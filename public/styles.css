@@ -100,7 +100,6 @@ h2 {
 .status-strip,
 .segmented,
 .method-strip,
-.control-strip,
 .memory-detail-panel {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.94);
@@ -212,7 +211,7 @@ h2 {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 12px 0 4px;
+  margin: 10px 0 4px;
   padding: 9px 11px;
   border: 1px solid #e4eaf2;
   border-radius: 8px;
@@ -262,13 +261,15 @@ h2 {
   text-align: right;
 }
 
-.control-strip {
+.chart-control-strip {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  gap: 12px;
+  margin: 14px 0 6px;
   padding: 12px;
+  border: 1px solid #e4eaf2;
   border-radius: 8px;
+  background: #f8fbff;
 }
 
 .control-group {
@@ -636,7 +637,7 @@ dd {
 .chart-frame {
   width: 100%;
   min-height: 390px;
-  padding-top: 4px;
+  padding-top: 0;
 }
 
 .chart-frame.small {
@@ -840,7 +841,7 @@ svg text {
   .summary-grid,
   .method-strip,
   .memory-detail-grid,
-  .control-strip,
+  .chart-control-strip,
   .workbench,
   .lower-grid {
     grid-template-columns: 1fr;
@@ -854,7 +855,7 @@ svg text {
     text-align: left;
   }
 
-  .control-strip {
+  .chart-control-strip {
     align-items: stretch;
     flex-direction: column;
   }

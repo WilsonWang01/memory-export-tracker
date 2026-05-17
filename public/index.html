@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口跟踪</title>
-    <link rel="stylesheet" href="styles.css?v=20260517-integrated-coverage" />
+    <link rel="stylesheet" href="styles.css?v=20260517-chart-controls" />
   </head>
   <body>
     <main class="screen">
@@ -36,25 +36,6 @@
         <div>
           <span class="method-label">更新节奏</span>
           <strong>月度最终值 + 10 日高频窗口</strong>
-        </div>
-      </section>
-
-      <section class="control-strip" aria-label="dashboard controls">
-        <div class="control-group">
-          <span class="control-label">时间窗口</span>
-          <div class="segmented compact" id="rangeControls">
-            <button data-range="6">近 6 月</button>
-            <button data-range="12" class="selected">近 12 月</button>
-            <button data-range="all">全部</button>
-          </div>
-        </div>
-        <div class="control-group grow">
-          <span class="control-label">主图系列</span>
-          <div id="seriesToggles" class="chip-row"></div>
-        </div>
-        <div class="control-group">
-          <span class="control-label">聚焦月份</span>
-          <strong id="selectedPeriod" class="focus-pill">未选择</strong>
         </div>
       </section>
 
@@ -101,8 +82,26 @@
               <button data-metric="unitPriceUsdPerKg" class="selected">出口单价</button>
             </div>
           </div>
-          <div id="mainCoverageBadge" class="coverage-badge"></div>
+          <div class="chart-control-strip" aria-label="dashboard controls">
+            <div class="control-group">
+              <span class="control-label">时间窗口</span>
+              <div class="segmented compact" id="rangeControls">
+                <button data-range="6">近 6 月</button>
+                <button data-range="12" class="selected">近 12 月</button>
+                <button data-range="all">全部</button>
+              </div>
+            </div>
+            <div class="control-group grow">
+              <span class="control-label">主图系列</span>
+              <div id="seriesToggles" class="chip-row"></div>
+            </div>
+            <div class="control-group">
+              <span class="control-label">聚焦月份</span>
+              <strong id="selectedPeriod" class="focus-pill">未选择</strong>
+            </div>
+          </div>
           <div id="mainChart" class="chart-frame"></div>
+          <div id="mainCoverageBadge" class="coverage-badge"></div>
         </section>
       </section>
 
@@ -124,6 +123,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-integrated-coverage" type="module"></script>
+    <script src="app.js?v=20260517-chart-controls" type="module"></script>
   </body>
 </html>
