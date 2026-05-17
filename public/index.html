@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口跟踪</title>
-    <link rel="stylesheet" href="styles.css?v=20260517-coverage" />
+    <link rel="stylesheet" href="styles.css?v=20260517-freshness-badges" />
   </head>
   <body>
     <main class="screen">
@@ -99,6 +99,7 @@
               <button data-metric="unitPriceUsdPerKg" class="selected">出口单价</button>
             </div>
           </div>
+          <div id="mainCoverageBadge" class="coverage-badge"></div>
           <div id="mainChart" class="chart-frame"></div>
         </section>
       </section>
@@ -106,11 +107,13 @@
       <section class="lower-grid">
         <section class="chart-panel">
           <div class="panel-title">选中品类三指标</div>
+          <div id="splitCoverageBadge" class="coverage-badge compact"></div>
           <p class="chart-caption">金额、净重、单价按各自最高值标准化，便于观察方向是否一致。</p>
           <div id="splitChart" class="chart-frame small"></div>
         </section>
         <section class="chart-panel">
           <div class="panel-title">月度总量与 10 日高频窗口</div>
+          <div id="officialCoverageBadge" class="coverage-badge compact"></div>
           <div id="monthlyOfficial" class="monthly-official"></div>
           <p id="prelimCaption" class="chart-caption">用于观察 KCS 旬度简报口径下的半导体出口节奏。</p>
           <div id="prelimChart" class="chart-frame small"></div>
@@ -119,6 +122,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-coverage" type="module"></script>
+    <script src="app.js?v=20260517-freshness-badges" type="module"></script>
   </body>
 </html>

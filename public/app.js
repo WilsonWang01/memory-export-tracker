@@ -89,6 +89,15 @@ function visibleProducts() {
   return state.data.products.filter((product) => state.visibleProducts.has(product.key));
 }
 
+function freshnessByKey(key) {
+  return (state.data.freshness ?? []).find((item) => item.key === key);
+}
+
+function coverageSentence(item) {
+  if (!item) return "";
+  return `截止：${item.latestPeriod} · 预计更新：${item.nextExpectedDate}`;
+}
+
 function tooltipHtml(label, rows) {
   return `<strong>${escapeHtml(label)}</strong>${rows
     .map((row) => `<span><i style="background:${row.color}"></i>${escapeHtml(row.name)}: ${escapeHtml(row.value)}</span>`)
@@ -206,6 +215,7 @@ function renderSummary() {
       const previous = latestPoint(monthly, product.key, 1);
       const delta = percentChange(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
       const changeClass = deltaClass(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
+      const hsFreshness = freshnessByKey("monthly_hs");
       return `<button class="summary-card ${state.selectedProduct === product.key ? "active" : ""}" data-product="${product.key}">
         <div class="card-head">
           <span>${product.name}</span>
@@ -218,6 +228,7 @@ function renderSummary() {
           <span><small>净重</small>${compactWeight(point?.weightKg ?? 0)}</span>
           <span class="delta ${changeClass}"><small>环比</small>${delta}</span>
         </div>
+        <p class="card-freshness">${escapeHtml(coverageSentence(hsFreshness))}</p>
       </button>`;
     })
     .join("");
@@ -239,7 +250,7 @@ function renderFreshness() {
         <strong>${escapeHtml(item.latestPeriod)}</strong>
         <dl>
           <div><dt>发布日期</dt><dd>${escapeHtml(item.latestReleaseDate)}</dd></div>
-          <div><dt>下一次</dt><dd>${escapeHtml(item.nextExpectedDate)}</dd></div>
+          <div><dt>预计更新</dt><dd>${escapeHtml(item.nextExpectedDate)}</dd></div>
         </dl>
         <p>${escapeHtml(item.note)}</p>
       </article>`
@@ -266,6 +277,8 @@ function renderDetails() {
 }
 
 function renderMainChart() {
+  const hsFreshness = freshnessByKey("monthly_hs");
+  document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>SSD / DRAM-HBM HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
   document.querySelector("#mainChartTitle").textContent = `${metricLabels[state.metric]}趋势`;
   const monthly = filteredMonthly();
   const periods = [...new Set(monthly.map((point) => point.period))].sort();
@@ -287,6 +300,8 @@ function renderMainChart() {
 }
 
 function renderSplitChart() {
+  const hsFreshness = freshnessByKey("monthly_hs");
+  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
   const points = filteredMonthly().filter((point) => point.productKey === state.selectedProduct);
   const labels = points.map((point) => point.period);
   const series = [
@@ -312,6 +327,9 @@ function renderSplitChart() {
 }
 
 function renderPrelimChart() {
+  const monthlyFreshness = freshnessByKey("monthly_semiconductor");
+  const tenDayFreshness = freshnessByKey("ten_day_semiconductor");
+  document.querySelector("#officialCoverageBadge").innerHTML = `<span>半导体总量</span><em>月度${escapeHtml(coverageSentence(monthlyFreshness))}；旬度${escapeHtml(coverageSentence(tenDayFreshness))}</em>`;
   const monthlyOfficial = state.data.officialMonthly ?? [];
   document.querySelector("#monthlyOfficial").innerHTML = monthlyOfficial
     .map(

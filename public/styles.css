@@ -207,6 +207,42 @@ h2 {
   line-height: 1.3;
 }
 
+.coverage-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 4px;
+  padding: 9px 11px;
+  border: 1px solid #e4eaf2;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #445166;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.coverage-badge.compact {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.coverage-badge span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.coverage-badge strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.coverage-badge em {
+  color: #536173;
+  font-style: normal;
+}
+
 .freshness-panel {
   display: grid;
   gap: 14px;
@@ -460,6 +496,13 @@ code {
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
+}
+
+.card-freshness {
+  margin-top: 11px;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .delta.positive {
