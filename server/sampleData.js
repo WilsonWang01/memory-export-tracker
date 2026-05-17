@@ -89,6 +89,15 @@ export function buildSampleStore() {
         nextExpectedDate: "2026-05-21 左右发布 2026年5月1-20日",
         status: "official_public",
         note: "KCS 通常在每月 11 日和 21 日附近发布前 10 日、前 20 日初值。"
+      },
+      {
+        key: "memory_provisional_detail",
+        label: "存储细分旬度暂估",
+        latestPeriod: "2026年5月1-10日",
+        latestReleaseDate: "2026-05-11",
+        nextExpectedDate: "2026-05-21 左右尝试补 2026年5月1-20日细分数据",
+        status: "market_repost_trass",
+        note: "券商/市场渠道转述 TRASS/Korean customs 暂估，已交叉核验多处转述；未等同于本站直连 TRASS 官方接口。"
       }
     ],
     officialMonthly: [
@@ -113,6 +122,92 @@ export function buildSampleStore() {
         status: "preliminary",
         sourceName: "MOTIE April 2026 Export-Import Trends, reported by Asia Business Daily / KCTDI",
         sourceUrl: "https://www.asiae.co.kr/en/article/2026050109205280402"
+      }
+    ],
+    memoryDetail: [
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "Memory",
+        exportValueUsd: 6_231_900_000,
+        exportValueYoYPct: 253.7,
+        exportValueMoMPct: 13.5,
+        unitPriceUsdPerKg: 82_680,
+        unitPriceYoYPct: 326.3,
+        unitPriceMoMPct: 28.8,
+        source: "market_repost_trass",
+        sourceName: "Wccftech / market repost citing provisional Korean customs statistics",
+        sourceUrl: "https://wccftech.com/koreas-dram-nand-export-massive-prices-bump-versus-last-month-ssd-memory-up-63-percent/"
+      },
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "DRAM incl. modules",
+        exportValueUsd: 4_366_000_000,
+        exportValueYoYPct: 375,
+        exportValueMoMPct: 4,
+        unitPriceUsdPerKg: 63_961,
+        unitPriceYoYPct: 441,
+        unitPriceMoMPct: 16,
+        source: "market_repost_trass",
+        sourceName: "Meritz Tech repost, via Telegram mirrors; cites May 1-10 provisional semiconductor export statistics",
+        sourceUrl: "https://t.me/s/bornlupin?before=17995"
+      },
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "DRAM excl. modules",
+        exportValueUsd: 3_492_000_000,
+        exportValueYoYPct: 383,
+        exportValueMoMPct: 18,
+        unitPriceUsdPerKg: 89_498,
+        unitPriceYoYPct: 497,
+        unitPriceMoMPct: 21,
+        source: "market_repost_trass",
+        sourceName: "Meritz Tech repost, via Telegram mirrors; cross-checked by Wccftech unit-price table",
+        sourceUrl: "https://www.teamblind.com/kr/post/%EB%AF%B8%EC%B3%A4%EB%8B%A4-%EB%82%B8%EB%93%9C%EA%B0%92-SSD%EA%B0%92-%ED%8F%AD%EB%93%B1%EC%9D%B4%EB%8B%A4-%EC%83%8C%EB%94%94%EC%8A%A4%ED%81%AC%EB%8F%84-%ED%8F%AD%EB%93%B1%EA%B0%81-5h82cb0c"
+      },
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "Flash memory",
+        exportValueUsd: 462_000_000,
+        exportValueYoYPct: 169,
+        exportValueMoMPct: 1,
+        unitPriceUsdPerKg: 67_307,
+        unitPriceYoYPct: 352,
+        unitPriceMoMPct: 63,
+        source: "market_repost_trass",
+        sourceName: "Meritz Tech repost, via Telegram mirrors; cross-checked by Wccftech unit-price table",
+        sourceUrl: "https://www.teamblind.com/kr/post/%EB%AF%B8%EC%B3%A4%EB%8B%A4-%EB%82%B8%EB%93%9C%EA%B0%92-SSD%EA%B0%92-%ED%8F%AD%EB%93%B1%EC%9D%B4%EB%8B%A4-%EC%83%8C%EB%94%94%EC%8A%A4%ED%81%AC%EB%8F%84-%ED%8F%AD%EB%93%B1%EA%B0%81-5h82cb0c"
+      },
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "SSD",
+        exportValueUsd: 1_061_000_000,
+        exportValueYoYPct: 607,
+        exportValueMoMPct: 172,
+        unitPriceUsdPerKg: 45_055,
+        unitPriceYoYPct: 865,
+        unitPriceMoMPct: 313,
+        source: "market_repost_trass",
+        sourceName: "Meritz Tech repost, via Telegram mirrors; cites May 1-10 provisional semiconductor export statistics",
+        sourceUrl: "https://t.me/s/bornlupin?before=17995"
+      },
+      {
+        period: "2026.05-1~10",
+        periodLabel: "2026年5月前10日",
+        category: "MCP / HBM proxy",
+        exportValueUsd: 1_809_197_568,
+        exportValueYoYPct: 156.1,
+        exportValueMoMPct: 12.8,
+        unitPriceUsdPerKg: 78_752,
+        unitPriceYoYPct: 165.5,
+        unitPriceMoMPct: 18.7,
+        source: "market_repost_trass",
+        sourceName: "Mirae Asset IT hardware Telegram mirror; cross-checked by Wccftech MCP/HBM table",
+        sourceUrl: "https://telemetr.io/uz/channels/2210862784"
       }
     ],
     preliminary: [

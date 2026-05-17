@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口跟踪</title>
-    <link rel="stylesheet" href="styles.css?v=20260517-freshness-badges" />
+    <link rel="stylesheet" href="styles.css?v=20260517-memory-detail" />
   </head>
   <body>
     <main class="screen">
@@ -71,6 +71,17 @@
 
       <section id="summaryGrid" class="summary-grid"></section>
 
+      <section class="chart-panel memory-detail-panel">
+        <div class="section-head">
+          <div>
+            <p class="panel-title">PROVISIONAL MEMORY DETAIL</p>
+            <h2>5 月前 10 日存储细分暂估</h2>
+          </div>
+          <span id="memoryDetailCoverage" class="freshness-note"></span>
+        </div>
+        <div id="memoryDetailGrid" class="memory-detail-grid"></div>
+      </section>
+
       <section class="workbench">
         <aside class="side-panel">
           <div class="panel-title">当前品类</div>
@@ -122,6 +133,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-freshness-badges" type="module"></script>
+    <script src="app.js?v=20260517-memory-detail" type="module"></script>
   </body>
 </html>

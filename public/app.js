@@ -44,6 +44,8 @@ const formatMetric = (value, metric) => {
   return unitPrice(value);
 };
 
+const formatPct = (value) => `${value > 0 ? "+" : ""}${Number(value).toFixed(Math.abs(value) >= 100 ? 0 : 1)}%`;
+
 const percentChange = (current, previous) => {
   if (!current || !previous) return "n/a";
   const change = (current / previous - 1) * 100;
@@ -258,6 +260,27 @@ function renderFreshness() {
     .join("");
 }
 
+function renderMemoryDetail() {
+  const detail = state.data.memoryDetail ?? [];
+  const freshness = freshnessByKey("memory_provisional_detail");
+  document.querySelector("#memoryDetailCoverage").textContent = coverageSentence(freshness);
+  document.querySelector("#memoryDetailGrid").innerHTML = detail
+    .map(
+      (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
+        <span>${escapeHtml(item.category)}</span>
+        <strong>${compactUsd(item.exportValueUsd)}</strong>
+        <div class="memory-kpis">
+          <em><small>单价</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
+          <em><small>金额 YoY</small>${formatPct(item.exportValueYoYPct)}</em>
+          <em><small>金额 MoM</small>${formatPct(item.exportValueMoMPct)}</em>
+          <em><small>单价 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
+        </div>
+        <p>${escapeHtml(item.sourceName)}</p>
+      </a>`
+    )
+    .join("");
+}
+
 function renderDetails() {
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
   const monthly = filteredMonthly();
@@ -452,6 +475,7 @@ function render() {
   if (!state.data) return;
   renderControls();
   renderFreshness();
+  renderMemoryDetail();
   document.querySelectorAll("[data-metric]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.metric === state.metric);
   });
