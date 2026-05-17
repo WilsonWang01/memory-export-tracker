@@ -693,6 +693,24 @@ dd {
   color: #ffffff;
 }
 
+.axis-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.axis-pair span {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #dce8f7;
+  border-radius: 7px;
+  background: #f8fbff;
+  color: #445166;
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .chart-frame {
   width: 100%;
   min-height: 390px;
@@ -735,6 +753,15 @@ dd {
   width: 16px;
   height: 3px;
   border-radius: 999px;
+}
+
+.legend i.dashed {
+  background: repeating-linear-gradient(90deg, currentColor 0 7px, transparent 7px 12px) !important;
+  color: #118273;
+}
+
+.amount-bar {
+  opacity: 0.92;
 }
 
 .source-list {

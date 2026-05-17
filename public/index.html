@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口跟踪</title>
-    <link rel="stylesheet" href="styles.css?v=20260517-summary-analysis" />
+    <link rel="stylesheet" href="styles.css?v=20260517-dual-axis-main" />
   </head>
   <body>
     <main class="screen">
@@ -53,8 +53,11 @@
           <dl class="detail-list">
             <div><dt>最近月份</dt><dd id="latestPeriod">--</dd></div>
             <div><dt>出口金额</dt><dd id="latestValue">--</dd></div>
+            <div><dt>金额环比</dt><dd id="latestValueChange">--</dd></div>
             <div><dt>出口净重</dt><dd id="latestWeight">--</dd></div>
+            <div><dt>净重环比</dt><dd id="latestWeightChange">--</dd></div>
             <div><dt>单价环比</dt><dd id="latestPriceChange">--</dd></div>
+            <div><dt>量价判断</dt><dd id="latestSignal">--</dd></div>
           </dl>
         </aside>
 
@@ -62,12 +65,11 @@
           <div class="chart-toolbar">
             <div>
               <div class="panel-title">月度量价拆分</div>
-              <h2 id="mainChartTitle">出口单价趋势</h2>
+              <h2 id="mainChartTitle">出口金额与增长率</h2>
             </div>
-            <div class="segmented">
-              <button data-metric="valueUsd">出口金额</button>
-              <button data-metric="weightKg">出口净重</button>
-              <button data-metric="unitPriceUsdPerKg" class="selected">出口单价</button>
+            <div class="axis-pair">
+              <span>左轴：金额</span>
+              <span>右轴：YoY / MoM</span>
             </div>
           </div>
           <div class="chart-control-strip" aria-label="dashboard controls">
@@ -78,10 +80,6 @@
                 <button data-range="12" class="selected">近 12 月</button>
                 <button data-range="all">全部</button>
               </div>
-            </div>
-            <div class="control-group grow">
-              <span class="control-label">主图系列</span>
-              <div id="seriesToggles" class="chip-row"></div>
             </div>
             <div class="control-group">
               <span class="control-label">聚焦月份</span>
@@ -123,6 +121,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-summary-analysis" type="module"></script>
+    <script src="app.js?v=20260517-dual-axis-main" type="module"></script>
   </body>
 </html>

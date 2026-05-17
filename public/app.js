@@ -1,16 +1,8 @@
 const state = {
   data: null,
   selectedProduct: "ssd",
-  metric: "unitPriceUsdPerKg",
   range: "12",
-  visibleProducts: new Set(["ssd", "dram_hbm"]),
   selectedPeriod: null
-};
-
-const metricLabels = {
-  valueUsd: "出口金额",
-  weightKg: "出口净重",
-  unitPriceUsdPerKg: "出口单价"
 };
 
 const colors = {
@@ -37,20 +29,7 @@ const compactWeight = (value) => {
 
 const unitPrice = (value) => (value ? `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}/kg` : "n/a");
 
-const formatMetric = (value, metric) => {
-  if (value === null || value === undefined) return "n/a";
-  if (metric === "valueUsd") return compactUsd(value);
-  if (metric === "weightKg") return compactWeight(value);
-  return unitPrice(value);
-};
-
 const formatPct = (value) => `${value > 0 ? "+" : ""}${Number(value).toFixed(Math.abs(value) >= 100 ? 0 : 1)}%`;
-
-const percentChange = (current, previous) => {
-  if (!current || !previous) return "n/a";
-  const change = (current / previous - 1) * 100;
-  return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
-};
 
 const percentChangeValue = (current, previous) => {
   if (!current || !previous) return null;
@@ -58,11 +37,6 @@ const percentChangeValue = (current, previous) => {
 };
 
 const formatChange = (value) => (Number.isFinite(value) ? formatPct(value) : "n/a");
-
-const deltaClass = (current, previous) => {
-  if (!current || !previous) return "neutral";
-  return current >= previous ? "positive" : "negative";
-};
 
 const deltaClassFromValue = (value) => {
   if (!Number.isFinite(value)) return "neutral";
@@ -92,15 +66,17 @@ function latestPoint(points, key, offset = 0) {
     .sort((a, b) => b.period.localeCompare(a.period))[offset];
 }
 
+function shiftPeriod(period, monthOffset) {
+  const [year, month] = period.split(".").map(Number);
+  const date = new Date(Date.UTC(year, month - 1 + monthOffset, 1));
+  return `${date.getUTCFullYear()}.${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
 function filteredMonthly() {
   if (!state.data) return [];
   const periods = [...new Set(state.data.monthly.map((point) => point.period))].sort();
   const keptPeriods = state.range === "all" ? periods : periods.slice(-Number(state.range));
   return state.data.monthly.filter((point) => keptPeriods.includes(point.period));
-}
-
-function visibleProducts() {
-  return state.data.products.filter((product) => state.visibleProducts.has(product.key));
 }
 
 function freshnessByKey(key) {
@@ -171,7 +147,8 @@ function chartSvg({ series, labels, formatter, height = 360, chartType = "line",
         const barWidth = Math.min(46, plotWidth / Math.max(count, 1) / (series.length + 0.8));
         return item.points
           .map((point, index) => {
-            const x = scaleX(index) - (barWidth * series.length) / 2 + seriesIndex * barWidth;
+            const pointIndex = point.index ?? index;
+            const x = scaleX(pointIndex) - (barWidth * series.length) / 2 + seriesIndex * barWidth;
             const y = scaleY(point.value);
             const tooltip = tooltipHtml(point.label ?? labels[index], [
               { color: item.color, name: item.name, value: formatter(point.value) },
@@ -187,11 +164,12 @@ function chartSvg({ series, labels, formatter, height = 360, chartType = "line",
       }
 
       const path = item.points
-        .map((point, index) => `${index === 0 ? "M" : "L"} ${scaleX(index)} ${scaleY(point.value)}`)
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${scaleX(point.index ?? index)} ${scaleY(point.value)}`)
         .join(" ");
       const lastPoint = item.points[item.points.length - 1];
-      const lastIndex = item.points.length - 1;
-      return `<path d="${path}" fill="none" stroke="${item.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+      const lastIndex = lastPoint.index ?? item.points.length - 1;
+      const dash = item.dash ? ` stroke-dasharray="${escapeHtml(item.dash)}"` : "";
+      return `<path d="${path}" fill="none" stroke="${item.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${dash}></path>
         <circle cx="${scaleX(lastIndex)}" cy="${scaleY(lastPoint.value)}" r="4" fill="#fff" stroke="${item.color}" stroke-width="2"></circle>`;
     })
     .join("");
@@ -208,7 +186,7 @@ function chartSvg({ series, labels, formatter, height = 360, chartType = "line",
             const end = index === labels.length - 1 ? width - padding.right : (x + scaleX(index + 1)) / 2;
             const rows = series
               .map((item) => {
-                const point = item.points[index];
+                const point = item.points.find((candidate, pointIndex) => (candidate.index ?? pointIndex) === index);
                 return point ? { color: item.color, name: item.name, value: formatter(point.value) } : null;
               })
               .filter(Boolean);
@@ -227,6 +205,121 @@ function chartSvg({ series, labels, formatter, height = 360, chartType = "line",
       ${xLabels}
       ${selectedLine}
       ${body}
+      ${hitZones}
+    </svg>${legend}`;
+}
+
+function lineSegments(points, scaleX, scaleY) {
+  const segments = [];
+  let current = [];
+  points.forEach((point, index) => {
+    if (Number.isFinite(point.value)) {
+      current.push({ ...point, index });
+      return;
+    }
+    if (current.length) segments.push(current);
+    current = [];
+  });
+  if (current.length) segments.push(current);
+  return segments
+    .map((segment) => {
+      if (segment.length === 1) {
+        const point = segment[0];
+        return `<circle cx="${scaleX(point.index)}" cy="${scaleY(point.value)}" r="3.5" fill="#fff" stroke="${point.color}" stroke-width="2"></circle>`;
+      }
+      const path = segment
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${scaleX(point.index)} ${scaleY(point.value)}`)
+        .join(" ");
+      const lastPoint = segment[segment.length - 1];
+      return `<path d="${path}" fill="none" stroke="${lastPoint.color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${lastPoint.dash ? ` stroke-dasharray="${escapeHtml(lastPoint.dash)}"` : ""}></path>
+        <circle cx="${scaleX(lastPoint.index)}" cy="${scaleY(lastPoint.value)}" r="4" fill="#fff" stroke="${lastPoint.color}" stroke-width="2"></circle>`;
+    })
+    .join("");
+}
+
+function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height = 360 }) {
+  if (!points.length) return `<div class="chart-empty">暂无可用数据</div>`;
+
+  const width = 900;
+  const padding = { top: 26, right: 84, bottom: 42, left: 74 };
+  const plotWidth = width - padding.left - padding.right;
+  const plotHeight = height - padding.top - padding.bottom;
+  const count = Math.max(points.length, 1);
+  const scaleX = (index) => padding.left + (count === 1 ? plotWidth / 2 : (plotWidth / (count - 1)) * index);
+
+  const amountMax = Math.max(...points.map((point) => point.valueUsd).filter(Number.isFinite), 1);
+  const amountScaleMax = amountMax * 1.08;
+  const amountScaleY = (value) => padding.top + plotHeight - (value / amountScaleMax) * plotHeight;
+  const pctValues = points.flatMap((point) => [point.yoyPct, point.sequentialPct]).filter(Number.isFinite);
+  const pctMinBase = pctValues.length ? Math.min(0, ...pctValues) : -10;
+  const pctMaxBase = pctValues.length ? Math.max(0, ...pctValues) : 10;
+  const pctPadding = Math.max((pctMaxBase - pctMinBase) * 0.12, 4);
+  const pctMin = pctMinBase - pctPadding;
+  const pctMax = pctMaxBase + pctPadding;
+  const pctScaleY = (value) => padding.top + plotHeight - ((value - pctMin) / (pctMax - pctMin || 1)) * plotHeight;
+  const amountTicks = Array.from({ length: 5 }, (_, index) => (amountScaleMax / 4) * index);
+  const pctTicks = Array.from({ length: 5 }, (_, index) => pctMin + ((pctMax - pctMin) / 4) * index);
+
+  const grid = amountTicks
+    .map((tick) => {
+      const y = amountScaleY(tick);
+      return `<line class="gridline" x1="${padding.left}" x2="${width - padding.right}" y1="${y}" y2="${y}"></line>
+        <text x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${compactUsd(tick)}</text>`;
+    })
+    .join("");
+  const rightAxis = pctTicks
+    .map((tick) => `<text x="${width - padding.right + 10}" y="${pctScaleY(tick) + 4}" text-anchor="start">${formatPct(tick)}</text>`)
+    .join("");
+  const xLabels = labels
+    .map((label, index) => {
+      if (labels.length > 10 && index % 2) return "";
+      return `<text x="${scaleX(index)}" y="${height - 12}" text-anchor="middle">${escapeHtml(label)}</text>`;
+    })
+    .join("");
+  const barWidth = Math.min(34, plotWidth / Math.max(count, 1) * 0.44);
+  const bars = points
+    .map((point, index) => {
+      const x = scaleX(index) - barWidth / 2;
+      const y = amountScaleY(point.valueUsd);
+      return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#cfe0ff"></rect>`;
+    })
+    .join("");
+  const yoyPoints = points.map((point) => ({ value: point.yoyPct, color: "#b45f17", dash: "" }));
+  const sequentialPoints = points.map((point) => ({ value: point.sequentialPct, color: "#118273", dash: "6 5" }));
+  const selectedLine = selectedLabel && labels.includes(selectedLabel)
+    ? `<line class="focus-line" x1="${scaleX(labels.indexOf(selectedLabel))}" x2="${scaleX(labels.indexOf(selectedLabel))}" y1="${padding.top}" y2="${height - padding.bottom}"></line>`
+    : "";
+  const hitZones = points
+    .map((point, index) => {
+      const x = scaleX(index);
+      const start = index === 0 ? padding.left : (scaleX(index - 1) + x) / 2;
+      const end = index === labels.length - 1 ? width - padding.right : (x + scaleX(index + 1)) / 2;
+      const rows = [
+        { color: "#2f6fdb", name: "出口金额", value: compactUsd(point.valueUsd) },
+        { color: "#b45f17", name: "YoY", value: formatChange(point.yoyPct) },
+        { color: "#118273", name: "MoM", value: formatChange(point.sequentialPct) }
+      ];
+      return `<rect class="hit-zone" x="${start}" y="${padding.top}" width="${end - start}" height="${plotHeight}" data-label="${escapeHtml(point.period)}" data-tooltip="${escapeHtml(tooltipHtml(point.periodLabel, rows))}"><title>${escapeHtml(tooltipText(point.periodLabel, rows))}</title></rect>`;
+    })
+    .join("");
+  const legend = `<div class="legend dual-axis-legend">
+    <span><i style="background:#cfe0ff"></i>出口金额（左轴）</span>
+    <span><i style="background:#b45f17"></i>YoY（右轴）</span>
+    <span><i class="dashed" style="background:#118273"></i>MoM（右轴）</span>
+  </div>`;
+
+  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="出口金额与增长率双轴图">
+      ${grid}
+      ${rightAxis}
+      <text class="axis-label" x="${padding.left}" y="14" text-anchor="start">金额</text>
+      <text class="axis-label" x="${width - padding.right}" y="14" text-anchor="end">增长率</text>
+      <line class="axis" x1="${padding.left}" x2="${width - padding.right}" y1="${height - padding.bottom}" y2="${height - padding.bottom}"></line>
+      <line class="axis" x1="${width - padding.right}" x2="${width - padding.right}" y1="${padding.top}" y2="${height - padding.bottom}"></line>
+      ${xLabels}
+      ${bars}
+      ${selectedLine}
+      ${lineSegments(yoyPoints, scaleX, pctScaleY)}
+      ${lineSegments(sequentialPoints, scaleX, pctScaleY)}
       ${hitZones}
     </svg>${legend}`;
 }
@@ -318,33 +411,48 @@ function renderDetails() {
     monthly.filter((item) => item.period < (point?.period ?? "")),
     state.selectedProduct
   );
+  const valuePct = percentChangeValue(point?.valueUsd, previous?.valueUsd);
+  const weightPct = percentChangeValue(point?.weightKg, previous?.weightKg);
+  const pricePct = percentChangeValue(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
   document.querySelector("#activeProductName").textContent = product?.name ?? "--";
   document.querySelector("#sideCoverageNote").textContent = `${coverageSentence(hsFreshness)}。${hsFreshness?.note ?? ""}`;
   document.querySelector("#activeProductNote").textContent = product?.note ?? "";
   document.querySelector("#latestPeriod").textContent = point?.periodLabel ?? "--";
   document.querySelector("#latestValue").textContent = compactUsd(point?.valueUsd ?? 0);
+  document.querySelector("#latestValueChange").textContent = formatChange(valuePct);
   document.querySelector("#latestWeight").textContent = compactWeight(point?.weightKg ?? 0);
-  document.querySelector("#latestPriceChange").textContent = percentChange(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
+  document.querySelector("#latestWeightChange").textContent = formatChange(weightPct);
+  document.querySelector("#latestPriceChange").textContent = formatChange(pricePct);
+  document.querySelector("#latestSignal").textContent = volumePriceSignal(valuePct, weightPct, pricePct);
 }
 
 function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>SSD / DRAM-HBM HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
-  document.querySelector("#mainChartTitle").textContent = `${metricLabels[state.metric]}趋势`;
+  const product = state.data.products.find((item) => item.key === state.selectedProduct);
+  document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>${escapeHtml(product?.name ?? "选中品类")} HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
+  document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：出口金额与增长率`;
   const monthly = filteredMonthly();
-  const periods = [...new Set(monthly.map((point) => point.period))].sort();
-  const series = visibleProducts().map((product) => ({
-    name: product.name,
-    color: colors[product.key],
-    points: periods.map((period) => {
-      const point = monthly.find((item) => item.productKey === product.key && item.period === period);
-      return { label: period, value: point?.[state.metric] ?? null };
-    }).filter((point) => point.value !== null)
-  }));
-  document.querySelector("#mainChart").innerHTML = chartSvg({
-    series,
-    labels: periods,
-    formatter: (value) => formatMetric(value, state.metric),
+  const allProductPoints = state.data.monthly
+    .filter((point) => point.productKey === state.selectedProduct)
+    .sort((a, b) => a.period.localeCompare(b.period));
+  const byPeriod = new Map(allProductPoints.map((point) => [point.period, point]));
+  const points = monthly
+    .filter((point) => point.productKey === state.selectedProduct)
+    .sort((a, b) => a.period.localeCompare(b.period))
+    .map((point) => {
+      const previousMonth = byPeriod.get(shiftPeriod(point.period, -1));
+      const previousYear = byPeriod.get(shiftPeriod(point.period, -12));
+      return {
+        period: point.period,
+        periodLabel: point.periodLabel,
+        valueUsd: point.valueUsd,
+        sequentialPct: percentChangeValue(point.valueUsd, previousMonth?.valueUsd),
+        yoyPct: percentChangeValue(point.valueUsd, previousYear?.valueUsd)
+      };
+    });
+  document.querySelector("#mainChart").innerHTML = amountGrowthDualAxisSvg({
+    points,
+    labels: points.map((point) => point.period),
     selectedLabel: state.selectedPeriod
   });
   bindChartInteractions(document.querySelector("#mainChart"));
@@ -445,25 +553,6 @@ function renderControls() {
     button.classList.toggle("selected", button.dataset.range === state.range);
   });
   document.querySelector("#selectedPeriod").textContent = state.selectedPeriod ? state.selectedPeriod.replace(".", "-") : "未选择";
-  document.querySelector("#seriesToggles").innerHTML = state.data.products
-    .map(
-      (product) =>
-        `<button class="series-chip ${state.visibleProducts.has(product.key) ? "active" : ""}" data-series="${product.key}">
-          <i style="background:${colors[product.key]}"></i>${escapeHtml(product.name)}
-        </button>`
-    )
-    .join("");
-  document.querySelectorAll("[data-series]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const key = button.dataset.series;
-      if (state.visibleProducts.has(key) && state.visibleProducts.size > 1) {
-        state.visibleProducts.delete(key);
-      } else {
-        state.visibleProducts.add(key);
-      }
-      render();
-    });
-  });
 }
 
 function bindChartInteractions(container) {
@@ -503,9 +592,6 @@ function render() {
   if (!state.data) return;
   renderControls();
   renderMemoryDetail();
-  document.querySelectorAll("[data-metric]").forEach((button) => {
-    button.classList.toggle("selected", button.dataset.metric === state.metric);
-  });
   renderMeta();
   renderSummary();
   renderDetails();
@@ -546,13 +632,6 @@ async function refreshNow() {
     button.classList.remove("spinning");
   }
 }
-
-document.querySelectorAll("[data-metric]").forEach((button) => {
-  button.addEventListener("click", () => {
-    state.metric = button.dataset.metric;
-    render();
-  });
-});
 
 document.querySelectorAll("[data-range]").forEach((button) => {
   button.addEventListener("click", () => {
