@@ -243,27 +243,11 @@ function renderSummary() {
   });
 }
 
-function renderFreshness() {
-  const rows = state.data.freshness ?? [];
-  document.querySelector("#freshnessGrid").innerHTML = rows
-    .map(
-      (item) => `<article class="freshness-card ${escapeHtml(item.status)}">
-        <span>${escapeHtml(item.label)}</span>
-        <strong>${escapeHtml(item.latestPeriod)}</strong>
-        <dl>
-          <div><dt>发布日期</dt><dd>${escapeHtml(item.latestReleaseDate)}</dd></div>
-          <div><dt>预计更新</dt><dd>${escapeHtml(item.nextExpectedDate)}</dd></div>
-        </dl>
-        <p>${escapeHtml(item.note)}</p>
-      </article>`
-    )
-    .join("");
-}
-
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
   const freshness = freshnessByKey("memory_provisional_detail");
-  document.querySelector("#memoryDetailCoverage").textContent = coverageSentence(freshness);
+  document.querySelector("#memoryDetailCoverage").textContent = `${coverageSentence(freshness)} · 非直连官方接口`;
+  document.querySelector("#memoryDetailMethod").textContent = freshness?.note ?? "";
   document.querySelector("#memoryDetailGrid").innerHTML = detail
     .map(
       (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
@@ -283,6 +267,7 @@ function renderMemoryDetail() {
 
 function renderDetails() {
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
+  const hsFreshness = freshnessByKey("monthly_hs");
   const monthly = filteredMonthly();
   const point =
     (state.selectedPeriod && monthly.find((item) => item.productKey === state.selectedProduct && item.period === state.selectedPeriod)) ||
@@ -292,6 +277,7 @@ function renderDetails() {
     state.selectedProduct
   );
   document.querySelector("#activeProductName").textContent = product?.name ?? "--";
+  document.querySelector("#sideCoverageNote").textContent = `${coverageSentence(hsFreshness)}。${hsFreshness?.note ?? ""}`;
   document.querySelector("#activeProductNote").textContent = product?.note ?? "";
   document.querySelector("#latestPeriod").textContent = point?.periodLabel ?? "--";
   document.querySelector("#latestValue").textContent = compactUsd(point?.valueUsd ?? 0);
@@ -474,7 +460,6 @@ function bindChartInteractions(container) {
 function render() {
   if (!state.data) return;
   renderControls();
-  renderFreshness();
   renderMemoryDetail();
   document.querySelectorAll("[data-metric]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.metric === state.metric);

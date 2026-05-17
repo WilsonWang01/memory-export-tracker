@@ -101,7 +101,7 @@ h2 {
 .segmented,
 .method-strip,
 .control-strip,
-.freshness-panel {
+.memory-detail-panel {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -243,14 +243,6 @@ h2 {
   font-style: normal;
 }
 
-.freshness-panel {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 14px;
-  padding: 16px;
-  border-radius: 8px;
-}
-
 .section-head {
   display: flex;
   align-items: flex-start;
@@ -268,70 +260,6 @@ h2 {
   font-size: 13px;
   line-height: 1.45;
   text-align: right;
-}
-
-.freshness-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.freshness-card {
-  display: grid;
-  gap: 9px;
-  min-height: 178px;
-  padding: 13px;
-  border: 1px solid #e4eaf2;
-  border-radius: 8px;
-  background: var(--surface-subtle);
-}
-
-.freshness-card.official_public {
-  border-color: #bfe6de;
-  background: #f2fbf8;
-}
-
-.freshness-card.needs_api_key {
-  border-color: #f0d28a;
-  background: #fff9ed;
-}
-
-.freshness-card.market_repost_trass {
-  border-color: #c7d2fe;
-  background: #f5f7ff;
-}
-
-.freshness-card > span,
-.freshness-card dt {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 850;
-}
-
-.freshness-card strong {
-  font-size: 22px;
-}
-
-.freshness-card dl {
-  display: grid;
-  gap: 7px;
-  margin: 0;
-}
-
-.freshness-card div {
-  display: grid;
-  gap: 3px;
-}
-
-.freshness-card dd {
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.freshness-card p {
-  color: #536173;
-  font-size: 12px;
-  line-height: 1.45;
 }
 
 .control-strip {
@@ -414,6 +342,10 @@ h2 {
 }
 
 .memory-detail-panel {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 8px;
   margin-bottom: 14px;
 }
 
@@ -629,7 +561,8 @@ code {
 }
 
 .note,
-.chart-caption {
+.chart-caption,
+.method-note {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.55;
@@ -641,6 +574,10 @@ code {
 
 .chart-caption {
   margin: -4px 0 10px;
+}
+
+.method-note {
+  margin-top: 8px;
 }
 
 .detail-list {
@@ -902,7 +839,6 @@ svg text {
   .status-strip,
   .summary-grid,
   .method-strip,
-  .freshness-grid,
   .memory-detail-grid,
   .control-strip,
   .workbench,

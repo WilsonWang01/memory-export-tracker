@@ -39,17 +39,6 @@
         </div>
       </section>
 
-      <section class="freshness-panel" aria-label="data freshness">
-        <div class="section-head">
-          <div>
-            <p class="panel-title">DATA COVERAGE</p>
-            <h2>最新数据覆盖</h2>
-          </div>
-          <span class="freshness-note">不同口径发布时间不同，主图 HS 明细与半导体总量不要混读</span>
-        </div>
-        <div id="freshnessGrid" class="freshness-grid"></div>
-      </section>
-
       <section class="control-strip" aria-label="dashboard controls">
         <div class="control-group">
           <span class="control-label">时间窗口</span>
@@ -79,6 +68,7 @@
           </div>
           <span id="memoryDetailCoverage" class="freshness-note"></span>
         </div>
+        <p id="memoryDetailMethod" class="method-note"></p>
         <div id="memoryDetailGrid" class="memory-detail-grid"></div>
       </section>
 
@@ -89,6 +79,7 @@
             <h2 id="activeProductName">--</h2>
             <span class="status-dot"></span>
           </div>
+          <p id="sideCoverageNote" class="method-note"></p>
           <p id="activeProductNote" class="note"></p>
           <dl class="detail-list">
             <div><dt>最近月份</dt><dd id="latestPeriod">--</dd></div>
