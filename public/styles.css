@@ -100,7 +100,8 @@ h2 {
 .status-strip,
 .segmented,
 .method-strip,
-.control-strip {
+.control-strip,
+.freshness-panel {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -204,6 +205,92 @@ h2 {
 .method-strip strong {
   font-size: 14px;
   line-height: 1.3;
+}
+
+.freshness-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.section-head .panel-title {
+  margin-bottom: 7px;
+}
+
+.freshness-note {
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.freshness-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.freshness-card {
+  display: grid;
+  gap: 9px;
+  min-height: 178px;
+  padding: 13px;
+  border: 1px solid #e4eaf2;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+}
+
+.freshness-card.official_public {
+  border-color: #bfe6de;
+  background: #f2fbf8;
+}
+
+.freshness-card.needs_api_key {
+  border-color: #f0d28a;
+  background: #fff9ed;
+}
+
+.freshness-card > span,
+.freshness-card dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.freshness-card strong {
+  font-size: 22px;
+}
+
+.freshness-card dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.freshness-card div {
+  display: grid;
+  gap: 3px;
+}
+
+.freshness-card dd {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.freshness-card p {
+  color: #536173;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .control-strip {
@@ -646,6 +733,39 @@ svg text {
   flex: 0 0 auto;
 }
 
+.monthly-official {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.monthly-official a {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #dce8f7;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.monthly-official a:hover {
+  border-color: #b7c8ea;
+}
+
+.monthly-official span,
+.monthly-official small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.monthly-official strong {
+  font-size: 22px;
+}
+
 @media (max-width: 960px) {
   .screen {
     padding: 18px;
@@ -664,10 +784,19 @@ svg text {
   .status-strip,
   .summary-grid,
   .method-strip,
+  .freshness-grid,
   .control-strip,
   .workbench,
   .lower-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-head {
+    flex-direction: column;
+  }
+
+  .freshness-note {
+    text-align: left;
   }
 
   .control-strip {
@@ -702,5 +831,9 @@ svg text {
   .detail-list div {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+
+  .monthly-official {
+    grid-template-columns: 1fr;
   }
 }

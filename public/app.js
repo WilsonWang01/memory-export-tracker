@@ -230,6 +230,23 @@ function renderSummary() {
   });
 }
 
+function renderFreshness() {
+  const rows = state.data.freshness ?? [];
+  document.querySelector("#freshnessGrid").innerHTML = rows
+    .map(
+      (item) => `<article class="freshness-card ${escapeHtml(item.status)}">
+        <span>${escapeHtml(item.label)}</span>
+        <strong>${escapeHtml(item.latestPeriod)}</strong>
+        <dl>
+          <div><dt>发布日期</dt><dd>${escapeHtml(item.latestReleaseDate)}</dd></div>
+          <div><dt>下一次</dt><dd>${escapeHtml(item.nextExpectedDate)}</dd></div>
+        </dl>
+        <p>${escapeHtml(item.note)}</p>
+      </article>`
+    )
+    .join("");
+}
+
 function renderDetails() {
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
   const monthly = filteredMonthly();
@@ -295,6 +312,16 @@ function renderSplitChart() {
 }
 
 function renderPrelimChart() {
+  const monthlyOfficial = state.data.officialMonthly ?? [];
+  document.querySelector("#monthlyOfficial").innerHTML = monthlyOfficial
+    .map(
+      (point) => `<a href="${escapeHtml(point.sourceUrl)}" target="_blank" rel="noreferrer">
+        <span>${escapeHtml(point.periodLabel)}</span>
+        <strong>${compactUsd(point.valueUsd)}</strong>
+        <small>${escapeHtml(point.productName)}</small>
+      </a>`
+    )
+    .join("");
   const labels = state.data.preliminary.map((point) => point.periodLabel);
   const latest = state.data.preliminary[state.data.preliminary.length - 1];
   document.querySelector("#prelimCaption").textContent = latest?.sourceName
@@ -406,6 +433,7 @@ function bindChartInteractions(container) {
 function render() {
   if (!state.data) return;
   renderControls();
+  renderFreshness();
   document.querySelectorAll("[data-metric]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.metric === state.metric);
   });

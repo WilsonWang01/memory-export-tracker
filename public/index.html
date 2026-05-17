@@ -39,6 +39,17 @@
         </div>
       </section>
 
+      <section class="freshness-panel" aria-label="data freshness">
+        <div class="section-head">
+          <div>
+            <p class="panel-title">DATA COVERAGE</p>
+            <h2>最新数据覆盖</h2>
+          </div>
+          <span class="freshness-note">不同口径发布时间不同，主图 HS 明细与半导体总量不要混读</span>
+        </div>
+        <div id="freshnessGrid" class="freshness-grid"></div>
+      </section>
+
       <section class="control-strip" aria-label="dashboard controls">
         <div class="control-group">
           <span class="control-label">时间窗口</span>
@@ -99,7 +110,8 @@
           <div id="splitChart" class="chart-frame small"></div>
         </section>
         <section class="chart-panel">
-          <div class="panel-title">10 日高频窗口</div>
+          <div class="panel-title">月度总量与 10 日高频窗口</div>
+          <div id="monthlyOfficial" class="monthly-official"></div>
           <p id="prelimCaption" class="chart-caption">用于观察 KCS 旬度简报口径下的半导体出口节奏。</p>
           <div id="prelimChart" class="chart-frame small"></div>
           <div id="sourceList" class="source-list"></div>

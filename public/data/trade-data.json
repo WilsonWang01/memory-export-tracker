@@ -1,9 +1,9 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-17T10:17:25.800Z",
+    "lastUpdated": "2026-05-17T10:34:18.460Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
-    "message": "已更新 KCS/政策简报公开旬度半导体出口实数；SSD 与 DRAM/HBM 月度 HS 明细仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
+    "message": "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-10日；SSD 与 DRAM/HBM 月度 HS 明细仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
   },
   "products": [
     {
@@ -381,6 +381,59 @@
       "productName": "DRAM / HBM",
       "source": "sample",
       "status": "final"
+    }
+  ],
+  "freshness": [
+    {
+      "key": "monthly_hs",
+      "label": "SSD / DRAM-HBM HS 明细",
+      "latestPeriod": "2026年3月",
+      "latestReleaseDate": "待授权接口核验",
+      "nextExpectedDate": "data.go.kr / TRASS 授权后可拉取 2026年4月最终值",
+      "status": "needs_api_key",
+      "note": "看板主图当前仍是 HS 明细样例序列，不作为真实 4 月 SSD/DRAM-HBM 数据。"
+    },
+    {
+      "key": "monthly_semiconductor",
+      "label": "半导体月度总量",
+      "latestPeriod": "2026年4月",
+      "latestReleaseDate": "2026-05-01",
+      "nextExpectedDate": "2026-06-01 左右发布 2026年5月月度初值",
+      "status": "official_public",
+      "note": "4 月半导体出口约 319 亿美元，MOTIE/KCS 公开月度口径。"
+    },
+    {
+      "key": "ten_day_semiconductor",
+      "label": "半导体旬度高频",
+      "latestPeriod": "2026年5月1-10日",
+      "latestReleaseDate": "2026-05-11",
+      "nextExpectedDate": "2026-05-21 左右发布 2026年5月1-20日",
+      "status": "official_public",
+      "note": "KCS 通常在每月 11 日和 21 日附近发布前 10 日、前 20 日初值。"
+    }
+  ],
+  "officialMonthly": [
+    {
+      "period": "2026.03",
+      "periodLabel": "2026年3月",
+      "valueUsd": 32829000000,
+      "productKey": "semiconductor",
+      "productName": "半导体出口",
+      "source": "official_public",
+      "status": "preliminary",
+      "sourceName": "MOTIE March 2026 Export-Import Trends, reported by Seoul Economic Daily",
+      "sourceUrl": "https://en.sedaily.com/news/2026/04/01/semiconductor-power-defies-war-monthly-exports-toward"
+    },
+    {
+      "period": "2026.04",
+      "periodLabel": "2026年4月",
+      "valueUsd": 31900000000,
+      "productKey": "semiconductor",
+      "productName": "半导体出口",
+      "source": "official_public",
+      "status": "preliminary",
+      "sourceName": "MOTIE April 2026 Export-Import Trends, reported by Asia Business Daily / KCTDI",
+      "sourceUrl": "https://www.asiae.co.kr/en/article/2026050109205280402"
     }
   ],
   "preliminary": [
