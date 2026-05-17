@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口跟踪</title>
-    <link rel="stylesheet" href="styles.css?v=20260517-chart-controls" />
+    <link rel="stylesheet" href="styles.css?v=20260517-analysis-flow" />
   </head>
   <body>
     <main class="screen">
@@ -40,18 +40,6 @@
       </section>
 
       <section id="summaryGrid" class="summary-grid"></section>
-
-      <section class="chart-panel memory-detail-panel">
-        <div class="section-head">
-          <div>
-            <p class="panel-title">PROVISIONAL MEMORY DETAIL</p>
-            <h2>5 月前 10 日存储细分暂估</h2>
-          </div>
-          <span id="memoryDetailCoverage" class="freshness-note"></span>
-        </div>
-        <p id="memoryDetailMethod" class="method-note"></p>
-        <div id="memoryDetailGrid" class="memory-detail-grid"></div>
-      </section>
 
       <section class="workbench">
         <aside class="side-panel">
@@ -105,6 +93,18 @@
         </section>
       </section>
 
+      <section class="chart-panel memory-detail-panel">
+        <div class="section-head">
+          <div>
+            <p class="panel-title">PROVISIONAL MEMORY DETAIL</p>
+            <h2>5 月前 10 日存储细分暂估</h2>
+          </div>
+          <span id="memoryDetailCoverage" class="freshness-note"></span>
+        </div>
+        <p id="memoryDetailMethod" class="method-note"></p>
+        <div id="memoryDetailGrid" class="memory-detail-grid"></div>
+      </section>
+
       <section class="lower-grid">
         <section class="chart-panel">
           <div class="panel-title">选中品类三指标</div>
@@ -123,6 +123,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-chart-controls" type="module"></script>
+    <script src="app.js?v=20260517-analysis-flow" type="module"></script>
   </body>
 </html>
