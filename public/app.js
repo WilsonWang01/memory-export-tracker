@@ -418,13 +418,23 @@ function render() {
 }
 
 async function loadDashboard() {
-  let response = await fetch("/api/dashboard");
-  if (!response.ok) {
-    response = await fetch("data/trade-data.json", { cache: "no-store" });
+  const candidates = ["/api/dashboard", "data/trade-data.json"];
+  let lastError = null;
+  for (const url of candidates) {
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!response.ok || !contentType.includes("application/json")) {
+        throw new Error(`${url} returned ${response.status} ${contentType || "unknown content type"}`);
+      }
+      state.data = await response.json();
+      render();
+      return;
+    } catch (error) {
+      lastError = error;
+    }
   }
-  if (!response.ok) throw new Error(`Dashboard data ${response.status}`);
-  state.data = await response.json();
-  render();
+  throw lastError ?? new Error("Dashboard data unavailable");
 }
 
 async function refreshNow() {
