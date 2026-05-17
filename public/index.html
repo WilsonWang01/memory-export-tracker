@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>韩国存储出口跟踪</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="screen">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">KCS / TRASS Memory Export Monitor</p>
+          <h1>韩国存储出口量价跟踪</h1>
+        </div>
+        <div class="actions">
+          <span id="sourcePill" class="source-pill">数据载入中</span>
+          <button id="refreshButton" class="icon-button" title="立即刷新" aria-label="立即刷新">↻</button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div><span>最近更新</span><strong id="lastUpdated">--</strong></div>
+        <div><span id="statusMessage">载入韩国出口数据...</span></div>
+      </section>
+
+      <section class="method-strip" aria-label="dashboard tracking method">
+        <div>
+          <span class="method-label">追踪口径</span>
+          <strong>SSD 8471.70.4010 · DRAM/HBM 8542.32</strong>
+        </div>
+        <div>
+          <span class="method-label">量价拆分</span>
+          <strong>出口单价 = 出口金额 ÷ 出口净重</strong>
+        </div>
+        <div>
+          <span class="method-label">更新节奏</span>
+          <strong>月度最终值 + 10 日高频窗口</strong>
+        </div>
+      </section>
+
+      <section class="control-strip" aria-label="dashboard controls">
+        <div class="control-group">
+          <span class="control-label">时间窗口</span>
+          <div class="segmented compact" id="rangeControls">
+            <button data-range="6">近 6 月</button>
+            <button data-range="12" class="selected">近 12 月</button>
+            <button data-range="all">全部</button>
+          </div>
+        </div>
+        <div class="control-group grow">
+          <span class="control-label">主图系列</span>
+          <div id="seriesToggles" class="chip-row"></div>
+        </div>
+        <div class="control-group">
+          <span class="control-label">聚焦月份</span>
+          <strong id="selectedPeriod" class="focus-pill">未选择</strong>
+        </div>
+      </section>
+
+      <section id="summaryGrid" class="summary-grid"></section>
+
+      <section class="workbench">
+        <aside class="side-panel">
+          <div class="panel-title">当前品类</div>
+          <div class="side-heading">
+            <h2 id="activeProductName">--</h2>
+            <span class="status-dot"></span>
+          </div>
+          <p id="activeProductNote" class="note"></p>
+          <dl class="detail-list">
+            <div><dt>最近月份</dt><dd id="latestPeriod">--</dd></div>
+            <div><dt>出口金额</dt><dd id="latestValue">--</dd></div>
+            <div><dt>出口净重</dt><dd id="latestWeight">--</dd></div>
+            <div><dt>单价环比</dt><dd id="latestPriceChange">--</dd></div>
+          </dl>
+        </aside>
+
+        <section class="chart-panel">
+          <div class="chart-toolbar">
+            <div>
+              <div class="panel-title">月度量价拆分</div>
+              <h2 id="mainChartTitle">出口单价趋势</h2>
+            </div>
+            <div class="segmented">
+              <button data-metric="valueUsd">出口金额</button>
+              <button data-metric="weightKg">出口净重</button>
+              <button data-metric="unitPriceUsdPerKg" class="selected">出口单价</button>
+            </div>
+          </div>
+          <div id="mainChart" class="chart-frame"></div>
+        </section>
+      </section>
+
+      <section class="lower-grid">
+        <section class="chart-panel">
+          <div class="panel-title">选中品类三指标</div>
+          <p class="chart-caption">金额、净重、单价按各自最高值标准化，便于观察方向是否一致。</p>
+          <div id="splitChart" class="chart-frame small"></div>
+        </section>
+        <section class="chart-panel">
+          <div class="panel-title">10 日高频窗口</div>
+          <p id="prelimCaption" class="chart-caption">用于观察 KCS 旬度简报口径下的半导体出口节奏。</p>
+          <div id="prelimChart" class="chart-frame small"></div>
+          <div id="sourceList" class="source-list"></div>
+        </section>
+      </section>
+    </main>
+    <div id="chartTooltip" class="chart-tooltip" hidden></div>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
