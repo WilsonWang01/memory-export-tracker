@@ -1,8 +1,15 @@
 const state = {
   data: null,
   selectedProduct: "ssd",
+  metric: "valueUsd",
   range: "12",
   selectedPeriod: null
+};
+
+const metricLabels = {
+  valueUsd: "出口金额",
+  weightKg: "出口净重",
+  unitPriceUsdPerKg: "出口单价"
 };
 
 const colors = {
@@ -28,6 +35,13 @@ const compactWeight = (value) => {
 };
 
 const unitPrice = (value) => (value ? `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}/kg` : "n/a");
+
+const formatMetric = (value, metric) => {
+  if (value === null || value === undefined) return "n/a";
+  if (metric === "valueUsd") return compactUsd(value);
+  if (metric === "weightKg") return compactWeight(value);
+  return unitPrice(value);
+};
 
 const formatPct = (value) => `${value > 0 ? "+" : ""}${Number(value).toFixed(Math.abs(value) >= 100 ? 0 : 1)}%`;
 
@@ -237,7 +251,7 @@ function lineSegments(points, scaleX, scaleY) {
     .join("");
 }
 
-function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height = 360 }) {
+function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null, height = 360 }) {
   if (!points.length) return `<div class="chart-empty">暂无可用数据</div>`;
 
   const width = 900;
@@ -247,9 +261,9 @@ function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height 
   const count = Math.max(points.length, 1);
   const scaleX = (index) => padding.left + (count === 1 ? plotWidth / 2 : (plotWidth / (count - 1)) * index);
 
-  const amountMax = Math.max(...points.map((point) => point.valueUsd).filter(Number.isFinite), 1);
-  const amountScaleMax = amountMax * 1.08;
-  const amountScaleY = (value) => padding.top + plotHeight - (value / amountScaleMax) * plotHeight;
+  const metricMax = Math.max(...points.map((point) => point.value).filter(Number.isFinite), 1);
+  const metricScaleMax = metricMax * 1.08;
+  const metricScaleY = (value) => padding.top + plotHeight - (value / metricScaleMax) * plotHeight;
   const pctValues = points.flatMap((point) => [point.yoyPct, point.sequentialPct]).filter(Number.isFinite);
   const pctMinBase = pctValues.length ? Math.min(0, ...pctValues) : -10;
   const pctMaxBase = pctValues.length ? Math.max(0, ...pctValues) : 10;
@@ -257,14 +271,14 @@ function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height 
   const pctMin = pctMinBase - pctPadding;
   const pctMax = pctMaxBase + pctPadding;
   const pctScaleY = (value) => padding.top + plotHeight - ((value - pctMin) / (pctMax - pctMin || 1)) * plotHeight;
-  const amountTicks = Array.from({ length: 5 }, (_, index) => (amountScaleMax / 4) * index);
+  const metricTicks = Array.from({ length: 5 }, (_, index) => (metricScaleMax / 4) * index);
   const pctTicks = Array.from({ length: 5 }, (_, index) => pctMin + ((pctMax - pctMin) / 4) * index);
 
-  const grid = amountTicks
+  const grid = metricTicks
     .map((tick) => {
-      const y = amountScaleY(tick);
+      const y = metricScaleY(tick);
       return `<line class="gridline" x1="${padding.left}" x2="${width - padding.right}" y1="${y}" y2="${y}"></line>
-        <text x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${compactUsd(tick)}</text>`;
+        <text x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${formatMetric(tick, metric)}</text>`;
     })
     .join("");
   const rightAxis = pctTicks
@@ -280,7 +294,7 @@ function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height 
   const bars = points
     .map((point, index) => {
       const x = scaleX(index) - barWidth / 2;
-      const y = amountScaleY(point.valueUsd);
+      const y = metricScaleY(point.value);
       return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#cfe0ff"></rect>`;
     })
     .join("");
@@ -295,7 +309,7 @@ function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height 
       const start = index === 0 ? padding.left : (scaleX(index - 1) + x) / 2;
       const end = index === labels.length - 1 ? width - padding.right : (x + scaleX(index + 1)) / 2;
       const rows = [
-        { color: "#2f6fdb", name: "出口金额", value: compactUsd(point.valueUsd) },
+        { color: colors[metric], name: metricLabels[metric], value: formatMetric(point.value, metric) },
         { color: "#b45f17", name: "YoY", value: formatChange(point.yoyPct) },
         { color: "#118273", name: "MoM", value: formatChange(point.sequentialPct) }
       ];
@@ -303,15 +317,15 @@ function amountGrowthDualAxisSvg({ points, labels, selectedLabel = null, height 
     })
     .join("");
   const legend = `<div class="legend dual-axis-legend">
-    <span><i style="background:#cfe0ff"></i>出口金额（左轴）</span>
+    <span><i style="background:#cfe0ff"></i>${metricLabels[metric]}（左轴）</span>
     <span><i style="background:#b45f17"></i>YoY（右轴）</span>
     <span><i class="dashed" style="background:#118273"></i>MoM（右轴）</span>
   </div>`;
 
-  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="出口金额与增长率双轴图">
+  return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${metricLabels[metric]}与增长率双轴图">
       ${grid}
       ${rightAxis}
-      <text class="axis-label" x="${padding.left}" y="14" text-anchor="start">金额</text>
+      <text class="axis-label" x="${padding.left}" y="14" text-anchor="start">${metricLabels[metric]}</text>
       <text class="axis-label" x="${width - padding.right}" y="14" text-anchor="end">增长率</text>
       <line class="axis" x1="${padding.left}" x2="${width - padding.right}" y1="${height - padding.bottom}" y2="${height - padding.bottom}"></line>
       <line class="axis" x1="${width - padding.right}" x2="${width - padding.right}" y1="${padding.top}" y2="${height - padding.bottom}"></line>
@@ -430,7 +444,7 @@ function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
   document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>${escapeHtml(product?.name ?? "选中品类")} HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
-  document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：出口金额与增长率`;
+  document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：${metricLabels[state.metric]}与增长率`;
   const monthly = filteredMonthly();
   const allProductPoints = state.data.monthly
     .filter((point) => point.productKey === state.selectedProduct)
@@ -445,14 +459,15 @@ function renderMainChart() {
       return {
         period: point.period,
         periodLabel: point.periodLabel,
-        valueUsd: point.valueUsd,
-        sequentialPct: percentChangeValue(point.valueUsd, previousMonth?.valueUsd),
-        yoyPct: percentChangeValue(point.valueUsd, previousYear?.valueUsd)
+        value: point[state.metric],
+        sequentialPct: percentChangeValue(point[state.metric], previousMonth?.[state.metric]),
+        yoyPct: percentChangeValue(point[state.metric], previousYear?.[state.metric])
       };
     });
   document.querySelector("#mainChart").innerHTML = amountGrowthDualAxisSvg({
     points,
     labels: points.map((point) => point.period),
+    metric: state.metric,
     selectedLabel: state.selectedPeriod
   });
   bindChartInteractions(document.querySelector("#mainChart"));
@@ -552,6 +567,9 @@ function renderControls() {
   document.querySelectorAll("[data-range]").forEach((button) => {
     button.classList.toggle("selected", button.dataset.range === state.range);
   });
+  document.querySelectorAll("[data-metric]").forEach((button) => {
+    button.classList.toggle("selected", button.dataset.metric === state.metric);
+  });
   document.querySelector("#selectedPeriod").textContent = state.selectedPeriod ? state.selectedPeriod.replace(".", "-") : "未选择";
 }
 
@@ -636,6 +654,14 @@ async function refreshNow() {
 document.querySelectorAll("[data-range]").forEach((button) => {
   button.addEventListener("click", () => {
     state.range = button.dataset.range;
+    state.selectedPeriod = null;
+    render();
+  });
+});
+
+document.querySelectorAll("[data-metric]").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.metric = button.dataset.metric;
     state.selectedPeriod = null;
     render();
   });
