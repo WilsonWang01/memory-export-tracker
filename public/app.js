@@ -52,9 +52,21 @@ const percentChange = (current, previous) => {
   return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
 };
 
+const percentChangeValue = (current, previous) => {
+  if (!current || !previous) return null;
+  return (current / previous - 1) * 100;
+};
+
+const formatChange = (value) => (Number.isFinite(value) ? formatPct(value) : "n/a");
+
 const deltaClass = (current, previous) => {
   if (!current || !previous) return "neutral";
   return current >= previous ? "positive" : "negative";
+};
+
+const deltaClassFromValue = (value) => {
+  if (!Number.isFinite(value)) return "neutral";
+  return value >= 0 ? "positive" : "negative";
 };
 
 const formatDateTime = (value) => {
@@ -98,6 +110,17 @@ function freshnessByKey(key) {
 function coverageSentence(item) {
   if (!item) return "";
   return `截止：${item.latestPeriod} · 预计更新：${item.nextExpectedDate}`;
+}
+
+function volumePriceSignal(valuePct, weightPct, pricePct) {
+  if (![valuePct, weightPct, pricePct].every(Number.isFinite)) return "样本不足";
+  if (valuePct >= 0 && weightPct >= 0 && pricePct >= 0) return "量价共振";
+  if (valuePct >= 0 && pricePct > 0 && weightPct < 0) return "价格驱动";
+  if (valuePct >= 0 && weightPct > 0 && pricePct < 0) return "出货驱动";
+  if (valuePct < 0 && pricePct > 0 && weightPct < 0) return "量缩抵消";
+  if (valuePct < 0 && weightPct > 0 && pricePct < 0) return "价格拖累";
+  if (valuePct < 0 && weightPct < 0 && pricePct < 0) return "量价双弱";
+  return Math.abs(pricePct) >= Math.abs(weightPct) ? "价格主导" : "出货主导";
 }
 
 function tooltipHtml(label, rows) {
@@ -215,8 +238,10 @@ function renderSummary() {
     .map((product) => {
       const point = latestPoint(monthly, product.key);
       const previous = latestPoint(monthly, product.key, 1);
-      const delta = percentChange(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
-      const changeClass = deltaClass(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
+      const valuePct = percentChangeValue(point?.valueUsd, previous?.valueUsd);
+      const weightPct = percentChangeValue(point?.weightKg, previous?.weightKg);
+      const pricePct = percentChangeValue(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
+      const signal = volumePriceSignal(valuePct, weightPct, pricePct);
       const hsFreshness = freshnessByKey("monthly_hs");
       return `<button class="summary-card ${state.selectedProduct === product.key ? "active" : ""}" data-product="${product.key}">
         <div class="card-head">
@@ -225,10 +250,27 @@ function renderSummary() {
         </div>
         <div class="metric-label">最新出口单价</div>
         <strong>${unitPrice(point?.unitPriceUsdPerKg)}</strong>
-        <div class="metric-row card-split">
-          <span><small>金额</small>${compactUsd(point?.valueUsd ?? 0)}</span>
-          <span><small>净重</small>${compactWeight(point?.weightKg ?? 0)}</span>
-          <span class="delta ${changeClass}"><small>环比</small>${delta}</span>
+        <div class="summary-analysis">
+          <span class="analysis-cell delta ${deltaClassFromValue(valuePct)}">
+            <small>金额 MoM</small>
+            <b>${formatChange(valuePct)}</b>
+            <em>${compactUsd(point?.valueUsd ?? 0)}</em>
+          </span>
+          <span class="analysis-cell delta ${deltaClassFromValue(weightPct)}">
+            <small>净重 MoM</small>
+            <b>${formatChange(weightPct)}</b>
+            <em>${compactWeight(point?.weightKg ?? 0)}</em>
+          </span>
+          <span class="analysis-cell delta ${deltaClassFromValue(pricePct)}">
+            <small>单价 MoM</small>
+            <b>${formatChange(pricePct)}</b>
+            <em>${unitPrice(point?.unitPriceUsdPerKg)}</em>
+          </span>
+          <span class="analysis-cell signal">
+            <small>量价判断</small>
+            <b>${signal}</b>
+            <em>${escapeHtml(point?.periodLabel ?? "--")}</em>
+          </span>
         </div>
         <p class="card-freshness">${escapeHtml(coverageSentence(hsFreshness))}</p>
       </button>`;

@@ -479,7 +479,8 @@ code {
   letter-spacing: 0;
 }
 
-.metric-row {
+.metric-row,
+.summary-analysis {
   margin-top: 18px;
   color: #374151;
   font-size: 13px;
@@ -506,6 +507,52 @@ code {
   font-weight: 800;
 }
 
+.summary-analysis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.analysis-cell {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: var(--surface-subtle);
+  font-weight: 800;
+}
+
+.analysis-cell small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.analysis-cell b {
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.analysis-cell em {
+  overflow: hidden;
+  color: #667085;
+  font-size: 11px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analysis-cell.signal {
+  border: 1px solid #dce8f7;
+  background: #f8fbff;
+}
+
+.analysis-cell.signal b {
+  color: #24467c;
+}
+
 .card-freshness {
   margin-top: 11px;
   color: #667085;
@@ -524,6 +571,18 @@ code {
 }
 
 .delta.neutral {
+  color: #526071;
+}
+
+.analysis-cell.delta.positive b {
+  color: #0f766e;
+}
+
+.analysis-cell.delta.negative b {
+  color: #b42318;
+}
+
+.analysis-cell.delta.neutral b {
   color: #526071;
 }
 
@@ -871,9 +930,14 @@ svg text {
   }
 
   .metric-row,
+  .summary-analysis,
   .card-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .summary-analysis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .card-split {
