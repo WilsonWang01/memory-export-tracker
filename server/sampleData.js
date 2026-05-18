@@ -67,7 +67,7 @@ export function buildSampleStore() {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
         latestPeriod: "2026年3月",
-        latestReleaseDate: "待授权接口核验",
+        latestReleaseDate: "DATA_GO_KR_SERVICE_KEY 未配置，待授权接口核验",
         nextExpectedDate: "data.go.kr / TRASS 授权后可拉取 2026年4月最终值",
         status: "needs_api_key",
         note: "看板主图当前仍是 HS 明细样例序列，不作为真实 4 月 SSD/DRAM-HBM 数据。"
@@ -76,10 +76,10 @@ export function buildSampleStore() {
         key: "monthly_semiconductor",
         label: "半导体月度总量",
         latestPeriod: "2026年4月",
-        latestReleaseDate: "2026-05-01",
+        latestReleaseDate: "2026-05-15",
         nextExpectedDate: "2026-06-01 左右发布 2026年5月月度初值",
         status: "official_public",
-        note: "4 月半导体出口约 319 亿美元，MOTIE/KCS 公开月度口径。"
+        note: "4 月半导体出口约 319 亿美元，MOTIE 月初口径；KCS 5 月 15 日已发布 4 月月度确报。"
       },
       {
         key: "ten_day_semiconductor",
@@ -116,12 +116,16 @@ export function buildSampleStore() {
         period: "2026.04",
         periodLabel: "2026年4月",
         valueUsd: 31_900_000_000,
+        valueYoYPct: 173.5,
         productKey: "semiconductor",
         productName: "半导体出口",
         source: "official_public",
         status: "preliminary",
-        sourceName: "MOTIE April 2026 Export-Import Trends, reported by Asia Business Daily / KCTDI",
-        sourceUrl: "https://www.asiae.co.kr/en/article/2026050109205280402"
+        sourceName: "MOTIE April 2026 Export-Import Trends; KCS final April release posted 2026-05-15",
+        sourceUrl: "https://www.asiae.co.kr/en/article/IT/2026050109205280402",
+        finalSourceName: "KCS 2026 April monthly import/export status [final], reposted by NLIC",
+        finalSourceUrl: "https://www.nlic.go.kr/nlic/logpolDt.action?command=VIEW&fldLogpolRefSeq=1941",
+        note: "KCS final public HTML verifies the April final release headline; the dashboard keeps the rounded semiconductor value from the MOTIE monthly release."
       }
     ],
     memoryDetail: [
@@ -270,16 +274,16 @@ export function buildSampleStore() {
       {
         period: "2026.04-1~10",
         periodLabel: "4月前10日",
-        valueUsd: 8_570_000_000,
+        valueUsd: 8_600_000_000,
         weightKg: 0,
         unitPriceUsdPerKg: null,
         hsCode: "semiconductor",
         productKey: "semiconductor",
         productName: "半导体出口",
-        source: "official_public_derived",
+        source: "official_public",
         status: "preliminary",
-        sourceName: "KCS 2026-04-10 brief, semiconductor share 34.0% of total exports",
-        sourceUrl: "https://mobile.newsis.com/view/NISX20260413_0003588382"
+        sourceName: "KCS / Korea.kr 2026-04-10 brief",
+        sourceUrl: "https://m.korea.kr/news/pressReleaseView.do?newsId=156754147&pWise=mSub&pWiseSub=C5"
       },
       {
         period: "2026.04-1~20",
