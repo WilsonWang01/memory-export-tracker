@@ -49,4 +49,4 @@ npm start
 - 2026 年 4 月 1-10 日：半导体出口约 86 亿美元，来源为 KCS 经政策简报转载的 2026-04-13 简报。
 - 2026 年 3 月 1-20 日：半导体出口约 187 亿美元，来源为 KCS 经新闻转载的 2026-03-23 简报。
 
-其中部分 1-20 日数据直接来自简报正文；部分 1-10/1-20 数据由简报披露的总出口额和半导体占比推算，并在 `data/trade-data.json` 的 `source` 字段标为 `official_public_derived`。截至 2026-05-18，本地环境未配置 `DATA_GO_KR_SERVICE_KEY`，SSD 与 DRAM/HBM 的月度 HS 明细仍保留样例序列。
+其中部分 1-20 日数据直接来自简报正文；部分 1-10/1-20 数据由简报披露的总出口额和半导体占比推算，并在 `data/trade-data.json` 的 `source` 字段标为 `official_public_derived`。截至 2026-05-19，本地环境未配置 `DATA_GO_KR_SERVICE_KEY`，SSD 与 DRAM/HBM 的月度 HS 明细仍保留样例序列。

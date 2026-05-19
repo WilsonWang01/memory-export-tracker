@@ -79,7 +79,7 @@ export function buildSampleStore() {
         latestReleaseDate: "2026-05-15",
         nextExpectedDate: "2026-06-01 左右发布 2026年5月月度初值",
         status: "official_public",
-        note: "4 月半导体出口约 319 亿美元，MOTIE 月初口径；KCS 5 月 15 日已发布 4 月月度确报。"
+        note: "4 月半导体出口约 319 亿美元，MOTIE 月初口径；KCS 5 月 15 日官网列表已发布 4 月月度确报。"
       },
       {
         key: "ten_day_semiconductor",
@@ -121,11 +121,12 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public",
         status: "preliminary",
-        sourceName: "MOTIE April 2026 Export-Import Trends; KCS final April release posted 2026-05-15",
+        sourceName: "MOTIE April 2026 Export-Import Trends; KCS final April release listed 2026-05-15",
         sourceUrl: "https://www.asiae.co.kr/en/article/IT/2026050109205280402",
         finalSourceName: "KCS 2026 April monthly import/export status [final], reposted by NLIC",
         finalSourceUrl: "https://www.nlic.go.kr/nlic/logpolDt.action?command=VIEW&fldLogpolRefSeq=1941",
-        note: "KCS final public HTML verifies the April final release headline; the dashboard keeps the rounded semiconductor value from the MOTIE monthly release."
+        officialListUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
+        note: "KCS official list verifies the April final release date; the dashboard keeps the rounded semiconductor value from the MOTIE monthly release."
       }
     ],
     memoryDetail: [
@@ -282,7 +283,7 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public",
         status: "preliminary",
-        sourceName: "KCS / Korea.kr 2026-04-10 brief",
+        sourceName: "KCS / Korea.kr 2026-04-13 April 1-10 brief",
         sourceUrl: "https://m.korea.kr/news/pressReleaseView.do?newsId=156754147&pWise=mSub&pWiseSub=C5"
       },
       {
@@ -310,7 +311,7 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public",
         status: "preliminary",
-        sourceName: "KCS / Korea.kr 2026-05-10 brief",
+        sourceName: "KCS / Korea.kr 2026-05-11 May 1-10 brief",
         sourceUrl: "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156760738&pWise=mSub&pWiseSub=C7"
       }
     ]
