@@ -13,9 +13,9 @@ export const productConfigs = [
   {
     key: "ssd",
     name: "SSD",
-    hsCode: "8471704010",
+    hsCode: "852351",
     unitBasis: "kg",
-    note: "HSK 8471.70.4010，通常用于 SSD 出口监测。"
+    note: "HS 8523.51 为 Solid-state non-volatile storage devices；KCS TradeData 当前可查询该口径，且 2026年4月金额与 Korea.kr/MSIT SSD 出口额对齐。"
   },
   {
     key: "dram_hbm",

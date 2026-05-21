@@ -14,15 +14,16 @@ export async function refreshTradeData() {
     const monthlyResponses = await Promise.all(productConfigs.map((product) => fetchMonthlyProductSeries(product)));
     const sample = buildSampleStore();
     const store = {
+      ...sample,
       meta: {
+        ...sample.meta,
         lastUpdated: new Date().toISOString(),
         nextScheduledUpdate: null,
         mode: "official_api",
         message: "已通过 KCS/data.go.kr 官方接口更新月度 HS 品类出口金额、净重与单位价格。"
       },
       products: productConfigs,
-      monthly: monthlyResponses.flat(),
-      preliminary: sample.preliminary
+      monthly: monthlyResponses.flat()
     };
     await writeStore(store);
     return store;

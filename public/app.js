@@ -554,7 +554,7 @@ function renderMeta() {
   const sourcePill = document.querySelector("#sourcePill");
   const sourceText = {
     official_api: "官方接口",
-    mixed_public: "公开简报+样例HS",
+    mixed_public: "公开简报+官方HS",
     sample: "样例数据"
   };
   sourcePill.textContent = sourceText[state.data.meta.mode] ?? "数据已载入";

@@ -15,14 +15,21 @@ const periods = [
   "2025.12",
   "2026.01",
   "2026.02",
-  "2026.03"
+  "2026.03",
+  "2026.04"
 ];
 
-function makeSeries(productKey, values, weights) {
+const monthlyHsSource = {
+  source: "official_tradedata_web",
+  sourceName: "KCS TradeData English by H.S Code monthly statistics",
+  sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000"
+};
+
+function makeSeries(productKey, valuesUsd, weightsKg) {
   const product = productConfigs.find((item) => item.key === productKey);
   return periods.map((period, index) => {
-    const weightKg = weights[index] * 1_000;
-    const valueUsd = values[index] * 1_000_000;
+    const weightKg = weightsKg[index];
+    const valueUsd = valuesUsd[index];
     return {
       period,
       periodLabel: period.replace(".", "-"),
@@ -32,7 +39,7 @@ function makeSeries(productKey, values, weights) {
       hsCode: product.hsCode,
       productKey,
       productName: product.name,
-      source: "sample",
+      ...monthlyHsSource,
       status: "final"
     };
   });
@@ -42,13 +49,81 @@ export function buildSampleStore() {
   const monthly = [
     ...makeSeries(
       "ssd",
-      [680, 705, 742, 771, 815, 836, 861, 902, 930, 975, 1016, 1054, 1098, 1162, 1238],
-      [18.8, 18.4, 18.1, 17.8, 17.6, 17.2, 16.9, 16.7, 16.4, 16.0, 15.7, 15.3, 15.0, 14.8, 14.4]
+      [
+        640_157_000,
+        622_804_000,
+        1_001_625_000,
+        472_586_000,
+        906_047_000,
+        1_133_937_000,
+        751_929_000,
+        1_031_464_000,
+        1_069_137_000,
+        823_519_000,
+        1_203_535_000,
+        1_796_519_000,
+        1_365_724_000,
+        2_417_571_000,
+        3_190_956_000,
+        3_836_678_000
+      ],
+      [
+        144_646,
+        133_970,
+        198_385,
+        114_107,
+        185_466,
+        219_753,
+        183_961,
+        235_401,
+        264_206,
+        194_641,
+        228_411,
+        266_224,
+        207_161,
+        218_033,
+        253_531,
+        202_057
+      ]
     ),
     ...makeSeries(
       "dram_hbm",
-      [5600, 5920, 6350, 6820, 7210, 7480, 7820, 8160, 8510, 9120, 9680, 10180, 10940, 11860, 12680],
-      [92, 91, 89, 86, 84, 82, 79, 77, 74, 71, 69, 66, 63, 60, 58]
+      [
+        4_765_687_000,
+        4_725_937_000,
+        6_694_284_000,
+        5_761_054_000,
+        7_337_464_000,
+        8_230_251_000,
+        7_560_781_000,
+        8_504_645_000,
+        9_345_975_000,
+        8_886_616_000,
+        10_163_661_000,
+        12_636_910_000,
+        12_111_963_000,
+        15_810_750_000,
+        20_758_802_000,
+        20_829_061_000
+      ],
+      [
+        229_221,
+        253_709,
+        333_624,
+        282_830,
+        341_367,
+        378_326,
+        331_549,
+        325_040,
+        369_663,
+        310_323,
+        306_192,
+        359_384,
+        302_637,
+        287_910,
+        375_392,
+        319_349
+      ]
     )
   ];
 
@@ -58,7 +133,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-20日；两处缺口已补充官方/可更新来源说明，SSD 与 DRAM/HBM 月度 HS 单价仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
+        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；月度 HS 来自 KCS TradeData 官方网页核验。"
     },
     products: productConfigs,
     monthly,
@@ -66,12 +141,12 @@ export function buildSampleStore() {
       {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
-        latestPeriod: "样例至 2026年3月",
-        latestReleaseDate: "DATA_GO_KR_SERVICE_KEY 未配置，待授权接口核验",
-        nextExpectedDate: "配置 data.go.kr key 后拉取 2026年4月最终值",
-        status: "needs_api_key",
+        latestPeriod: "2026年4月",
+        latestReleaseDate: "KCS TradeData 官方网页已更新至 2026.04",
+        nextExpectedDate: "2026年5月最终值预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
+        status: "official_public_web",
         note:
-          "真正可更新源是 KCS/data.go.kr Itemtrade API，可按 HS 8471704010 与 854232 拉取出口金额和净重并计算单价；KITA/K-stat 公开页可见 2026.04 更新和 854232 国家分布，但本轮未取得月度净重明细。Korea.kr 4 月 ICT 月报可核验 SSD 出口金额 38.4 亿美元，但不含净重/美元每公斤。"
+          "Chrome 可访问 KCS TradeData 英文 By H.S Code 页面，并通过页面同源查询取得月度出口金额和 KG。SSD 改用 HS 852351（Solid-state non-volatile storage devices），旧 HSK 8471704010 在当前官方查询中无结果；DRAM/HBM 继续用 HS 854232（Memories）。"
       },
       {
         key: "monthly_semiconductor",
@@ -104,12 +179,20 @@ export function buildSampleStore() {
     ],
     sourceRegistry: [
       {
+        key: "kcs_tradedata_hs_monthly",
+        section: "monthly_hs",
+        sourceName: "KCS TradeData English by H.S Code monthly statistics",
+        sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000",
+        status: "official_public_web_verified",
+        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site query. Verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232."
+      },
+      {
         key: "data_go_kr_itemtrade",
         section: "monthly_hs",
         sourceName: "KCS/data.go.kr Itemtrade API",
         sourceUrl: "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
         status: "requires_DATA_GO_KR_SERVICE_KEY",
-        note: "Official API source for monthly HS export value and net weight. Required for SSD 8471704010 and DRAM/HBM proxy 854232 unit-price calculation."
+        note: "Official API source for monthly HS export value and net weight. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when DATA_GO_KR_SERVICE_KEY is configured."
       },
       {
         key: "korea_ict_202604",
