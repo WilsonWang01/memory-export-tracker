@@ -43,7 +43,7 @@ export async function fetchMonthlyProductSeries(product, range = getLookbackRang
     throw new Error("DATA_GO_KR_SERVICE_KEY is not configured.");
   }
 
-  const endpoint = "http://apis.data.go.kr/1220000/itemtrade/getItemtradeList";
+  const endpoint = "http://apis.data.go.kr/1220000/Itemtrade/getItemtradeList";
   const params = new URLSearchParams({
     strtYymm: range.start,
     endYymm: range.end,

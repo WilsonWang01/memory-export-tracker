@@ -58,7 +58,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-20日；SSD 与 DRAM/HBM 月度 HS 明细仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
+        "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-20日；两处缺口已补充官方/可更新来源说明，SSD 与 DRAM/HBM 月度 HS 单价仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
     },
     products: productConfigs,
     monthly,
@@ -66,11 +66,12 @@ export function buildSampleStore() {
       {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
-        latestPeriod: "2026年3月",
+        latestPeriod: "样例至 2026年3月",
         latestReleaseDate: "DATA_GO_KR_SERVICE_KEY 未配置，待授权接口核验",
-        nextExpectedDate: "data.go.kr / TRASS 授权后可拉取 2026年4月最终值",
+        nextExpectedDate: "配置 data.go.kr key 后拉取 2026年4月最终值",
         status: "needs_api_key",
-        note: "看板主图当前仍是 HS 明细样例序列，不作为真实 4 月 SSD/DRAM-HBM 数据。"
+        note:
+          "真正可更新源是 KCS/data.go.kr Itemtrade API，可按 HS 8471704010 与 854232 拉取出口金额和净重并计算单价；KITA/TRASS 公开页本轮未取得可复现明细。Korea.kr 4 月 ICT 月报可核验 SSD 出口金额 38.4 亿美元，但不含净重/美元每公斤。"
       },
       {
         key: "monthly_semiconductor",
@@ -97,7 +98,34 @@ export function buildSampleStore() {
         latestReleaseDate: "2026-05-11",
         nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年5月1-20日细分数据",
         status: "market_repost_trass",
-        note: "券商/市场渠道转述 TRASS/Korean customs 暂估，已交叉核验多处转述；5 月前 20 日存储细分未见可公开核验来源。"
+        note:
+          "当前卡片仍是市场渠道转述 TRASS/Korean customs 的 5 月前 10 日存储细分暂估；KCS TradeData 已公开 5 月前 20 日半导体总量入口，但不拆分 DRAM/SSD/HBM。Korea.kr 4 月 ICT 月报可作为月度 SSD/存储背景参照，不能替代旬度细分。"
+      }
+    ],
+    sourceRegistry: [
+      {
+        key: "data_go_kr_itemtrade",
+        section: "monthly_hs",
+        sourceName: "KCS/data.go.kr Itemtrade API",
+        sourceUrl: "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
+        status: "requires_DATA_GO_KR_SERVICE_KEY",
+        note: "Official API source for monthly HS export value and net weight. Required for SSD 8471704010 and DRAM/HBM proxy 854232 unit-price calculation."
+      },
+      {
+        key: "korea_ict_202604",
+        section: "memory_provisional_detail,monthly_hs_context",
+        sourceName: "Korea.kr / MSIT April 2026 ICT export-import trends",
+        sourceUrl: "https://m.korea.kr/news/pressReleaseView.do?newsId=156761512&pWise=mSub&pWiseSub=C2",
+        status: "official_public_context",
+        note: "Official public context for April ICT exports, including SSD export value of USD 3.84B and semiconductor/memory market-price commentary; it does not provide HS net weight or USD/kg."
+      },
+      {
+        key: "kcs_tradedata_20260520",
+        section: "memory_provisional_detail,ten_day_semiconductor",
+        sourceName: "KCS TradeData press-release list, May 1-20 provisional import/export status",
+        sourceUrl: "https://tradedata.go.kr/cts/index.do",
+        status: "official_public_aggregate",
+        note: "Official KCS TradeData homepage exposes the May 1-20 provisional release entry; public aggregate does not provide the DRAM/SSD/HBM split used in memory detail cards."
       }
     ],
     officialMonthly: [
@@ -326,10 +354,11 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public_repost",
         status: "preliminary",
-        sourceName: "CBS NoCutNews / Daum 2026-05-21 report citing KCS May 1-20 provisional brief",
-        sourceUrl: "https://v.daum.net/v/20260521095100130",
+        sourceName: "KCS TradeData May 1-20 provisional release; CBS NoCutNews / Daum mirror carries the published semiconductor figure",
+        sourceUrl: "https://tradedata.go.kr/cts/index.do",
+        mirrorSourceUrl: "https://v.daum.net/v/20260521095100130",
         officialListUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-        note: "KCS official list page checked on 2026-05-21 still showed 2026-05-19 as newest visible item; value is the reported KCS semiconductor figure rounded as published."
+        note: "KCS TradeData homepage shows the 2026-05-21 May 1-20 provisional release entry; value is the reported KCS semiconductor figure rounded as published by the article mirror."
       }
     ]
   };
