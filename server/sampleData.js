@@ -71,7 +71,7 @@ export function buildSampleStore() {
         nextExpectedDate: "配置 data.go.kr key 后拉取 2026年4月最终值",
         status: "needs_api_key",
         note:
-          "真正可更新源是 KCS/data.go.kr Itemtrade API，可按 HS 8471704010 与 854232 拉取出口金额和净重并计算单价；KITA/TRASS 公开页本轮未取得可复现明细。Korea.kr 4 月 ICT 月报可核验 SSD 出口金额 38.4 亿美元，但不含净重/美元每公斤。"
+          "真正可更新源是 KCS/data.go.kr Itemtrade API，可按 HS 8471704010 与 854232 拉取出口金额和净重并计算单价；KITA/K-stat 公开页可见 2026.04 更新和 854232 国家分布，但本轮未取得月度净重明细。Korea.kr 4 月 ICT 月报可核验 SSD 出口金额 38.4 亿美元，但不含净重/美元每公斤。"
       },
       {
         key: "monthly_semiconductor",
@@ -123,9 +123,17 @@ export function buildSampleStore() {
         key: "kcs_tradedata_20260520",
         section: "memory_provisional_detail,ten_day_semiconductor",
         sourceName: "KCS TradeData press-release list, May 1-20 provisional import/export status",
-        sourceUrl: "https://tradedata.go.kr/cts/index.do",
+        sourceUrl: "https://www.tradedata.go.kr/cts/index.do",
         status: "official_public_aggregate",
-        note: "Official KCS TradeData homepage exposes the May 1-20 provisional release entry; public aggregate does not provide the DRAM/SSD/HBM split used in memory detail cards."
+        note: "Official KCS TradeData homepage exposes the May 1-20 provisional release entry and HWPX attachment; attachment reports semiconductor exports of USD 21,951M, YoY +202.1%, but does not provide the DRAM/SSD/HBM split used in memory detail cards."
+      },
+      {
+        key: "kita_kstat_public",
+        section: "monthly_hs_context",
+        sourceName: "KITA K-stat public page",
+        sourceUrl: "https://stat.kita.net/newMain.screen",
+        status: "official_or_industry_public_partial",
+        note: "Browser-visible public page showed Korea data updated to 2026.04 and an 854232 export-by-country widget, but not the monthly net-weight fields needed for USD/kg."
       }
     ],
     officialMonthly: [
@@ -345,7 +353,7 @@ export function buildSampleStore() {
       {
         period: "2026.05-1~20",
         periodLabel: "5月前20日",
-        valueUsd: 22_000_000_000,
+        valueUsd: 21_951_000_000,
         valueYoYPct: 202.1,
         weightKg: 0,
         unitPriceUsdPerKg: null,
@@ -354,11 +362,14 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public_repost",
         status: "preliminary",
-        sourceName: "KCS TradeData May 1-20 provisional release; CBS NoCutNews / Daum mirror carries the published semiconductor figure",
-        sourceUrl: "https://tradedata.go.kr/cts/index.do",
+        sourceName: "KCS TradeData May 1-20 provisional HWPX attachment",
+        sourceUrl: "https://www.tradedata.go.kr/cts/index.do",
+        attachmentFileName: "260521 26년 5월 1일 - 5월 20일 수출입현황.hwpx",
+        attachmentValueUnit: "USD million",
+        attachmentValue: 21_951,
         mirrorSourceUrl: "https://v.daum.net/v/20260521095100130",
         officialListUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-        note: "KCS TradeData homepage shows the 2026-05-21 May 1-20 provisional release entry; value is the reported KCS semiconductor figure rounded as published by the article mirror."
+        note: "KCS TradeData HWPX attachment table reports semiconductor exports of USD 21,951M and YoY +202.1%; the document has no DRAM/SSD/HBM split."
       }
     ]
   };
