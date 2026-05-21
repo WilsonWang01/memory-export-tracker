@@ -1,9 +1,9 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-19T11:11:41.738Z",
+    "lastUpdated": "2026-05-21T02:07:52.943Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
-    "message": "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-10日；SSD 与 DRAM/HBM 月度 HS 明细仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
+    "message": "公开数据已覆盖至：半导体月度 2026年4月、旬度 2026年5月1-20日；SSD 与 DRAM/HBM 月度 HS 明细仍需 DATA_GO_KR_SERVICE_KEY 后自动替换。"
   },
   "products": [
     {
@@ -405,20 +405,20 @@
     {
       "key": "ten_day_semiconductor",
       "label": "半导体旬度高频",
-      "latestPeriod": "2026年5月1-10日",
-      "latestReleaseDate": "2026-05-11",
-      "nextExpectedDate": "2026-05-21 左右发布 2026年5月1-20日",
-      "status": "official_public",
-      "note": "KCS 通常在每月 11 日和 21 日附近发布前 10 日、前 20 日初值。"
+      "latestPeriod": "2026年5月1-20日",
+      "latestReleaseDate": "2026-05-21",
+      "nextExpectedDate": "2026-06-01 左右发布 2026年5月月度初值",
+      "status": "official_repost_pending_primary",
+      "note": "5 月前 20 日值来自 2026-05-21 媒体转述的 KCS 暂定值；KCS 官网新闻列表截至核验时仍未显示该原始简报。"
     },
     {
       "key": "memory_provisional_detail",
       "label": "存储细分旬度暂估",
       "latestPeriod": "2026年5月1-10日",
       "latestReleaseDate": "2026-05-11",
-      "nextExpectedDate": "2026-05-21 左右尝试补 2026年5月1-20日细分数据",
+      "nextExpectedDate": "等待 TRASS/KITA 或市场转述公开 2026年5月1-20日细分数据",
       "status": "market_repost_trass",
-      "note": "券商/市场渠道转述 TRASS/Korean customs 暂估，已交叉核验多处转述；未等同于本站直连 TRASS 官方接口。"
+      "note": "券商/市场渠道转述 TRASS/Korean customs 暂估，已交叉核验多处转述；5 月前 20 日存储细分未见可公开核验来源。"
     }
   ],
   "officialMonthly": [
@@ -634,6 +634,23 @@
       "status": "preliminary",
       "sourceName": "KCS / Korea.kr 2026-05-11 May 1-10 brief",
       "sourceUrl": "https://m.korea.kr/briefing/pressReleaseView.do?newsId=156760738&pWise=mSub&pWiseSub=C7"
+    },
+    {
+      "period": "2026.05-1~20",
+      "periodLabel": "5月前20日",
+      "valueUsd": 22000000000,
+      "valueYoYPct": 202.1,
+      "weightKg": 0,
+      "unitPriceUsdPerKg": null,
+      "hsCode": "semiconductor",
+      "productKey": "semiconductor",
+      "productName": "半导体出口",
+      "source": "official_public_repost",
+      "status": "preliminary",
+      "sourceName": "CBS NoCutNews / Daum 2026-05-21 report citing KCS May 1-20 provisional brief",
+      "sourceUrl": "https://v.daum.net/v/20260521095100130",
+      "officialListUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
+      "note": "KCS official list page checked on 2026-05-21 still showed 2026-05-19 as newest visible item; value is the reported KCS semiconductor figure rounded as published."
     }
   ]
 }
