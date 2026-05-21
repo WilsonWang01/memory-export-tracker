@@ -43,7 +43,8 @@ const formatMetric = (value, metric) => {
   return unitPrice(value);
 };
 
-const formatPct = (value) => `${value > 0 ? "+" : ""}${Number(value).toFixed(Math.abs(value) >= 100 ? 0 : 1)}%`;
+const formatPct = (value) =>
+  Number.isFinite(value) ? `${value > 0 ? "+" : ""}${Number(value).toFixed(Math.abs(value) >= 100 ? 0 : 1)}%` : "n/a";
 
 const percentChangeValue = (current, previous) => {
   if (!current || !previous) return null;
