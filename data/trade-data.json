@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-21T03:15:23.325Z",
+    "lastUpdated": "2026-05-21T11:54:48.041Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
     "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；月度 HS 来自 KCS TradeData 官方网页核验。"
@@ -496,8 +496,8 @@
       "latestPeriod": "2026年5月1-20日",
       "latestReleaseDate": "2026-05-21",
       "nextExpectedDate": "2026-06-01 左右发布 2026年5月月度初值",
-      "status": "official_repost_pending_primary",
-      "note": "5 月前 20 日值来自 2026-05-21 媒体转述的 KCS 暂定值；KCS 官网新闻列表截至核验时仍未显示该原始简报。"
+      "status": "official_public_crosschecked",
+      "note": "KCS TradeData 官方首页已列示 2026-05-21 的 5 月前 20 日暂定值简报；半导体金额和同比来自多家媒体对该 KCS 简报的同日转述交叉核验，KCS 主站新闻列表截至核验时仍未显示该原始简报。"
     },
     {
       "key": "memory_provisional_detail",
@@ -540,7 +540,7 @@
       "sourceName": "KCS TradeData press-release list, May 1-20 provisional import/export status",
       "sourceUrl": "https://www.tradedata.go.kr/cts/index.do",
       "status": "official_public_aggregate",
-      "note": "Official KCS TradeData homepage exposes the May 1-20 provisional release entry and HWPX attachment; attachment reports semiconductor exports of USD 21,951M, YoY +202.1%, but does not provide the DRAM/SSD/HBM split used in memory detail cards."
+      "note": "Official KCS TradeData homepage exposes the May 1-20 provisional release entry dated 2026-05-21. Same-day media reports quoting the KCS release provide semiconductor exports of USD 21,951M, YoY +202.1%; no official public page found with a DRAM/SSD/HBM split."
     },
     {
       "key": "sk_securities_20260520_memory_detail",
@@ -792,16 +792,16 @@
       "hsCode": "semiconductor",
       "productKey": "semiconductor",
       "productName": "半导体出口",
-      "source": "official_public_repost",
+      "source": "official_public_crosschecked",
       "status": "preliminary",
-      "sourceName": "KCS TradeData May 1-20 provisional HWPX attachment",
+      "sourceName": "KCS TradeData May 1-20 provisional release listing",
       "sourceUrl": "https://www.tradedata.go.kr/cts/index.do",
       "attachmentFileName": "260521 26년 5월 1일 - 5월 20일 수출입현황.hwpx",
       "attachmentValueUnit": "USD million",
       "attachmentValue": 21951,
-      "mirrorSourceUrl": "https://v.daum.net/v/20260521095100130",
+      "mirrorSourceUrl": "https://biz.chosun.com/policy/policy_sub/2026/05/21/E7LOYAUUORGTDMCJBAWY7HCZHI/?outputType=amp",
       "officialListUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-      "note": "KCS TradeData HWPX attachment table reports semiconductor exports of USD 21,951M and YoY +202.1%; the document has no DRAM/SSD/HBM split."
+      "note": "KCS TradeData homepage lists the 2026-05-21 provisional release; same-day media reports quoting KCS provide semiconductor exports of USD 21,951M and YoY +202.1%. The publicly visible official listing does not provide a DRAM/SSD/HBM split."
     }
   ]
 }
