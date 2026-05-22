@@ -1,9 +1,9 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-21T11:54:48.041Z",
+    "lastUpdated": "2026-05-22T15:31:38.076Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
-    "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；月度 HS 来自 KCS TradeData 官方网页核验。"
+    "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；截至 2026-05-22 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 来自 KCS TradeData 官方网页核验。"
   },
   "products": [
     {
@@ -497,7 +497,7 @@
       "latestReleaseDate": "2026-05-21",
       "nextExpectedDate": "2026-06-01 左右发布 2026年5月月度初值",
       "status": "official_public_crosschecked",
-      "note": "KCS TradeData 官方首页已列示 2026-05-21 的 5 月前 20 日暂定值简报；半导体金额和同比来自多家媒体对该 KCS 简报的同日转述交叉核验，KCS 主站新闻列表截至核验时仍未显示该原始简报。"
+      "note": "KCS TradeData 官方首页已列示 2026-05-21 的 5 月前 20 日暂定值简报；TRASS 公开首页同步显示 5月1~20日总出口/进口暂定值。半导体金额和同比来自多家媒体对该 KCS 简报的同日转述交叉核验，Korea.kr 与 KCS 主站新闻列表截至 2026-05-22 核验时仍未显示该原始简报。"
     },
     {
       "key": "memory_provisional_detail",
@@ -524,7 +524,7 @@
       "sourceName": "KCS/data.go.kr Itemtrade API",
       "sourceUrl": "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
       "status": "requires_DATA_GO_KR_SERVICE_KEY",
-      "note": "Official API source for monthly HS export value and net weight. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when DATA_GO_KR_SERVICE_KEY is configured."
+      "note": "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-05-22 refresh environment; use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
     },
     {
       "key": "korea_ict_202604",
@@ -541,6 +541,22 @@
       "sourceUrl": "https://www.tradedata.go.kr/cts/index.do",
       "status": "official_public_aggregate",
       "note": "Official KCS TradeData homepage exposes the May 1-20 provisional release entry dated 2026-05-21. Same-day media reports quoting the KCS release provide semiconductor exports of USD 21,951M, YoY +202.1%; no official public page found with a DRAM/SSD/HBM split."
+    },
+    {
+      "key": "trass_public_20260520",
+      "section": "ten_day_semiconductor",
+      "sourceName": "TRASS public homepage, provisional trade summary",
+      "sourceUrl": "https://www.bandtrass.or.kr/index.do",
+      "status": "public_aggregate_only",
+      "note": "Public homepage shows 2026 May 1-20 provisional total exports of USD 52,652M (+64.78%) and imports of USD 41,618M (+29.28%), but product-level provisional lookup is marked premium and was not publicly accessible."
+    },
+    {
+      "key": "korea_kr_20260520",
+      "section": "ten_day_semiconductor",
+      "sourceName": "Korea.kr repost search for May 1-20 KCS provisional release",
+      "sourceUrl": "https://www.korea.kr/",
+      "status": "not_found_2026_05_22",
+      "note": "Korea.kr search did not expose a repost of the 2026-05-21 KCS May 1-20 provisional release during this refresh."
     },
     {
       "key": "sk_securities_20260520_memory_detail",
@@ -564,7 +580,7 @@
       "sourceName": "KITA K-stat public page",
       "sourceUrl": "https://stat.kita.net/newMain.screen",
       "status": "official_or_industry_public_partial",
-      "note": "Browser-visible public page showed Korea data updated to 2026.04 and an 854232 export-by-country widget, but not the monthly net-weight fields needed for USD/kg."
+      "note": "Browser-visible public page showed Korea updated to 2026.04 plus an 854232 export-by-country widget and 2026.04 ICT/IC semiconductor context, but not the monthly net-weight fields needed for USD/kg."
     }
   ],
   "officialMonthly": [
@@ -799,9 +815,15 @@
       "attachmentFileName": "260521 26년 5월 1일 - 5월 20일 수출입현황.hwpx",
       "attachmentValueUnit": "USD million",
       "attachmentValue": 21951,
+      "overallExportValueUsd": 52652000000,
+      "overallExportYoYPct": 64.78,
+      "overallImportValueUsd": 41618000000,
+      "overallImportYoYPct": 29.28,
+      "trassPublicSourceName": "TRASS public homepage, provisional trade summary",
+      "trassPublicSourceUrl": "https://www.bandtrass.or.kr/index.do",
       "mirrorSourceUrl": "https://biz.chosun.com/policy/policy_sub/2026/05/21/E7LOYAUUORGTDMCJBAWY7HCZHI/?outputType=amp",
       "officialListUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-      "note": "KCS TradeData homepage lists the 2026-05-21 provisional release; same-day media reports quoting KCS provide semiconductor exports of USD 21,951M and YoY +202.1%. The publicly visible official listing does not provide a DRAM/SSD/HBM split."
+      "note": "KCS TradeData homepage lists the 2026-05-21 provisional release; TRASS public homepage confirms the overall May 1-20 provisional trade totals. Same-day media reports quoting KCS provide semiconductor exports of USD 21,951M and YoY +202.1%. The publicly visible official listing does not provide a DRAM/SSD/HBM split."
     }
   ]
 }
