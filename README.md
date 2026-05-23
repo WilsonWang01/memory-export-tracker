@@ -19,11 +19,13 @@ npm start
 
 本项目的线上版由 Cloudflare Worker 托管：Worker 负责静态资源、`/api/dashboard`、`/data/trade-data.json`、KV 数据读取，以及定时触发更新。
 
+正式地址：<https://memory-export.chenzixin.uk>
+
 ```bash
 npm run deploy:cf
 ```
 
-Worker 配置在 `wrangler.memory-export.toml`，使用 `MEMORY_EXPORT_KV` 保存最新数据和历史快照。当前 Worker 项目名为 `memory-export-tracker`。
+Worker 配置在 `wrangler.memory-export.toml`，使用 `MEMORY_EXPORT_KV` 保存最新数据和历史快照。当前 Worker 项目名为 `memory-export-tracker`，并通过 Cloudflare Worker Custom Domain 绑定到 `memory-export.chenzixin.uk`。
 
 如果仍需发布静态 Pages 版本，可使用：
 
@@ -51,7 +53,7 @@ Worker 的非敏感变量在 `wrangler.memory-export.toml` 中配置，默认 di
 GitHub 仓库需要这些 secrets：
 
 - `DATA_GO_KR_SERVICE_KEY`：可选；配置后使用 KCS/data.go.kr 官方接口刷新月度 HS 明细
-- `MEMORY_EXPORT_WORKER_URL`：Worker 根地址
+- `MEMORY_EXPORT_WORKER_URL`：Worker 根地址，当前为 `https://memory-export.chenzixin.uk`
 - `MEMORY_EXPORT_UPDATE_TOKEN`：与 Worker `UPDATE_TOKEN` 相同
 
 ## 配置官方 API
