@@ -529,7 +529,7 @@ function renderSummary() {
             <em>同口径暂估</em>
           </span>
         </div>
-        <p class="card-freshness">三张总览卡统一使用 5 月前 20 日存储细分暂估；月度 HS 海关单位价值见下方图表。</p>
+        <p class="card-freshness">三张总览卡统一使用 5 月 1-20 日存储细分暂估；MoM 对比 4 月 1-20 日，YoY 对比 2025 年 5 月 1-20 日。</p>
       </button>`;
     })
     .join("");
@@ -548,51 +548,32 @@ function renderMemoryDetail() {
     .map((segment) => detail.find((item) => item.category === segment.category))
     .filter(Boolean);
   const freshness = freshnessByKey("memory_provisional_detail");
-  const active = selectedMemoryItem();
   document.querySelector("#memoryDetailCoverage").textContent = `${coverageSentence(freshness)} · 非直连官方接口`;
   document.querySelector("#memoryDetailMethod").textContent = freshness?.note ?? "";
-  document.querySelector("#memoryDetailSwitch").innerHTML = displaySegments
-    .map(
-      (segment) => `<button class="${segment.category === active?.category ? "selected" : ""}" data-memory-category="${escapeHtml(segment.category)}">
-        ${escapeHtml(segment.label)}
-      </button>`
-    )
-    .join("");
-  document.querySelector("#memoryDetailFocus").innerHTML = active
-    ? `<div class="memory-focus-main">
-        <span>${escapeHtml(active.periodLabel)}</span>
-        <h3>${escapeHtml(memoryLabel(active.category))}</h3>
-        <strong>${compactUsd(active.exportValueUsd)}</strong>
-      </div>
-      <div class="memory-focus-kpis">
-        <span><small>出口金额 YoY</small><b>${formatPct(active.exportValueYoYPct)}</b></span>
-        <span><small>出口金额 MoM</small><b>${formatPct(active.exportValueMoMPct)}</b></span>
-        <span><small>单位价值</small><b>${unitPrice(active.unitPriceUsdPerKg)}</b></span>
-        <span><small>单位价值 MoM</small><b>${formatPct(active.unitPriceMoMPct)}</b></span>
-      </div>
-      <a class="memory-source-link" href="${escapeHtml(active.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(active.sourceName ?? "source")}</a>`
-    : `<div class="chart-empty">暂无可用数据</div>`;
+  document.querySelector("#memoryDetailSwitch").innerHTML = "";
+  document.querySelector("#memoryDetailFocus").innerHTML = "";
   document.querySelector("#memoryDetailGrid").innerHTML = visibleDetail
     .map(
-      (item) => `<button class="memory-detail-card ${item.category === active?.category ? "active" : ""}" data-memory-category="${escapeHtml(item.category)}">
-        <span>${escapeHtml(memoryLabel(item.category))}</span>
-        <strong>${compactUsd(item.exportValueUsd)}</strong>
-        <div class="memory-kpis">
-          <em><small>单位价值</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
-          <em><small>金额 YoY</small>${formatPct(item.exportValueYoYPct)}</em>
-          <em><small>金额 MoM</small>${formatPct(item.exportValueMoMPct)}</em>
-          <em><small>单位价值 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
+      (item) => `<article class="memory-table-card">
+        <div class="memory-table-head">
+          <span>${escapeHtml(item.periodLabel)}</span>
+          <h3>${escapeHtml(memoryLabel(item.category))}</h3>
+          <strong>${compactUsd(item.exportValueUsd)}</strong>
         </div>
-        <p>${escapeHtml(item.sourceName)}</p>
-      </button>`
+        <p class="memory-table-note">MoM 对比 4 月 1-20 日；YoY 对比 2025 年 5 月 1-20 日。</p>
+        <dl class="memory-table">
+          <div><dt>出口金额</dt><dd>${compactUsd(item.exportValueUsd)}</dd></div>
+          <div><dt>金额 YoY</dt><dd class="${deltaClassFromValue(item.exportValueYoYPct)}">${formatPct(item.exportValueYoYPct)}</dd></div>
+          <div><dt>金额 MoM</dt><dd class="${deltaClassFromValue(item.exportValueMoMPct)}">${formatPct(item.exportValueMoMPct)}</dd></div>
+          <div><dt>单位价值</dt><dd>${unitPrice(item.unitPriceUsdPerKg)}</dd></div>
+          <div><dt>单位价值 YoY</dt><dd class="${deltaClassFromValue(item.unitPriceYoYPct)}">${formatPct(item.unitPriceYoYPct)}</dd></div>
+          <div><dt>单位价值 MoM</dt><dd class="${deltaClassFromValue(item.unitPriceMoMPct)}">${formatPct(item.unitPriceMoMPct)}</dd></div>
+          <div><dt>数据口径</dt><dd>${escapeHtml(item.source)}</dd></div>
+          <div><dt>来源</dt><dd><a href="${escapeHtml(item.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(item.sourceName ?? "source")}</a></dd></div>
+        </dl>
+      </article>`
     )
     .join("");
-  document.querySelectorAll("[data-memory-category]").forEach((button) => {
-    button.addEventListener("click", () => {
-      selectDisplaySegment(displaySegmentForCategory(button.dataset.memoryCategory));
-      render();
-    });
-  });
 }
 
 function renderDetails() {
@@ -638,7 +619,7 @@ function renderDetails() {
 
 function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  document.querySelector("#mainCoverageBadge").innerHTML = `<span>口径说明</span><strong>DRAM/SSD 月度 HS；NAND 暂估</strong><em>华尔街见闻文章对应的是下方 5 月前 20 日暂估细分，不是 DRAM/SSD 月度 HS 图。</em>`;
+  document.querySelector("#mainCoverageBadge").innerHTML = `<span>口径说明</span><strong>DRAM/SSD 月度 HS；NAND 暂估</strong><em>华尔街见闻文章对应的是下方 5 月 1-20 日暂估细分；其中 MoM 是对 4 月 1-20 日，不是对 4 月全月。</em>`;
   document.querySelector("#mainChartTitle").textContent = `月度 HS 趋势 + NAND 暂估快照`;
   document.querySelector("#mainChart").innerHTML = `<div class="three-chart-grid">
     ${monthlyChartCard(displaySegments[0])}
