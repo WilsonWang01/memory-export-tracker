@@ -493,7 +493,7 @@ code {
 
 .workbench {
   display: grid;
-  grid-template-columns: minmax(280px, 0.36fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 14px;
   margin-bottom: 14px;
 }
@@ -619,16 +619,17 @@ dd {
 
 .three-chart-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 14px;
 }
 
 .flat-chart-card {
   min-width: 0;
+  width: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: color-mix(in oklch, var(--paper) 76%, white);
-  padding: 12px;
+  padding: 14px;
 }
 
 .flat-chart-head {

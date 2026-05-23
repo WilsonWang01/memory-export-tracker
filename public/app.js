@@ -476,7 +476,7 @@ function monthlyChartCard(segment) {
       labels: points.map((point) => point.period),
       metric: state.metric,
       selectedLabel: state.selectedPeriod,
-      height: 250
+      height: 320
     })}
   </section>`;
 }
@@ -488,7 +488,7 @@ function nandChartCard() {
       <span>NAND</span>
       <code>暂估</code>
     </div>
-    ${memorySnapshotHtml(item, true)}
+    ${memorySnapshotHtml(item)}
   </section>`;
 }
 
