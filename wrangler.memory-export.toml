@@ -15,7 +15,7 @@ id = "36ff6e93a29e414fa78ede3111909076"
 crons = ["35 6 * * *"]
 
 [vars]
-GITHUB_OWNER = "chenzixin1"
+GITHUB_OWNER = "WilsonWang01"
 GITHUB_REPO = "memory-export-tracker"
 GITHUB_WORKFLOW_ID = "update-memory-export-kv.yml"
-GITHUB_REF = "codex/regimealpha-cloudflare-redesign"
+GITHUB_REF = "main"

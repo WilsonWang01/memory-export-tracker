@@ -46,6 +46,8 @@ Cloudflare Worker 需要这些 secrets：
 - `GITHUB_DISPATCH_TOKEN`：可 dispatch GitHub workflow 的 token
 - `UPDATE_TOKEN`：保护 `/api/memory-export-update/run` 与 `/publish`
 
+Worker 的非敏感变量在 `wrangler.memory-export.toml` 中配置，默认 dispatch 到 `WilsonWang01/memory-export-tracker` 的 `main` 分支。
+
 GitHub 仓库需要这些 secrets：
 
 - `DATA_GO_KR_SERVICE_KEY`：可选；配置后使用 KCS/data.go.kr 官方接口刷新月度 HS 明细
