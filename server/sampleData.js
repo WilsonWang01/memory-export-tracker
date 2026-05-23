@@ -1,5 +1,7 @@
 import { productConfigs } from "./config.js";
 
+const sampleSnapshotUpdatedAt = "2026-05-22T15:31:38.076Z";
+
 const periods = [
   "2025.01",
   "2025.02",
@@ -45,7 +47,7 @@ function makeSeries(productKey, valuesUsd, weightsKg) {
   });
 }
 
-export function buildSampleStore() {
+export function buildSampleStore({ lastUpdated = sampleSnapshotUpdatedAt } = {}) {
   const monthly = [
     ...makeSeries(
       "ssd",
@@ -129,7 +131,7 @@ export function buildSampleStore() {
 
   return {
     meta: {
-      lastUpdated: new Date().toISOString(),
+      lastUpdated,
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:

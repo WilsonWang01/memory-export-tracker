@@ -28,6 +28,21 @@ npm run deploy:cf
 - `https://df007533.memory-export-tracker.pages.dev`
 - `https://memory-export-tracker.pages.dev`（Cloudflare 新建项目后可能需要等待 DNS 生效）
 
+### 定时更新
+
+`.github/workflows/cloudflare-pages.yml` 会在每天 `06:35 UTC`（韩国时间 15:35）运行：
+
+1. 执行 `npm run fetch` 刷新 `data/trade-data.json` 与 `public/data/trade-data.json`
+2. 执行 `npm run check`
+3. 只有数据文件发生变化时才提交 `Refresh trade data`
+4. 只有 push 或数据发生变化时才部署 Cloudflare Pages
+
+GitHub 仓库需要配置这些 Secrets：
+
+- `DATA_GO_KR_SERVICE_KEY`：可选；配置后使用 KCS/data.go.kr 官方接口刷新月度 HS 明细
+- `CLOUDFLARE_ACCOUNT_ID`：Cloudflare 账号 ID
+- `CLOUDFLARE_API_TOKEN`：具备 Cloudflare Pages 写权限的 API token
+
 ## 配置官方 API
 
 复制 `.env.example` 里的变量到运行环境：
