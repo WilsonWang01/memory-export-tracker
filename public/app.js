@@ -494,49 +494,42 @@ function nandChartCard() {
 
 function renderSummary() {
   const grid = document.querySelector("#summaryGrid");
-  const monthly = filteredMonthly();
   const activeSegment = displaySegmentForCategory(selectedMemoryItem()?.category);
   grid.innerHTML = displaySegments
     .map((segment) => {
-      const product = state.data.products.find((item) => item.key === segment.productKey);
       const memoryItem = (state.data.memoryDetail ?? []).find((item) => item.category === segment.category);
-      const point = segment.productKey ? latestPoint(monthly, segment.productKey) : null;
-      const previous = segment.productKey ? latestPoint(monthly, segment.productKey, 1) : null;
-      const valuePct = segment.productKey ? percentChangeValue(point?.valueUsd, previous?.valueUsd) : memoryItem?.exportValueMoMPct;
-      const weightPct = segment.productKey ? percentChangeValue(point?.weightKg, previous?.weightKg) : null;
-      const pricePct = segment.productKey ? percentChangeValue(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg) : memoryItem?.unitPriceMoMPct;
-      const signal = segment.productKey ? volumePriceSignal(valuePct, weightPct, pricePct) : "暂估快照";
-      const hsFreshness = freshnessByKey("monthly_hs");
+      const valuePct = memoryItem?.exportValueMoMPct;
+      const pricePct = memoryItem?.unitPriceMoMPct;
       return `<button class="summary-card ${activeSegment?.key === segment.key ? "active" : ""}" data-segment="${segment.key}">
         <div class="card-head">
           <span>${escapeHtml(segment.label)}</span>
-          <code>${escapeHtml(segment.hsCode)}</code>
+          <code>5月前20日</code>
         </div>
-        <div class="metric-label">${segment.productKey ? "最新海关单位价值" : "暂估单位价值"}</div>
-        <strong>${unitPrice(segment.productKey ? point?.unitPriceUsdPerKg : memoryItem?.unitPriceUsdPerKg)}</strong>
+        <div class="metric-label">暂估单位价值</div>
+        <strong>${unitPrice(memoryItem?.unitPriceUsdPerKg)}</strong>
         <div class="summary-analysis">
           <span class="analysis-cell delta ${deltaClassFromValue(valuePct)}">
             <small>金额 MoM</small>
             <b>${formatChange(valuePct)}</b>
-            <em>${compactUsd(segment.productKey ? point?.valueUsd ?? 0 : memoryItem?.exportValueUsd ?? 0)}</em>
+            <em>${compactUsd(memoryItem?.exportValueUsd ?? 0)}</em>
           </span>
-          <span class="analysis-cell delta ${deltaClassFromValue(weightPct)}">
-            <small>${segment.productKey ? "净重 MoM" : "净重"}</small>
-            <b>${segment.productKey ? formatChange(weightPct) : "未披露"}</b>
-            <em>${segment.productKey ? compactWeight(point?.weightKg ?? 0) : "n/a"}</em>
+          <span class="analysis-cell delta ${deltaClassFromValue(memoryItem?.exportValueYoYPct)}">
+            <small>金额 YoY</small>
+            <b>${formatPct(memoryItem?.exportValueYoYPct)}</b>
+            <em>${escapeHtml(memoryItem?.periodLabel ?? "--")}</em>
           </span>
           <span class="analysis-cell delta ${deltaClassFromValue(pricePct)}">
             <small>单位价值 MoM</small>
             <b>${formatChange(pricePct)}</b>
-            <em>${unitPrice(segment.productKey ? point?.unitPriceUsdPerKg : memoryItem?.unitPriceUsdPerKg)}</em>
+            <em>${unitPrice(memoryItem?.unitPriceUsdPerKg)}</em>
           </span>
           <span class="analysis-cell signal">
-            <small>量价判断</small>
-            <b>${signal}</b>
-            <em>${escapeHtml(segment.productKey ? point?.periodLabel ?? "--" : memoryItem?.periodLabel ?? "--")}</em>
+            <small>单位价值 YoY</small>
+            <b>${formatPct(memoryItem?.unitPriceYoYPct)}</b>
+            <em>同口径暂估</em>
           </span>
         </div>
-        <p class="card-freshness">${escapeHtml(segment.productKey ? coverageSentence(hsFreshness) : "NAND 当前为 5 月前 20 日公开暂估")}</p>
+        <p class="card-freshness">三张总览卡统一使用 5 月前 20 日存储细分暂估；月度 HS 海关单位价值见下方图表。</p>
       </button>`;
     })
     .join("");
