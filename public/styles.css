@@ -619,6 +619,110 @@ dd {
   margin-bottom: 14px;
 }
 
+.memory-detail-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.memory-detail-switch button {
+  min-height: 33px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper-strong);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 850;
+  padding: 0 12px;
+}
+
+.memory-detail-switch button:hover {
+  border-color: var(--line-strong);
+}
+
+.memory-detail-switch button.selected {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.memory-detail-focus {
+  align-items: stretch;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1fr) minmax(220px, 0.6fr);
+  margin-top: 2px;
+  padding: 14px;
+  background: color-mix(in oklch, var(--paper) 82%, white);
+}
+
+.memory-focus-main {
+  display: grid;
+  gap: 6px;
+}
+
+.memory-focus-main span,
+.memory-focus-kpis small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.memory-focus-main h3 {
+  font-size: clamp(1.15rem, 1.8vw, 1.65rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.memory-focus-main strong {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(1.5rem, 2.7vw, 2.25rem);
+  line-height: 1;
+}
+
+.memory-focus-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.memory-focus-kpis span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 7px;
+  background: var(--paper-strong);
+}
+
+.memory-focus-kpis b {
+  color: #24446f;
+  font-size: 1rem;
+}
+
+.memory-source-link {
+  align-content: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  display: grid;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.35;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.memory-source-link:hover {
+  border-color: var(--line-strong);
+  background: var(--paper-strong);
+}
+
 .memory-detail-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -635,12 +739,19 @@ dd {
   border-radius: 8px;
   background: var(--paper-strong);
   color: var(--ink);
-  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
 .memory-detail-card:hover {
   border-color: var(--line-strong);
   background: color-mix(in oklch, var(--paper) 74%, white);
+}
+
+.memory-detail-card.active {
+  border-color: color-mix(in oklch, var(--blue) 36%, var(--line));
+  background: color-mix(in oklch, var(--blue) 7%, var(--paper));
 }
 
 .memory-detail-card > span {
@@ -894,6 +1005,7 @@ svg text {
   .status-strip,
   .summary-grid,
   .method-strip,
+  .memory-detail-focus,
   .memory-detail-grid,
   .chart-control-strip,
   .workbench,
@@ -942,5 +1054,9 @@ svg text {
 
   .monthly-official {
     grid-template-columns: 1fr;
+  }
+
+  .memory-focus-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

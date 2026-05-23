@@ -1,6 +1,7 @@
 const state = {
   data: null,
   selectedProduct: "ssd",
+  selectedMemoryCategory: null,
   metric: "valueUsd",
   range: "12",
   selectedPeriod: null
@@ -19,6 +20,15 @@ const colors = {
   valueUsd: "#315f9d",
   weightKg: "#15756b",
   unitPriceUsdPerKg: "#a8601f"
+};
+
+const memoryCategoryLabels = {
+  "Memory ex-MCP (derived)": "Memory ex-MCP",
+  "DRAM incl. modules": "DRAM",
+  "DRAM excl. modules": "DRAM excl.",
+  "Flash memory": "NAND / Flash",
+  SSD: "SSD",
+  "MCP / HBM proxy": "MCP / HBM"
 };
 
 const compactUsd = (value) => {
@@ -96,6 +106,33 @@ function filteredMonthly() {
 
 function freshnessByKey(key) {
   return (state.data.freshness ?? []).find((item) => item.key === key);
+}
+
+function memoryLabel(category) {
+  return memoryCategoryLabels[category] ?? category;
+}
+
+function selectedMemoryItem() {
+  const detail = state.data.memoryDetail ?? [];
+  const preferredCategory = state.selectedProduct === "dram_hbm" ? "DRAM incl. modules" : "SSD";
+  const preferred = detail.find((item) => item.category === preferredCategory) ?? detail[0];
+  if (!state.selectedMemoryCategory && preferred) state.selectedMemoryCategory = preferred.category;
+  return detail.find((item) => item.category === state.selectedMemoryCategory) ?? preferred;
+}
+
+function syncMemoryCategoryForProduct(productKey) {
+  if (productKey === "ssd") state.selectedMemoryCategory = "SSD";
+  if (productKey === "dram_hbm") state.selectedMemoryCategory = "DRAM incl. modules";
+}
+
+function syncProductForMemoryCategory(category) {
+  if (category === "SSD") {
+    state.selectedProduct = "ssd";
+    state.selectedPeriod = null;
+  } else if (category?.includes("DRAM") || category?.includes("HBM") || category?.includes("Memory ex-MCP")) {
+    state.selectedProduct = "dram_hbm";
+    state.selectedPeriod = null;
+  }
 }
 
 function coverageSentence(item) {
@@ -388,6 +425,7 @@ function renderSummary() {
   grid.querySelectorAll("[data-product]").forEach((button) => {
     button.addEventListener("click", () => {
       state.selectedProduct = button.dataset.product;
+      syncMemoryCategoryForProduct(state.selectedProduct);
       render();
     });
   });
@@ -396,11 +434,33 @@ function renderSummary() {
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
   const freshness = freshnessByKey("memory_provisional_detail");
+  const active = selectedMemoryItem();
   document.querySelector("#memoryDetailCoverage").textContent = `${coverageSentence(freshness)} · 非直连官方接口`;
   document.querySelector("#memoryDetailMethod").textContent = freshness?.note ?? "";
+  document.querySelector("#memoryDetailSwitch").innerHTML = detail
+    .map(
+      (item) => `<button class="${item.category === active?.category ? "selected" : ""}" data-memory-category="${escapeHtml(item.category)}">
+        ${escapeHtml(memoryLabel(item.category))}
+      </button>`
+    )
+    .join("");
+  document.querySelector("#memoryDetailFocus").innerHTML = active
+    ? `<div class="memory-focus-main">
+        <span>${escapeHtml(active.periodLabel)}</span>
+        <h3>${escapeHtml(memoryLabel(active.category))}</h3>
+        <strong>${compactUsd(active.exportValueUsd)}</strong>
+      </div>
+      <div class="memory-focus-kpis">
+        <span><small>出口金额 YoY</small><b>${formatPct(active.exportValueYoYPct)}</b></span>
+        <span><small>出口金额 MoM</small><b>${formatPct(active.exportValueMoMPct)}</b></span>
+        <span><small>单价</small><b>${unitPrice(active.unitPriceUsdPerKg)}</b></span>
+        <span><small>单价 MoM</small><b>${formatPct(active.unitPriceMoMPct)}</b></span>
+      </div>
+      <a class="memory-source-link" href="${escapeHtml(active.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(active.sourceName ?? "source")}</a>`
+    : `<div class="chart-empty">暂无可用数据</div>`;
   document.querySelector("#memoryDetailGrid").innerHTML = detail
     .map(
-      (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
+      (item) => `<button class="memory-detail-card ${item.category === active?.category ? "active" : ""}" data-memory-category="${escapeHtml(item.category)}">
         <span>${escapeHtml(item.category)}</span>
         <strong>${compactUsd(item.exportValueUsd)}</strong>
         <div class="memory-kpis">
@@ -410,9 +470,16 @@ function renderMemoryDetail() {
           <em><small>单价 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
         </div>
         <p>${escapeHtml(item.sourceName)}</p>
-      </a>`
+      </button>`
     )
     .join("");
+  document.querySelectorAll("[data-memory-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selectedMemoryCategory = button.dataset.memoryCategory;
+      syncProductForMemoryCategory(state.selectedMemoryCategory);
+      render();
+    });
+  });
 }
 
 function renderDetails() {
