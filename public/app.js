@@ -2,7 +2,7 @@ const state = {
   data: null,
   selectedProduct: "dram_hbm",
   selectedMemoryCategory: null,
-  metric: "valueUsd",
+  metric: "unitPriceUsdPerKg",
   range: "12",
   selectedPeriod: null
 };
