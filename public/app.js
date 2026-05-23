@@ -13,12 +13,12 @@ const metricLabels = {
 };
 
 const colors = {
-  ssd: "#2f6fdb",
-  dram_hbm: "#118273",
-  semiconductor: "#b45f17",
-  valueUsd: "#2f6fdb",
-  weightKg: "#118273",
-  unitPriceUsdPerKg: "#b45f17"
+  ssd: "#315f9d",
+  dram_hbm: "#15756b",
+  semiconductor: "#a8601f",
+  valueUsd: "#315f9d",
+  weightKg: "#15756b",
+  unitPriceUsdPerKg: "#a8601f"
 };
 
 const compactUsd = (value) => {
@@ -296,11 +296,11 @@ function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null,
     .map((point, index) => {
       const x = scaleX(index) - barWidth / 2;
       const y = metricScaleY(point.value);
-      return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#cfe0ff"></rect>`;
+      return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#dbe3dc"></rect>`;
     })
     .join("");
-  const yoyPoints = points.map((point) => ({ value: point.yoyPct, color: "#b45f17", dash: "" }));
-  const sequentialPoints = points.map((point) => ({ value: point.sequentialPct, color: "#118273", dash: "6 5" }));
+  const yoyPoints = points.map((point) => ({ value: point.yoyPct, color: colors.unitPriceUsdPerKg, dash: "" }));
+  const sequentialPoints = points.map((point) => ({ value: point.sequentialPct, color: colors.weightKg, dash: "6 5" }));
   const selectedLine = selectedLabel && labels.includes(selectedLabel)
     ? `<line class="focus-line" x1="${scaleX(labels.indexOf(selectedLabel))}" x2="${scaleX(labels.indexOf(selectedLabel))}" y1="${padding.top}" y2="${height - padding.bottom}"></line>`
     : "";
@@ -318,9 +318,9 @@ function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null,
     })
     .join("");
   const legend = `<div class="legend dual-axis-legend">
-    <span><i style="background:#cfe0ff"></i>${metricLabels[metric]}（左轴）</span>
-    <span><i style="background:#b45f17"></i>YoY（右轴）</span>
-    <span><i class="dashed" style="background:#118273"></i>MoM（右轴）</span>
+    <span><i style="background:#dbe3dc"></i>${metricLabels[metric]}（左轴）</span>
+    <span><i style="background:${colors.unitPriceUsdPerKg}"></i>YoY（右轴）</span>
+    <span><i class="dashed" style="background:${colors.weightKg}"></i>MoM（右轴）</span>
   </div>`;
 
   return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${metricLabels[metric]}与增长率双轴图">
@@ -642,13 +642,18 @@ async function loadDashboard() {
 async function refreshNow() {
   const button = document.querySelector("#refreshButton");
   button.classList.add("spinning");
+  button.disabled = true;
   try {
     const response = await fetch("/api/refresh", { method: "POST" });
     if (!response.ok) throw new Error(`Refresh API ${response.status}`);
     state.data = await response.json();
     render();
+  } catch {
+    await loadDashboard();
+    document.querySelector("#statusMessage").textContent = "已重新载入静态数据；实时刷新需在本地 Node 服务中运行。";
   } finally {
     button.classList.remove("spinning");
+    button.disabled = false;
   }
 }
 

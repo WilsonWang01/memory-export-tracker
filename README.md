@@ -15,6 +15,19 @@ npm start
 
 打开 `http://localhost:8787`。
 
+## Cloudflare Pages
+
+本项目的线上版按静态站点发布，入口目录为 `public/`：
+
+```bash
+npm run deploy:cf
+```
+
+生产项目名为 `memory-export-tracker`。当前部署地址：
+
+- `https://df007533.memory-export-tracker.pages.dev`
+- `https://memory-export-tracker.pages.dev`（Cloudflare 新建项目后可能需要等待 DNS 生效）
+
 ## 配置官方 API
 
 复制 `.env.example` 里的变量到运行环境：
