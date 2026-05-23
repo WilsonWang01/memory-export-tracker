@@ -1,0 +1,47 @@
+name: Update Worker KV data
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Why the Worker dispatched this refresh
+        required: false
+        default: manual
+
+permissions:
+  contents: read
+
+concurrency:
+  group: memory-export-worker-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Refresh dashboard data
+        env:
+          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+        run: npm run fetch
+
+      - name: Validate JavaScript
+        run: npm run check
+
+      - name: Publish data to Worker KV
+        env:
+          MEMORY_EXPORT_WORKER_URL: ${{ secrets.MEMORY_EXPORT_WORKER_URL }}
+          MEMORY_EXPORT_UPDATE_TOKEN: ${{ secrets.MEMORY_EXPORT_UPDATE_TOKEN }}
+        run: |
+          test -n "$MEMORY_EXPORT_WORKER_URL"
+          test -n "$MEMORY_EXPORT_UPDATE_TOKEN"
+          curl --fail-with-body -sS \
+            -X POST "$MEMORY_EXPORT_WORKER_URL/api/memory-export-update/publish" \
+            -H "authorization: Bearer $MEMORY_EXPORT_UPDATE_TOKEN" \
+            -H "content-type: application/json" \
+            --data-binary @public/data/trade-data.json

@@ -15,33 +15,42 @@ npm start
 
 打开 `http://localhost:8787`。
 
-## Cloudflare Pages
+## Cloudflare Worker
 
-本项目的线上版按静态站点发布，入口目录为 `public/`：
+本项目的线上版由 Cloudflare Worker 托管：Worker 负责静态资源、`/api/dashboard`、`/data/trade-data.json`、KV 数据读取，以及定时触发更新。
 
 ```bash
 npm run deploy:cf
 ```
 
-生产项目名为 `memory-export-tracker`。当前部署地址：
+Worker 配置在 `wrangler.memory-export.toml`，使用 `MEMORY_EXPORT_KV` 保存最新数据和历史快照。当前 Worker 项目名为 `memory-export-tracker`。
 
-- `https://df007533.memory-export-tracker.pages.dev`
-- `https://memory-export-tracker.pages.dev`（Cloudflare 新建项目后可能需要等待 DNS 生效）
+如果仍需发布静态 Pages 版本，可使用：
 
-### 定时更新
+```bash
+npm run deploy:pages
+```
 
-`.github/workflows/cloudflare-pages.yml` 会在每天 `06:35 UTC`（韩国时间 15:35）运行：
+### Worker 定时更新
 
-1. 执行 `npm run fetch` 刷新 `data/trade-data.json` 与 `public/data/trade-data.json`
-2. 执行 `npm run check`
-3. 只有数据文件发生变化时才提交 `Refresh trade data`
-4. 只有 push 或数据发生变化时才部署 Cloudflare Pages
+定时更新参照 RegimeAlpha 的 Worker 模式：
 
-GitHub 仓库需要配置这些 Secrets：
+1. Cloudflare Worker 的 cron `35 6 * * *` 触发 `scheduled()`。
+2. Worker 调用 GitHub Actions `update-memory-export-kv.yml` 的 `workflow_dispatch`。
+3. GitHub workflow 执行 `npm run fetch` 和 `npm run check`。
+4. workflow 将 `public/data/trade-data.json` POST 到 Worker 的 `/api/memory-export-update/publish`。
+5. Worker 校验 JSON 后写入 KV，并由 `/api/dashboard` 与 `/data/trade-data.json` 对外提供最新数据。
+
+Cloudflare Worker 需要这些 secrets：
+
+- `GITHUB_DISPATCH_TOKEN`：可 dispatch GitHub workflow 的 token
+- `UPDATE_TOKEN`：保护 `/api/memory-export-update/run` 与 `/publish`
+
+GitHub 仓库需要这些 secrets：
 
 - `DATA_GO_KR_SERVICE_KEY`：可选；配置后使用 KCS/data.go.kr 官方接口刷新月度 HS 明细
-- `CLOUDFLARE_ACCOUNT_ID`：Cloudflare 账号 ID
-- `CLOUDFLARE_API_TOKEN`：具备 Cloudflare Pages 写权限的 API token
+- `MEMORY_EXPORT_WORKER_URL`：Worker 根地址
+- `MEMORY_EXPORT_UPDATE_TOKEN`：与 Worker `UPDATE_TOKEN` 相同
 
 ## 配置官方 API
 
