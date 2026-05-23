@@ -468,7 +468,7 @@ function monthlyChartCard(segment) {
   const points = monthlyPointsForProduct(segment.productKey);
   return `<section class="flat-chart-card" data-segment="${segment.key}">
     <div class="flat-chart-head">
-      <span>${escapeHtml(segment.label)}</span>
+      <span>${escapeHtml(segment.label)} 月度 HS</span>
       <code>${escapeHtml(segment.hsCode)}</code>
     </div>
     ${amountGrowthDualAxisSvg({
@@ -638,8 +638,8 @@ function renderDetails() {
 
 function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  document.querySelector("#mainCoverageBadge").innerHTML = `<span>三段式结构</span><strong>DRAM · SSD · NAND</strong><em>DRAM/SSD：${escapeHtml(coverageSentence(hsFreshness))}；NAND：公开暂估快照</em>`;
-  document.querySelector("#mainChartTitle").textContent = `DRAM / SSD / NAND：三图平铺`;
+  document.querySelector("#mainCoverageBadge").innerHTML = `<span>口径说明</span><strong>DRAM/SSD 月度 HS；NAND 暂估</strong><em>华尔街见闻文章对应的是下方 5 月前 20 日暂估细分，不是 DRAM/SSD 月度 HS 图。</em>`;
+  document.querySelector("#mainChartTitle").textContent = `月度 HS 趋势 + NAND 暂估快照`;
   document.querySelector("#mainChart").innerHTML = `<div class="three-chart-grid">
     ${monthlyChartCard(displaySegments[0])}
     ${monthlyChartCard(displaySegments[1])}
@@ -653,11 +653,11 @@ function renderSplitChart() {
   const productKey = activeMonthlyProductKey();
   if (!productKey) {
     const active = selectedMemoryItem();
-    document.querySelector("#splitCoverageBadge").innerHTML = `<span>暂估细分</span><em>没有连续月度 HS 量价序列</em>`;
+    document.querySelector("#splitCoverageBadge").innerHTML = `<span>暂估细分</span><em>没有连续月度 HS 海关单位价值序列</em>`;
     document.querySelector("#splitChart").innerHTML = memorySnapshotHtml(active, true);
     return;
   }
-  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
+  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类月度 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
   const points = filteredMonthly().filter((point) => point.productKey === productKey);
   const labels = points.map((point) => point.period);
   const series = [
