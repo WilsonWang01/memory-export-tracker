@@ -31,7 +31,7 @@
         </div>
         <div>
           <span class="method-label">量价拆分</span>
-          <strong>出口单价 = 出口金额 ÷ 出口净重</strong>
+          <strong>海关单位价值 = 出口金额 ÷ 出口净重</strong>
         </div>
         <div>
           <span class="method-label">更新节奏</span>
@@ -56,7 +56,7 @@
             <div><dt>金额环比</dt><dd id="latestValueChange">--</dd></div>
             <div><dt>出口净重</dt><dd id="latestWeight">--</dd></div>
             <div><dt>净重环比</dt><dd id="latestWeightChange">--</dd></div>
-            <div><dt>单价环比</dt><dd id="latestPriceChange">--</dd></div>
+            <div><dt>单位价值环比</dt><dd id="latestPriceChange">--</dd></div>
             <div><dt>量价判断</dt><dd id="latestSignal">--</dd></div>
           </dl>
         </aside>
@@ -70,7 +70,7 @@
             <div class="segmented">
               <button data-metric="valueUsd" class="selected">出口金额</button>
               <button data-metric="weightKg">出口净重</button>
-              <button data-metric="unitPriceUsdPerKg">出口单价</button>
+              <button data-metric="unitPriceUsdPerKg">单位价值</button>
             </div>
           </div>
           <div class="chart-control-strip" aria-label="dashboard controls">
@@ -114,7 +114,7 @@
         <section class="chart-panel">
           <div class="panel-title">选中品类三指标</div>
           <div id="splitCoverageBadge" class="coverage-badge compact"></div>
-          <p class="chart-caption">金额、净重、单价按各自最高值标准化，便于观察方向是否一致。</p>
+          <p class="chart-caption">金额、净重、海关单位价值按各自最高值标准化，便于观察方向是否一致。</p>
           <div id="splitChart" class="chart-frame small"></div>
         </section>
         <section class="chart-panel">

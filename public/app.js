@@ -10,7 +10,7 @@ const state = {
 const metricLabels = {
   valueUsd: "出口金额",
   weightKg: "出口净重",
-  unitPriceUsdPerKg: "出口单价"
+  unitPriceUsdPerKg: "海关单位价值"
 };
 
 const colors = {
@@ -426,7 +426,7 @@ function memorySnapshotHtml(item, compact = false) {
     <div class="snapshot-copy">
       <span>${escapeHtml(item.periodLabel)}</span>
       <strong>${escapeHtml(memoryLabel(item.category))} 暂估快照</strong>
-      <p>当前公开源只给这一期细分金额和单价，没有连续月度 HS 净重序列；所以这里显示暂估快照，不再误切到 SSD/DRAM 月度线。</p>
+      <p>当前公开源只给这一期细分金额和按净重推算的单位价值，没有连续月度 HS 净重序列；所以这里显示暂估快照，不再误切到 SSD/DRAM 月度线。</p>
     </div>
     <div class="snapshot-bars">
       ${rows
@@ -512,7 +512,7 @@ function renderSummary() {
           <span>${escapeHtml(segment.label)}</span>
           <code>${escapeHtml(segment.hsCode)}</code>
         </div>
-        <div class="metric-label">${segment.productKey ? "最新出口单价" : "暂估出口单价"}</div>
+        <div class="metric-label">${segment.productKey ? "最新海关单位价值" : "暂估单位价值"}</div>
         <strong>${unitPrice(segment.productKey ? point?.unitPriceUsdPerKg : memoryItem?.unitPriceUsdPerKg)}</strong>
         <div class="summary-analysis">
           <span class="analysis-cell delta ${deltaClassFromValue(valuePct)}">
@@ -526,7 +526,7 @@ function renderSummary() {
             <em>${segment.productKey ? compactWeight(point?.weightKg ?? 0) : "n/a"}</em>
           </span>
           <span class="analysis-cell delta ${deltaClassFromValue(pricePct)}">
-            <small>单价 MoM</small>
+            <small>单位价值 MoM</small>
             <b>${formatChange(pricePct)}</b>
             <em>${unitPrice(segment.productKey ? point?.unitPriceUsdPerKg : memoryItem?.unitPriceUsdPerKg)}</em>
           </span>
@@ -574,8 +574,8 @@ function renderMemoryDetail() {
       <div class="memory-focus-kpis">
         <span><small>出口金额 YoY</small><b>${formatPct(active.exportValueYoYPct)}</b></span>
         <span><small>出口金额 MoM</small><b>${formatPct(active.exportValueMoMPct)}</b></span>
-        <span><small>单价</small><b>${unitPrice(active.unitPriceUsdPerKg)}</b></span>
-        <span><small>单价 MoM</small><b>${formatPct(active.unitPriceMoMPct)}</b></span>
+        <span><small>单位价值</small><b>${unitPrice(active.unitPriceUsdPerKg)}</b></span>
+        <span><small>单位价值 MoM</small><b>${formatPct(active.unitPriceMoMPct)}</b></span>
       </div>
       <a class="memory-source-link" href="${escapeHtml(active.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(active.sourceName ?? "source")}</a>`
     : `<div class="chart-empty">暂无可用数据</div>`;
@@ -585,10 +585,10 @@ function renderMemoryDetail() {
         <span>${escapeHtml(memoryLabel(item.category))}</span>
         <strong>${compactUsd(item.exportValueUsd)}</strong>
         <div class="memory-kpis">
-          <em><small>单价</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
+          <em><small>单位价值</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
           <em><small>金额 YoY</small>${formatPct(item.exportValueYoYPct)}</em>
           <em><small>金额 MoM</small>${formatPct(item.exportValueMoMPct)}</em>
-          <em><small>单价 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
+          <em><small>单位价值 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
         </div>
         <p>${escapeHtml(item.sourceName)}</p>
       </button>`
@@ -610,7 +610,7 @@ function renderDetails() {
   if (!product) {
     const active = selectedMemoryItem();
     document.querySelector("#activeProductName").textContent = memoryLabel(active?.category ?? "当前分段");
-    document.querySelector("#sideCoverageNote").textContent = "暂估细分来自公开市场镜像；KCS 官方月度 HS 数据当前没有这一分段的连续量价序列。";
+    document.querySelector("#sideCoverageNote").textContent = "暂估细分来自公开市场镜像；KCS 官方月度 HS 数据当前没有这一分段的连续海关单位价值序列。";
     document.querySelector("#activeProductNote").textContent = active?.sourceName ?? "";
     document.querySelector("#latestPeriod").textContent = active?.periodLabel ?? "--";
     document.querySelector("#latestValue").textContent = compactUsd(active?.exportValueUsd ?? 0);
@@ -670,7 +670,7 @@ function renderSplitChart() {
   const series = [
     { name: "出口金额", color: colors.valueUsd, metric: "valueUsd" },
     { name: "出口净重", color: colors.weightKg, metric: "weightKg" },
-    { name: "出口单价", color: colors.unitPriceUsdPerKg, metric: "unitPriceUsdPerKg" }
+    { name: "海关单位价值", color: colors.unitPriceUsdPerKg, metric: "unitPriceUsdPerKg" }
   ].map((item) => {
     const max = Math.max(...points.map((point) => point[item.metric] ?? 0), 1);
     return {
