@@ -6,6 +6,7 @@
 
 - 月度 HS 品类数据：KCS TradeData 英文 `By H.S Code` 公开页；配置密钥时也可调用 KCS/data.go.kr `관세청_품목별 수출입실적(GW)` 的 `http://apis.data.go.kr/1220000/Itemtrade/getItemtradeList`。
 - 10 日高频窗口：KCS 官网、KCS TradeData 首页或 Korea.kr 每月 11 日/21 日附近发布/转载的 `수출입 현황` 简报；TRASS/KITA 仅在公开可访问时用于交叉核验。
+- 存储细分暂估：`data/provisional-memory-detail.json`，人工核验后录入 DRAM / SSD / NAND 等公开市场转述或券商表格数据。
 
 ## 运行
 
@@ -74,6 +75,17 @@ npm start
 - 已通过浏览器核验的 SSD 与 DRAM/HBM 月度 HS 公开网页快照
 
 配置密钥后，SSD 与 DRAM/HBM 月度 HS 明细会尝试由 data.go.kr 官方 API 自动替换。
+
+## 更新流程
+
+这套数据不是纯 API 项目，更新分成自动和人工确认两层：
+
+- 自动层：`npm run fetch` 更新可通过官方接口或稳定公开页取得的月度 HS、半导体总量和静态 fallback。
+- 人工确认层：把华尔街见闻、TRASS/KITA、Telegram 镜像或券商表格里的 DRAM / SSD / NAND 暂估细分录入 `data/provisional-memory-detail.json`。
+- 校验层：`npm run validate:provisional` 检查暂估细分是否包含 DRAM、SSD、NAND，字段类型和来源链接是否完整。
+- 发布层：`npm run check` 通过后，GitHub workflow 或 Worker publish endpoint 将 `public/data/trade-data.json` 发布到 Cloudflare KV。
+
+更新高频暂估时，应保持同窗口比较：例如 `5 月 1-20 日` 的 MoM 对比 `4 月 1-20 日`，YoY 对比 `2025 年 5 月 1-20 日`，不要混用完整月度数据。
 
 ## 指标口径
 

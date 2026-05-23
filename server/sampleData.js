@@ -1,6 +1,15 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import { productConfigs } from "./config.js";
 
 const sampleSnapshotUpdatedAt = "2026-05-22T15:31:38.076Z";
+
+const provisionalDetailPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "provisional-memory-detail.json");
+
+function loadProvisionalMemoryDetail() {
+  return JSON.parse(readFileSync(provisionalDetailPath, "utf8"));
+}
 
 const periods = [
   "2025.01",
@@ -283,93 +292,7 @@ export function buildSampleStore({ lastUpdated = sampleSnapshotUpdatedAt } = {})
         note: "KCS official list verifies the April final release date; the dashboard keeps the rounded semiconductor value from the MOTIE monthly release."
       }
     ],
-    memoryDetail: [
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "Memory ex-MCP (derived)",
-        exportValueUsd: 14_705_000_000,
-        exportValueYoYPct: 450.0,
-        exportValueMoMPct: 23.4,
-        unitPriceUsdPerKg: 46_822,
-        unitPriceYoYPct: 388.1,
-        unitPriceMoMPct: 14.3,
-        source: "market_repost_trass_derived",
-        sourceName: "Derived from May 1-20 DRAM incl. modules + Flash memory + SSD values and unit prices in public market mirrors",
-        sourceUrl: "https://t.me/s/bornlupin/18175"
-      },
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "DRAM incl. modules",
-        exportValueUsd: 11_527_000_000,
-        exportValueYoYPct: 498,
-        exportValueMoMPct: 27,
-        unitPriceUsdPerKg: 60_319,
-        unitPriceYoYPct: 432,
-        unitPriceMoMPct: 5,
-        source: "market_repost_trass",
-        sourceName: "Market Telegram mirror; cites May 1-20 Korean semiconductor export table",
-        sourceUrl: "https://t.me/s/bornlupin/18175"
-      },
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "DRAM excl. modules",
-        exportValueUsd: 7_488_000_000,
-        exportValueYoYPct: 431,
-        exportValueMoMPct: 26,
-        unitPriceUsdPerKg: 82_820,
-        unitPriceYoYPct: 497,
-        unitPriceMoMPct: 13,
-        source: "market_repost_trass",
-        sourceName: "Market Telegram mirror; cites May 1-20 Korean semiconductor export table",
-        sourceUrl: "https://t.me/s/bornlupin/18175"
-      },
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "Flash memory",
-        exportValueUsd: 954_000_000,
-        exportValueYoYPct: 178,
-        exportValueMoMPct: 7,
-        unitPriceUsdPerKg: 54_716,
-        unitPriceYoYPct: 280,
-        unitPriceMoMPct: 23,
-        source: "market_repost_trass",
-        sourceName: "Market Telegram mirror; cites May 1-20 Korean semiconductor export table",
-        sourceUrl: "https://t.me/s/bornlupin/18175"
-      },
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "SSD",
-        exportValueUsd: 2_224_000_000,
-        exportValueYoYPct: 452,
-        exportValueMoMPct: 14.1,
-        unitPriceUsdPerKg: 21_075,
-        unitPriceYoYPct: 344,
-        unitPriceMoMPct: 22,
-        source: "market_repost_trass",
-        sourceName: "SK Securities value table and market Telegram unit-price mirror; cites May 1-20 Korean semiconductor export table",
-        sourceUrl: "https://t.me/s/bornlupin/18175",
-        crossCheckSourceUrl: "https://t.me/s/skitteam/3951"
-      },
-      {
-        period: "2026.05-1~20",
-        periodLabel: "2026年5月前20日",
-        category: "MCP / HBM proxy",
-        exportValueUsd: 4_860_000_000,
-        exportValueYoYPct: null,
-        exportValueMoMPct: 30,
-        unitPriceUsdPerKg: null,
-        unitPriceYoYPct: null,
-        unitPriceMoMPct: null,
-        source: "market_repost_trass",
-        sourceName: "SK Securities Semiconductor Telegram mirror; May 1-20 MCP provisional value table",
-        sourceUrl: "https://t.me/s/skitteam/3951"
-      }
-    ],
+    memoryDetail: loadProvisionalMemoryDetail(),
     preliminary: [
       {
         period: "2026.01-1~20",
