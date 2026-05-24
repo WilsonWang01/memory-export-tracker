@@ -6,9 +6,14 @@ import { productConfigs } from "./config.js";
 const sampleSnapshotUpdatedAt = "2026-05-22T15:31:38.076Z";
 
 const provisionalDetailPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "provisional-memory-detail.json");
+const taiwanDemandPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "data", "taiwan-ai-demand.json");
 
 function loadProvisionalMemoryDetail() {
   return JSON.parse(readFileSync(provisionalDetailPath, "utf8"));
+}
+
+function loadTaiwanDemand() {
+  return JSON.parse(readFileSync(taiwanDemandPath, "utf8"));
 }
 
 const periods = [
@@ -293,6 +298,7 @@ export function buildSampleStore({ lastUpdated = sampleSnapshotUpdatedAt } = {})
       }
     ],
     memoryDetail: loadProvisionalMemoryDetail(),
+    taiwanDemand: loadTaiwanDemand(),
     preliminary: [
       {
         period: "2026.01-1~20",

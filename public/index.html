@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>韩国存储出口量价台</title>
-    <link rel="stylesheet" href="styles.css?v=20260523-regimealpha" />
+    <link rel="stylesheet" href="styles.css?v=20260524-taiwan-demand" />
   </head>
   <body>
     <main class="screen">
@@ -110,6 +110,18 @@
         <div id="memoryDetailGrid" class="memory-detail-grid"></div>
       </section>
 
+      <section class="chart-panel taiwan-demand-panel">
+        <div class="section-head">
+          <div>
+            <p class="panel-title">TAIWAN AI PULL-DEMAND</p>
+            <h2>台湾拉货链条：韩国存储代理 + 日本 SSD</h2>
+          </div>
+          <span id="taiwanDemandCoverage" class="freshness-note"></span>
+        </div>
+        <p id="taiwanDemandMethod" class="method-note"></p>
+        <div id="taiwanDemandGrid" class="taiwan-demand-grid"></div>
+      </section>
+
       <section class="lower-grid">
         <section class="chart-panel">
           <div class="panel-title">选中品类三指标</div>
@@ -128,6 +140,6 @@
       </section>
     </main>
     <div id="chartTooltip" class="chart-tooltip" hidden></div>
-    <script src="app.js?v=20260517-dual-axis-metrics" type="module"></script>
+    <script src="app.js?v=20260524-taiwan-demand" type="module"></script>
   </body>
 </html>

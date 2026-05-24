@@ -17,6 +17,8 @@ const colors = {
   ssd: "#315f9d",
   dram_hbm: "#15756b",
   semiconductor: "#a8601f",
+  korea_to_taiwan_electrical: "#8a4a18",
+  japan_to_taiwan_ssd: "#245c9a",
   valueUsd: "#315f9d",
   weightKg: "#15756b",
   unitPriceUsdPerKg: "#a8601f"
@@ -49,6 +51,13 @@ const compactUsd = (value) => {
   return `$${value.toFixed(0)}`;
 };
 
+const compactJpy = (value) => {
+  if (Math.abs(value) >= 1_000_000_000) return `¥${(value / 1_000_000_000).toFixed(1)}B`;
+  if (Math.abs(value) >= 1_000_000) return `¥${(value / 1_000_000).toFixed(0)}M`;
+  if (Math.abs(value) >= 1_000) return `¥${(value / 1_000).toFixed(0)}K`;
+  return `¥${value.toFixed(0)}`;
+};
+
 const compactWeight = (value) => {
   if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}kt`;
   if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}t`;
@@ -60,8 +69,18 @@ const unitPrice = (value) => (value ? `$${value.toLocaleString("en-US", { maximu
 const formatMetric = (value, metric) => {
   if (value === null || value === undefined) return "n/a";
   if (metric === "valueUsd") return compactUsd(value);
+  if (metric === "valueJpy") return compactJpy(value);
   if (metric === "weightKg") return compactWeight(value);
   return unitPrice(value);
+};
+
+const formatRouteValue = (value, currency) => (currency === "JPY" ? compactJpy(value) : compactUsd(value));
+
+const formatUnits = (value) => {
+  if (!Number.isFinite(value)) return "n/a";
+  if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M台`;
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K台`;
+  return `${value.toLocaleString("en-US")}台`;
 };
 
 const formatPct = (value) =>
@@ -576,6 +595,87 @@ function renderMemoryDetail() {
     .join("");
 }
 
+function routePoints(route) {
+  return (state.data.taiwanDemand?.monthly ?? [])
+    .filter((point) => point.routeKey === route.key)
+    .sort((a, b) => a.period.localeCompare(b.period));
+}
+
+function routeChange(points, field, latest) {
+  const previousMonth = points.find((point) => point.period === shiftPeriod(latest.period, -1));
+  const previousYear = points.find((point) => point.period === shiftPeriod(latest.period, -12));
+  return {
+    mom: percentChangeValue(latest?.[field], previousMonth?.[field]),
+    yoy: percentChangeValue(latest?.[field], previousYear?.[field])
+  };
+}
+
+function taiwanDemandCard(route) {
+  const points = routePoints(route);
+  const visiblePoints = points.slice(-12);
+  const latest = points.at(-1);
+  const changes = latest ? routeChange(points, route.valueField, latest) : { mom: null, yoy: null };
+  const color = colors[route.key] ?? colors.valueUsd;
+  const labels = visiblePoints.map((point) => point.period);
+  const series = [
+    {
+      name: route.metricLabel,
+      color,
+      points: visiblePoints.map((point) => ({
+        label: point.periodLabel,
+        value: point[route.valueField],
+        sourceName: point.sourceName,
+        sourceUrl: point.sourceUrl
+      }))
+    }
+  ];
+  const extraMetric = route.quantityField && latest?.[route.quantityField]
+    ? `<div><dt>数量</dt><dd>${formatUnits(latest[route.quantityField])}</dd></div>`
+    : `<div><dt>韩国总进口</dt><dd>${latest?.totalImportUsd ? compactUsd(latest.totalImportUsd) : "n/a"}</dd></div>`;
+  const unitValue = latest?.unitValueJpyPerUnit
+    ? `<div><dt>单台价值</dt><dd>${compactJpy(latest.unitValueJpyPerUnit)}/台</dd></div>`
+    : "";
+  return `<article class="taiwan-route-card">
+    <div class="taiwan-route-head">
+      <div>
+        <span>${escapeHtml(route.hsCode)}</span>
+        <h3>${escapeHtml(route.title)}</h3>
+      </div>
+      <strong>${formatRouteValue(latest?.[route.valueField] ?? 0, route.currency)}</strong>
+    </div>
+    <dl class="route-stats">
+      <div><dt>最新月份</dt><dd>${escapeHtml(latest?.periodLabel ?? "--")}</dd></div>
+      <div><dt>YoY</dt><dd class="${deltaClassFromValue(changes.yoy)}">${formatChange(changes.yoy)}</dd></div>
+      <div><dt>MoM</dt><dd class="${deltaClassFromValue(changes.mom)}">${formatChange(changes.mom)}</dd></div>
+      ${extraMetric}
+      ${unitValue}
+    </dl>
+    <p>${escapeHtml(route.interpretation)}</p>
+    <div class="chart-frame route-chart">
+      ${chartSvg({
+        series,
+        labels,
+        formatter: (value) => formatRouteValue(value, route.currency),
+        height: 230,
+        chartType: "bar"
+      })}
+    </div>
+    <a class="memory-source-link" href="${escapeHtml(route.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(route.sourceName)}</a>
+  </article>`;
+}
+
+function renderTaiwanDemand() {
+  const demand = state.data.taiwanDemand;
+  if (!demand?.routes?.length) return;
+  const allPeriods = demand.monthly.map((point) => point.period).sort();
+  document.querySelector("#taiwanDemandCoverage").textContent = `最新：${allPeriods.at(-1)?.replace(".", "-") ?? "--"} · 官方公开数据`;
+  document.querySelector("#taiwanDemandMethod").textContent =
+    demand.meta?.notes?.join(" ") ??
+    "韩国→台湾使用台湾进口端代理指标；日本→台湾 SSD 使用日本出口端 HS 852351000。";
+  document.querySelector("#taiwanDemandGrid").innerHTML = demand.routes.map(taiwanDemandCard).join("");
+  bindChartInteractions(document.querySelector("#taiwanDemandGrid"));
+}
+
 function renderDetails() {
   const productKey = activeMonthlyProductKey();
   const product = state.data.products.find((item) => item.key === productKey);
@@ -778,6 +878,7 @@ function render() {
   renderDetails();
   renderMainChart();
   renderSplitChart();
+  renderTaiwanDemand();
   renderPrelimChart();
 }
 

@@ -109,7 +109,8 @@ h2 {
 .status-strip,
 .segmented,
 .method-strip,
-.memory-detail-panel {
+.memory-detail-panel,
+.taiwan-demand-panel {
   border: 1px solid var(--line);
   background: color-mix(in oklch, var(--paper) 92%, white);
   box-shadow: var(--shadow);
@@ -500,7 +501,8 @@ code {
 
 .side-panel,
 .chart-panel,
-.memory-detail-panel {
+.memory-detail-panel,
+.taiwan-demand-panel {
   border-radius: 8px;
   padding: 18px;
 }
@@ -879,6 +881,108 @@ dd {
   text-underline-offset: 3px;
 }
 
+.taiwan-demand-panel {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.taiwan-demand-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.taiwan-route-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-strong);
+}
+
+.taiwan-route-card:first-child {
+  border-color: color-mix(in oklch, var(--amber) 36%, var(--line));
+}
+
+.taiwan-route-card:last-child {
+  border-color: color-mix(in oklch, var(--blue) 34%, var(--line));
+}
+
+.taiwan-route-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.taiwan-route-head span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.taiwan-route-head h3 {
+  margin: 4px 0 0;
+  font-size: clamp(1.15rem, 1.7vw, 1.65rem);
+  line-height: 1.08;
+}
+
+.taiwan-route-head strong {
+  flex: 0 0 auto;
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  line-height: 1;
+}
+
+.route-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.route-stats div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: color-mix(in oklch, var(--paper) 70%, white);
+}
+
+.route-stats dd {
+  min-width: 0;
+  color: #24446f;
+  overflow-wrap: anywhere;
+}
+
+.route-stats dd.positive {
+  color: var(--good);
+}
+
+.route-stats dd.negative {
+  color: var(--bad);
+}
+
+.taiwan-route-card p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 750;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.route-chart {
+  min-height: 250px;
+}
+
 .lower-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(360px, 0.76fr);
@@ -1205,6 +1309,7 @@ svg text {
   .method-strip,
   .memory-detail-focus,
   .memory-detail-grid,
+  .taiwan-demand-grid,
   .three-chart-grid,
   .chart-control-strip,
   .workbench,
@@ -1256,6 +1361,14 @@ svg text {
   }
 
   .memory-focus-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .taiwan-route-head {
+    flex-direction: column;
+  }
+
+  .route-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
