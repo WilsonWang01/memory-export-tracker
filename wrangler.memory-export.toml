@@ -1,0 +1,21 @@
+name = "memory-export-tracker"
+main = "workers/memory-export-worker.js"
+compatibility_date = "2026-05-23"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[[kv_namespaces]]
+binding = "MEMORY_EXPORT_KV"
+id = "36ff6e93a29e414fa78ede3111909076"
+
+[triggers]
+crons = ["35 6 * * *"]
+
+[vars]
+GITHUB_OWNER = "WilsonWang01"
+GITHUB_REPO = "memory-export-tracker"
+GITHUB_WORKFLOW_ID = "update-memory-export-kv.yml"
+GITHUB_REF = "main"

@@ -1,7 +1,8 @@
 const state = {
   data: null,
-  selectedProduct: "ssd",
-  metric: "valueUsd",
+  selectedProduct: "dram_hbm",
+  selectedMemoryCategory: null,
+  metric: "unitPriceUsdPerKg",
   range: "12",
   selectedPeriod: null
 };
@@ -9,16 +10,38 @@ const state = {
 const metricLabels = {
   valueUsd: "出口金额",
   weightKg: "出口净重",
-  unitPriceUsdPerKg: "出口单价"
+  unitPriceUsdPerKg: "海关单位价值"
 };
 
 const colors = {
-  ssd: "#2f6fdb",
-  dram_hbm: "#118273",
-  semiconductor: "#b45f17",
-  valueUsd: "#2f6fdb",
-  weightKg: "#118273",
-  unitPriceUsdPerKg: "#b45f17"
+  ssd: "#315f9d",
+  dram_hbm: "#15756b",
+  semiconductor: "#a8601f",
+  korea_to_taiwan_electrical: "#8a4a18",
+  japan_to_taiwan_ssd: "#245c9a",
+  valueUsd: "#315f9d",
+  weightKg: "#15756b",
+  unitPriceUsdPerKg: "#a8601f"
+};
+
+const memoryCategoryLabels = {
+  "Memory ex-MCP (derived)": "Memory ex-MCP",
+  "DRAM incl. modules": "DRAM",
+  "DRAM excl. modules": "DRAM excl.",
+  "Flash memory": "NAND",
+  SSD: "SSD",
+  "MCP / HBM proxy": "MCP / HBM"
+};
+
+const displaySegments = [
+  { key: "dram", label: "DRAM", category: "DRAM incl. modules", productKey: "dram_hbm", hsCode: "854232" },
+  { key: "ssd", label: "SSD", category: "SSD", productKey: "ssd", hsCode: "852351" },
+  { key: "nand", label: "NAND", category: "Flash memory", productKey: null, hsCode: "暂估" }
+];
+
+const memoryCategoryMonthlyProducts = {
+  SSD: "ssd",
+  "DRAM incl. modules": "dram_hbm"
 };
 
 const compactUsd = (value) => {
@@ -26,6 +49,13 @@ const compactUsd = (value) => {
   if (Math.abs(value) >= 1_000_000) return `$${(value / 1_000_000).toFixed(0)}M`;
   if (Math.abs(value) >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
   return `$${value.toFixed(0)}`;
+};
+
+const compactJpy = (value) => {
+  if (Math.abs(value) >= 1_000_000_000) return `¥${(value / 1_000_000_000).toFixed(1)}B`;
+  if (Math.abs(value) >= 1_000_000) return `¥${(value / 1_000_000).toFixed(0)}M`;
+  if (Math.abs(value) >= 1_000) return `¥${(value / 1_000).toFixed(0)}K`;
+  return `¥${value.toFixed(0)}`;
 };
 
 const compactWeight = (value) => {
@@ -39,8 +69,18 @@ const unitPrice = (value) => (value ? `$${value.toLocaleString("en-US", { maximu
 const formatMetric = (value, metric) => {
   if (value === null || value === undefined) return "n/a";
   if (metric === "valueUsd") return compactUsd(value);
+  if (metric === "valueJpy") return compactJpy(value);
   if (metric === "weightKg") return compactWeight(value);
   return unitPrice(value);
+};
+
+const formatRouteValue = (value, currency) => (currency === "JPY" ? compactJpy(value) : compactUsd(value));
+
+const formatUnits = (value) => {
+  if (!Number.isFinite(value)) return "n/a";
+  if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M台`;
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K台`;
+  return `${value.toLocaleString("en-US")}台`;
 };
 
 const formatPct = (value) =>
@@ -96,6 +136,50 @@ function filteredMonthly() {
 
 function freshnessByKey(key) {
   return (state.data.freshness ?? []).find((item) => item.key === key);
+}
+
+function memoryLabel(category) {
+  return memoryCategoryLabels[category] ?? category;
+}
+
+function selectedMemoryItem() {
+  const detail = state.data.memoryDetail ?? [];
+  const preferredCategory = state.selectedProduct === "ssd" ? "SSD" : "DRAM incl. modules";
+  const preferred = detail.find((item) => item.category === preferredCategory) ?? detail[0];
+  if (!state.selectedMemoryCategory && preferred) state.selectedMemoryCategory = preferred.category;
+  return detail.find((item) => item.category === state.selectedMemoryCategory) ?? preferred;
+}
+
+function activeMonthlyProductKey() {
+  const active = selectedMemoryItem();
+  if (!active) return state.selectedProduct;
+  return memoryCategoryMonthlyProducts[active.category] ?? null;
+}
+
+function displaySegmentForCategory(category) {
+  return displaySegments.find((segment) => segment.category === category);
+}
+
+function displaySegmentForProduct(productKey) {
+  return displaySegments.find((segment) => segment.productKey === productKey);
+}
+
+function selectDisplaySegment(segment) {
+  if (!segment) return;
+  state.selectedMemoryCategory = segment.category;
+  if (segment.productKey) state.selectedProduct = segment.productKey;
+  state.selectedPeriod = null;
+}
+
+function syncMemoryCategoryForProduct(productKey) {
+  const segment = displaySegmentForProduct(productKey);
+  if (segment) state.selectedMemoryCategory = segment.category;
+}
+
+function syncProductForMemoryCategory(category) {
+  const productKey = memoryCategoryMonthlyProducts[category];
+  if (productKey) state.selectedProduct = productKey;
+  state.selectedPeriod = null;
 }
 
 function coverageSentence(item) {
@@ -296,11 +380,11 @@ function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null,
     .map((point, index) => {
       const x = scaleX(index) - barWidth / 2;
       const y = metricScaleY(point.value);
-      return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#cfe0ff"></rect>`;
+      return `<rect class="amount-bar" x="${x}" y="${y}" width="${barWidth}" height="${height - padding.bottom - y}" rx="4" fill="#dbe3dc"></rect>`;
     })
     .join("");
-  const yoyPoints = points.map((point) => ({ value: point.yoyPct, color: "#b45f17", dash: "" }));
-  const sequentialPoints = points.map((point) => ({ value: point.sequentialPct, color: "#118273", dash: "6 5" }));
+  const yoyPoints = points.map((point) => ({ value: point.yoyPct, color: colors.unitPriceUsdPerKg, dash: "" }));
+  const sequentialPoints = points.map((point) => ({ value: point.sequentialPct, color: colors.weightKg, dash: "6 5" }));
   const selectedLine = selectedLabel && labels.includes(selectedLabel)
     ? `<line class="focus-line" x1="${scaleX(labels.indexOf(selectedLabel))}" x2="${scaleX(labels.indexOf(selectedLabel))}" y1="${padding.top}" y2="${height - padding.bottom}"></line>`
     : "";
@@ -318,9 +402,9 @@ function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null,
     })
     .join("");
   const legend = `<div class="legend dual-axis-legend">
-    <span><i style="background:#cfe0ff"></i>${metricLabels[metric]}（左轴）</span>
-    <span><i style="background:#b45f17"></i>YoY（右轴）</span>
-    <span><i class="dashed" style="background:#118273"></i>MoM（右轴）</span>
+    <span><i style="background:#dbe3dc"></i>${metricLabels[metric]}（左轴）</span>
+    <span><i style="background:${colors.unitPriceUsdPerKg}"></i>YoY（右轴）</span>
+    <span><i class="dashed" style="background:${colors.weightKg}"></i>MoM（右轴）</span>
   </div>`;
 
   return `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${metricLabels[metric]}与增长率双轴图">
@@ -339,55 +423,139 @@ function amountGrowthDualAxisSvg({ points, labels, metric, selectedLabel = null,
     </svg>${legend}`;
 }
 
+function memorySnapshotHtml(item, compact = false) {
+  if (!item) return `<div class="chart-empty">暂无可用数据</div>`;
+  const rows = [
+    {
+      label: "出口金额",
+      value: compactUsd(item.exportValueUsd),
+      delta: `YoY ${formatPct(item.exportValueYoYPct)} · MoM ${formatPct(item.exportValueMoMPct)}`,
+      width: Math.min(Math.max(Math.abs(item.exportValueMoMPct ?? 0) * 3, 14), 100),
+      className: deltaClassFromValue(item.exportValueMoMPct)
+    },
+    {
+      label: "单位价格",
+      value: unitPrice(item.unitPriceUsdPerKg),
+      delta: `YoY ${formatPct(item.unitPriceYoYPct)} · MoM ${formatPct(item.unitPriceMoMPct)}`,
+      width: Math.min(Math.max(Math.abs(item.unitPriceMoMPct ?? 0) * 3, 14), 100),
+      className: deltaClassFromValue(item.unitPriceMoMPct)
+    }
+  ];
+  return `<div class="provisional-snapshot ${compact ? "compact" : ""}">
+    <div class="snapshot-copy">
+      <span>${escapeHtml(item.periodLabel)}</span>
+      <strong>${escapeHtml(memoryLabel(item.category))} 暂估快照</strong>
+      <p>当前公开源只给这一期细分金额和按净重推算的单位价值，没有连续月度 HS 净重序列；所以这里显示暂估快照，不再误切到 SSD/DRAM 月度线。</p>
+    </div>
+    <div class="snapshot-bars">
+      ${rows
+        .map(
+          (row) => `<div class="snapshot-row">
+            <div><span>${escapeHtml(row.label)}</span><strong>${escapeHtml(row.value)}</strong></div>
+            <div class="snapshot-track"><i class="${row.className}" style="width:${row.width}%"></i></div>
+            <em>${escapeHtml(row.delta)}</em>
+          </div>`
+        )
+        .join("")}
+    </div>
+    <a class="memory-source-link" href="${escapeHtml(item.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(item.sourceName ?? "source")}</a>
+  </div>`;
+}
+
+function monthlyPointsForProduct(productKey) {
+  const allProductPoints = state.data.monthly
+    .filter((point) => point.productKey === productKey)
+    .sort((a, b) => a.period.localeCompare(b.period));
+  const byPeriod = new Map(allProductPoints.map((point) => [point.period, point]));
+  return filteredMonthly()
+    .filter((point) => point.productKey === productKey)
+    .sort((a, b) => a.period.localeCompare(b.period))
+    .map((point) => {
+      const previousMonth = byPeriod.get(shiftPeriod(point.period, -1));
+      const previousYear = byPeriod.get(shiftPeriod(point.period, -12));
+      return {
+        period: point.period,
+        periodLabel: point.periodLabel,
+        value: point[state.metric],
+        sequentialPct: percentChangeValue(point[state.metric], previousMonth?.[state.metric]),
+        yoyPct: percentChangeValue(point[state.metric], previousYear?.[state.metric])
+      };
+    });
+}
+
+function monthlyChartCard(segment) {
+  const points = monthlyPointsForProduct(segment.productKey);
+  return `<section class="flat-chart-card" data-segment="${segment.key}">
+    <div class="flat-chart-head">
+      <span>${escapeHtml(segment.label)} 月度 HS</span>
+      <code>${escapeHtml(segment.hsCode)}</code>
+    </div>
+    ${amountGrowthDualAxisSvg({
+      points,
+      labels: points.map((point) => point.period),
+      metric: state.metric,
+      selectedLabel: state.selectedPeriod,
+      height: 320
+    })}
+  </section>`;
+}
+
+function nandChartCard() {
+  const item = (state.data.memoryDetail ?? []).find((detail) => detail.category === "Flash memory");
+  return `<section class="flat-chart-card" data-segment="nand">
+    <div class="flat-chart-head">
+      <span>NAND</span>
+      <code>暂估</code>
+    </div>
+    ${memorySnapshotHtml(item)}
+  </section>`;
+}
+
 function renderSummary() {
   const grid = document.querySelector("#summaryGrid");
-  const monthly = filteredMonthly();
-  grid.innerHTML = state.data.products
-    .map((product) => {
-      const point = latestPoint(monthly, product.key);
-      const previous = latestPoint(monthly, product.key, 1);
-      const valuePct = percentChangeValue(point?.valueUsd, previous?.valueUsd);
-      const weightPct = percentChangeValue(point?.weightKg, previous?.weightKg);
-      const pricePct = percentChangeValue(point?.unitPriceUsdPerKg, previous?.unitPriceUsdPerKg);
-      const signal = volumePriceSignal(valuePct, weightPct, pricePct);
-      const hsFreshness = freshnessByKey("monthly_hs");
-      return `<button class="summary-card ${state.selectedProduct === product.key ? "active" : ""}" data-product="${product.key}">
+  const activeSegment = displaySegmentForCategory(selectedMemoryItem()?.category);
+  grid.innerHTML = displaySegments
+    .map((segment) => {
+      const memoryItem = (state.data.memoryDetail ?? []).find((item) => item.category === segment.category);
+      const valuePct = memoryItem?.exportValueMoMPct;
+      const pricePct = memoryItem?.unitPriceMoMPct;
+      return `<button class="summary-card ${activeSegment?.key === segment.key ? "active" : ""}" data-segment="${segment.key}">
         <div class="card-head">
-          <span>${product.name}</span>
-          <code>${product.hsCode}</code>
+          <span>${escapeHtml(segment.label)}</span>
+          <code>5月前20日</code>
         </div>
-        <div class="metric-label">最新出口单价</div>
-        <strong>${unitPrice(point?.unitPriceUsdPerKg)}</strong>
+        <div class="metric-label">暂估单位价值</div>
+        <strong>${unitPrice(memoryItem?.unitPriceUsdPerKg)}</strong>
         <div class="summary-analysis">
           <span class="analysis-cell delta ${deltaClassFromValue(valuePct)}">
             <small>金额 MoM</small>
             <b>${formatChange(valuePct)}</b>
-            <em>${compactUsd(point?.valueUsd ?? 0)}</em>
+            <em>${compactUsd(memoryItem?.exportValueUsd ?? 0)}</em>
           </span>
-          <span class="analysis-cell delta ${deltaClassFromValue(weightPct)}">
-            <small>净重 MoM</small>
-            <b>${formatChange(weightPct)}</b>
-            <em>${compactWeight(point?.weightKg ?? 0)}</em>
+          <span class="analysis-cell delta ${deltaClassFromValue(memoryItem?.exportValueYoYPct)}">
+            <small>金额 YoY</small>
+            <b>${formatPct(memoryItem?.exportValueYoYPct)}</b>
+            <em>${escapeHtml(memoryItem?.periodLabel ?? "--")}</em>
           </span>
           <span class="analysis-cell delta ${deltaClassFromValue(pricePct)}">
-            <small>单价 MoM</small>
+            <small>单位价值 MoM</small>
             <b>${formatChange(pricePct)}</b>
-            <em>${unitPrice(point?.unitPriceUsdPerKg)}</em>
+            <em>${unitPrice(memoryItem?.unitPriceUsdPerKg)}</em>
           </span>
           <span class="analysis-cell signal">
-            <small>量价判断</small>
-            <b>${signal}</b>
-            <em>${escapeHtml(point?.periodLabel ?? "--")}</em>
+            <small>单位价值 YoY</small>
+            <b>${formatPct(memoryItem?.unitPriceYoYPct)}</b>
+            <em>同口径暂估</em>
           </span>
         </div>
-        <p class="card-freshness">${escapeHtml(coverageSentence(hsFreshness))}</p>
+        <p class="card-freshness">三张总览卡统一使用 5 月 1-20 日存储细分暂估；MoM 对比 4 月 1-20 日，YoY 对比 2025 年 5 月 1-20 日。</p>
       </button>`;
     })
     .join("");
 
-  grid.querySelectorAll("[data-product]").forEach((button) => {
+  grid.querySelectorAll("[data-segment]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.selectedProduct = button.dataset.product;
+      selectDisplaySegment(displaySegments.find((segment) => segment.key === button.dataset.segment));
       render();
     });
   });
@@ -395,36 +563,144 @@ function renderSummary() {
 
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
+  const visibleDetail = displaySegments
+    .map((segment) => detail.find((item) => item.category === segment.category))
+    .filter(Boolean);
   const freshness = freshnessByKey("memory_provisional_detail");
   document.querySelector("#memoryDetailCoverage").textContent = `${coverageSentence(freshness)} · 非直连官方接口`;
   document.querySelector("#memoryDetailMethod").textContent = freshness?.note ?? "";
-  document.querySelector("#memoryDetailGrid").innerHTML = detail
+  document.querySelector("#memoryDetailSwitch").innerHTML = "";
+  document.querySelector("#memoryDetailFocus").innerHTML = "";
+  document.querySelector("#memoryDetailGrid").innerHTML = visibleDetail
     .map(
-      (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
-        <span>${escapeHtml(item.category)}</span>
-        <strong>${compactUsd(item.exportValueUsd)}</strong>
-        <div class="memory-kpis">
-          <em><small>单价</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
-          <em><small>金额 YoY</small>${formatPct(item.exportValueYoYPct)}</em>
-          <em><small>金额 MoM</small>${formatPct(item.exportValueMoMPct)}</em>
-          <em><small>单价 MoM</small>${formatPct(item.unitPriceMoMPct)}</em>
+      (item) => `<article class="memory-table-card">
+        <div class="memory-table-head">
+          <span>${escapeHtml(item.periodLabel)}</span>
+          <h3>${escapeHtml(memoryLabel(item.category))}</h3>
+          <strong>${compactUsd(item.exportValueUsd)}</strong>
         </div>
-        <p>${escapeHtml(item.sourceName)}</p>
-      </a>`
+        <p class="memory-table-note">MoM 对比 4 月 1-20 日；YoY 对比 2025 年 5 月 1-20 日。</p>
+        <dl class="memory-table">
+          <div><dt>出口金额</dt><dd>${compactUsd(item.exportValueUsd)}</dd></div>
+          <div><dt>金额 YoY</dt><dd class="${deltaClassFromValue(item.exportValueYoYPct)}">${formatPct(item.exportValueYoYPct)}</dd></div>
+          <div><dt>金额 MoM</dt><dd class="${deltaClassFromValue(item.exportValueMoMPct)}">${formatPct(item.exportValueMoMPct)}</dd></div>
+          <div><dt>单位价值</dt><dd>${unitPrice(item.unitPriceUsdPerKg)}</dd></div>
+          <div><dt>单位价值 YoY</dt><dd class="${deltaClassFromValue(item.unitPriceYoYPct)}">${formatPct(item.unitPriceYoYPct)}</dd></div>
+          <div><dt>单位价值 MoM</dt><dd class="${deltaClassFromValue(item.unitPriceMoMPct)}">${formatPct(item.unitPriceMoMPct)}</dd></div>
+          <div><dt>数据口径</dt><dd>${escapeHtml(item.source)}</dd></div>
+          <div><dt>来源</dt><dd><a href="${escapeHtml(item.sourceUrl ?? "#")}" target="_blank" rel="noreferrer">${escapeHtml(item.sourceName ?? "source")}</a></dd></div>
+        </dl>
+      </article>`
     )
     .join("");
 }
 
+function routePoints(route) {
+  return (state.data.taiwanDemand?.monthly ?? [])
+    .filter((point) => point.routeKey === route.key)
+    .sort((a, b) => a.period.localeCompare(b.period));
+}
+
+function routeChange(points, field, latest) {
+  const previousMonth = points.find((point) => point.period === shiftPeriod(latest.period, -1));
+  const previousYear = points.find((point) => point.period === shiftPeriod(latest.period, -12));
+  return {
+    mom: percentChangeValue(latest?.[field], previousMonth?.[field]),
+    yoy: percentChangeValue(latest?.[field], previousYear?.[field])
+  };
+}
+
+function taiwanDemandCard(route) {
+  const points = routePoints(route);
+  const visiblePoints = points.slice(-12);
+  const latest = points.at(-1);
+  const changes = latest ? routeChange(points, route.valueField, latest) : { mom: null, yoy: null };
+  const color = colors[route.key] ?? colors.valueUsd;
+  const labels = visiblePoints.map((point) => point.period);
+  const series = [
+    {
+      name: route.metricLabel,
+      color,
+      points: visiblePoints.map((point) => ({
+        label: point.periodLabel,
+        value: point[route.valueField],
+        sourceName: point.sourceName,
+        sourceUrl: point.sourceUrl
+      }))
+    }
+  ];
+  const extraMetric = route.quantityField && latest?.[route.quantityField]
+    ? `<div><dt>数量</dt><dd>${formatUnits(latest[route.quantityField])}</dd></div>`
+    : `<div><dt>韩国总进口</dt><dd>${latest?.totalImportUsd ? compactUsd(latest.totalImportUsd) : "n/a"}</dd></div>`;
+  const unitValue = latest?.unitValueJpyPerUnit
+    ? `<div><dt>单台价值</dt><dd>${compactJpy(latest.unitValueJpyPerUnit)}/台</dd></div>`
+    : "";
+  return `<article class="taiwan-route-card">
+    <div class="taiwan-route-head">
+      <div>
+        <span>${escapeHtml(route.hsCode)}</span>
+        <h3>${escapeHtml(route.title)}</h3>
+      </div>
+      <strong>${formatRouteValue(latest?.[route.valueField] ?? 0, route.currency)}</strong>
+    </div>
+    <dl class="route-stats">
+      <div><dt>最新月份</dt><dd>${escapeHtml(latest?.periodLabel ?? "--")}</dd></div>
+      <div><dt>YoY</dt><dd class="${deltaClassFromValue(changes.yoy)}">${formatChange(changes.yoy)}</dd></div>
+      <div><dt>MoM</dt><dd class="${deltaClassFromValue(changes.mom)}">${formatChange(changes.mom)}</dd></div>
+      ${extraMetric}
+      ${unitValue}
+    </dl>
+    <p>${escapeHtml(route.interpretation)}</p>
+    <div class="chart-frame route-chart">
+      ${chartSvg({
+        series,
+        labels,
+        formatter: (value) => formatRouteValue(value, route.currency),
+        height: 230,
+        chartType: "bar"
+      })}
+    </div>
+    <a class="memory-source-link" href="${escapeHtml(route.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(route.sourceName)}</a>
+  </article>`;
+}
+
+function renderTaiwanDemand() {
+  const demand = state.data.taiwanDemand;
+  if (!demand?.routes?.length) return;
+  const allPeriods = demand.monthly.map((point) => point.period).sort();
+  document.querySelector("#taiwanDemandCoverage").textContent = `最新：${allPeriods.at(-1)?.replace(".", "-") ?? "--"} · 官方公开数据`;
+  document.querySelector("#taiwanDemandMethod").textContent =
+    demand.meta?.notes?.join(" ") ??
+    "韩国→台湾使用台湾进口端代理指标；日本→台湾 SSD 使用日本出口端 HS 852351000。";
+  document.querySelector("#taiwanDemandGrid").innerHTML = demand.routes.map(taiwanDemandCard).join("");
+  bindChartInteractions(document.querySelector("#taiwanDemandGrid"));
+}
+
 function renderDetails() {
-  const product = state.data.products.find((item) => item.key === state.selectedProduct);
+  const productKey = activeMonthlyProductKey();
+  const product = state.data.products.find((item) => item.key === productKey);
   const hsFreshness = freshnessByKey("monthly_hs");
   const monthly = filteredMonthly();
+  if (!product) {
+    const active = selectedMemoryItem();
+    document.querySelector("#activeProductName").textContent = memoryLabel(active?.category ?? "当前分段");
+    document.querySelector("#sideCoverageNote").textContent = "暂估细分来自公开市场镜像；KCS 官方月度 HS 数据当前没有这一分段的连续海关单位价值序列。";
+    document.querySelector("#activeProductNote").textContent = active?.sourceName ?? "";
+    document.querySelector("#latestPeriod").textContent = active?.periodLabel ?? "--";
+    document.querySelector("#latestValue").textContent = compactUsd(active?.exportValueUsd ?? 0);
+    document.querySelector("#latestValueChange").textContent = formatPct(active?.exportValueMoMPct);
+    document.querySelector("#latestWeight").textContent = "未披露";
+    document.querySelector("#latestWeightChange").textContent = "n/a";
+    document.querySelector("#latestPriceChange").textContent = formatPct(active?.unitPriceMoMPct);
+    document.querySelector("#latestSignal").textContent = "暂估快照";
+    return;
+  }
   const point =
-    (state.selectedPeriod && monthly.find((item) => item.productKey === state.selectedProduct && item.period === state.selectedPeriod)) ||
-    latestPoint(monthly, state.selectedProduct);
+    (state.selectedPeriod && monthly.find((item) => item.productKey === productKey && item.period === state.selectedPeriod)) ||
+    latestPoint(monthly, productKey);
   const previous = latestPoint(
     monthly.filter((item) => item.period < (point?.period ?? "")),
-    state.selectedProduct
+    productKey
   );
   const valuePct = percentChangeValue(point?.valueUsd, previous?.valueUsd);
   const weightPct = percentChangeValue(point?.weightKg, previous?.weightKg);
@@ -443,46 +719,32 @@ function renderDetails() {
 
 function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  const product = state.data.products.find((item) => item.key === state.selectedProduct);
-  document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>${escapeHtml(product?.name ?? "选中品类")} HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
-  document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：${metricLabels[state.metric]}与增长率`;
-  const monthly = filteredMonthly();
-  const allProductPoints = state.data.monthly
-    .filter((point) => point.productKey === state.selectedProduct)
-    .sort((a, b) => a.period.localeCompare(b.period));
-  const byPeriod = new Map(allProductPoints.map((point) => [point.period, point]));
-  const points = monthly
-    .filter((point) => point.productKey === state.selectedProduct)
-    .sort((a, b) => a.period.localeCompare(b.period))
-    .map((point) => {
-      const previousMonth = byPeriod.get(shiftPeriod(point.period, -1));
-      const previousYear = byPeriod.get(shiftPeriod(point.period, -12));
-      return {
-        period: point.period,
-        periodLabel: point.periodLabel,
-        value: point[state.metric],
-        sequentialPct: percentChangeValue(point[state.metric], previousMonth?.[state.metric]),
-        yoyPct: percentChangeValue(point[state.metric], previousYear?.[state.metric])
-      };
-    });
-  document.querySelector("#mainChart").innerHTML = amountGrowthDualAxisSvg({
-    points,
-    labels: points.map((point) => point.period),
-    metric: state.metric,
-    selectedLabel: state.selectedPeriod
-  });
+  document.querySelector("#mainCoverageBadge").innerHTML = `<span>口径说明</span><strong>DRAM/SSD 月度 HS；NAND 暂估</strong><em>华尔街见闻文章对应的是下方 5 月 1-20 日暂估细分；其中 MoM 是对 4 月 1-20 日，不是对 4 月全月。</em>`;
+  document.querySelector("#mainChartTitle").textContent = `月度 HS 趋势 + NAND 暂估快照`;
+  document.querySelector("#mainChart").innerHTML = `<div class="three-chart-grid">
+    ${monthlyChartCard(displaySegments[0])}
+    ${monthlyChartCard(displaySegments[1])}
+    ${nandChartCard()}
+  </div>`;
   bindChartInteractions(document.querySelector("#mainChart"));
 }
 
 function renderSplitChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
-  const points = filteredMonthly().filter((point) => point.productKey === state.selectedProduct);
+  const productKey = activeMonthlyProductKey();
+  if (!productKey) {
+    const active = selectedMemoryItem();
+    document.querySelector("#splitCoverageBadge").innerHTML = `<span>暂估细分</span><em>没有连续月度 HS 海关单位价值序列</em>`;
+    document.querySelector("#splitChart").innerHTML = memorySnapshotHtml(active, true);
+    return;
+  }
+  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类月度 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
+  const points = filteredMonthly().filter((point) => point.productKey === productKey);
   const labels = points.map((point) => point.period);
   const series = [
     { name: "出口金额", color: colors.valueUsd, metric: "valueUsd" },
     { name: "出口净重", color: colors.weightKg, metric: "weightKg" },
-    { name: "出口单价", color: colors.unitPriceUsdPerKg, metric: "unitPriceUsdPerKg" }
+    { name: "海关单位价值", color: colors.unitPriceUsdPerKg, metric: "unitPriceUsdPerKg" }
   ].map((item) => {
     const max = Math.max(...points.map((point) => point[item.metric] ?? 0), 1);
     return {
@@ -616,6 +878,7 @@ function render() {
   renderDetails();
   renderMainChart();
   renderSplitChart();
+  renderTaiwanDemand();
   renderPrelimChart();
 }
 
@@ -642,13 +905,18 @@ async function loadDashboard() {
 async function refreshNow() {
   const button = document.querySelector("#refreshButton");
   button.classList.add("spinning");
+  button.disabled = true;
   try {
     const response = await fetch("/api/refresh", { method: "POST" });
     if (!response.ok) throw new Error(`Refresh API ${response.status}`);
     state.data = await response.json();
     render();
+  } catch {
+    await loadDashboard();
+    document.querySelector("#statusMessage").textContent = "已重新载入静态数据；实时刷新需在本地 Node 服务中运行。";
   } finally {
     button.classList.remove("spinning");
+    button.disabled = false;
   }
 }
 
