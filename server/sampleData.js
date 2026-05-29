@@ -133,7 +133,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；截至 2026-05-28 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 来自 KCS TradeData 官方网页核验，旬度半导体来自 KCS 官方简报附件。"
+        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年4月、旬度 2026年5月1-20日；截至 2026-05-29 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 来自 KCS TradeData 官方网页同源查询核验，旬度半导体来自 KCS 官方简报附件。"
     },
     products: productConfigs,
     monthly,
@@ -142,11 +142,11 @@ export function buildSampleStore() {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
         latestPeriod: "2026年4月",
-        latestReleaseDate: "2026-05-28 复核：KCS TradeData 官方网页仍更新至 2026.04，2026.05 月度 HS 尚未释放",
+        latestReleaseDate: "2026-05-29 复核：KCS TradeData 官方网页同源查询仍更新至 2026.04，2026.05 月度 HS 尚未释放",
         nextExpectedDate: "2026年5月最终值预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
         status: "official_public_web",
         note:
-          "KCS TradeData 英文 By H.S Code 页面同源查询可取得月度出口金额和 KG。2026-05-28 使用 2025.01-2026.05 区间复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 均仅返回 2025.01-2026.04 明细和 TOTAL 行，未返回 2026.05 明细。"
+          "KCS TradeData 英文 By H.S Code 页面同源查询可取得月度出口金额和 KG。2026-05-29 使用 2025.01-2026.05 区间复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 均仅返回 2025.01-2026.04 明细和 TOTAL 行，未返回 2026.05 明细；已落库数值与官方响应一致。"
       },
       {
         key: "monthly_semiconductor",
@@ -165,7 +165,7 @@ export function buildSampleStore() {
         nextExpectedDate: "2026-06-01 左右发布 2026年5月月度初值",
         status: "official_public",
         note:
-          "KCS 官方页面登记日为 2026-05-27，正文显示 5月1~20日总出口 52,652M 美元、总进口 41,618M 美元，并概述半导体约 220 亿美元；2026-05-28 下载官方 PDF 附件复核，第 4 页给出半导体出口 21,951M 美元、同比 +202.1%。KCS 新闻列表首页 2026-05-28 未出现更新的 수출입 현황 简报。"
+          "KCS 官方页面登记日为 2026-05-27，正文显示 5月1~20日总出口 52,652M 美元、总进口 41,618M 美元，并概述半导体约 220 亿美元；2026-05-29 下载官方 PDF 附件复核，第 4 页给出半导体出口 21,951M 美元、同比 +202.1%。KCS 新闻列表首页 2026-05-29 有当日新稿，但未出现更新的 수출입 현황 简报。"
       },
       {
         key: "memory_provisional_detail",
@@ -184,8 +184,8 @@ export function buildSampleStore() {
         section: "monthly_hs",
         sourceName: "KCS TradeData English by H.S Code monthly statistics",
         sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000",
-        status: "official_public_web_verified_2026_05_28",
-        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-05-28; querying through 2026.05 returned no May monthly HS row."
+        status: "official_public_web_verified_2026_05_29",
+        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-05-29; querying through 2026.05 returned no May monthly HS row and no local value/weight differences versus the official response."
       },
       {
         key: "data_go_kr_itemtrade",
@@ -193,7 +193,7 @@ export function buildSampleStore() {
         sourceName: "KCS/data.go.kr Itemtrade API",
         sourceUrl: "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
         status: "requires_DATA_GO_KR_SERVICE_KEY",
-        note: "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-05-28 refresh environment; a no-key endpoint request returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22 and explains monthly data is refreshed around the 15th after corrections/cancellations. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
+        note: "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-05-29 refresh environment; a no-key endpoint request returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22 and explains monthly data is refreshed around the 15th after corrections/cancellations. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
       },
       {
         key: "kcs_official_20260520",
@@ -201,16 +201,16 @@ export function buildSampleStore() {
         sourceName: "KCS official May 1-20 provisional import/export status",
         sourceUrl:
           "https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?bbsId=1362&mi=2891&nttSn=10165324&nttSnUrl=25f1515a1723a16d1aaea2ff9d6f3a6a",
-        status: "official_public_verified_2026_05_28",
-        note: "KCS official page was registered 2026-05-27 and includes PDF/HWPX attachments named 260521. The page verifies the May 1-20 aggregate total; the official PDF attachment was downloaded and text-checked on 2026-05-28 and gives semiconductor exports of USD 21,951M and YoY +202.1%."
+        status: "official_public_verified_2026_05_29",
+        note: "KCS official page was registered 2026-05-27 and includes PDF/HWPX attachments named 260521. The page verifies the May 1-20 aggregate total; the official PDF attachment was downloaded and text-checked on 2026-05-29 and gives semiconductor exports of USD 21,951M and YoY +202.1%."
       },
       {
-        key: "kcs_official_press_list_20260528",
+        key: "kcs_official_press_list_20260529",
         section: "ten_day_semiconductor",
         sourceName: "KCS official press-release list",
         sourceUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-        status: "official_public_checked_no_newer_export_status_2026_05_28",
-        note: "KCS official press-release list page 1 was checked on 2026-05-28. The latest visible posts were unrelated customs operations and cooperation releases dated 2026-05-28/2026-05-27; no newer 수출입 현황 release appeared after the May 1-20 provisional briefing."
+        status: "official_public_checked_no_newer_export_status_2026_05_29",
+        note: "KCS official press-release list page 1 was checked on 2026-05-29. The latest visible posts were unrelated K-semiconductor classification, narcotics/interdiction, refund, personnel, and customs operations releases dated 2026-05-29/2026-05-28; no newer 수출입 현황 release appeared after the May 1-20 provisional briefing."
       },
       {
         key: "korea_ict_202604",
@@ -242,7 +242,7 @@ export function buildSampleStore() {
         sourceName: "TRASS public homepage, provisional trade summary",
         sourceUrl: "https://www.bandtrass.or.kr/index.do",
         status: "public_aggregate_only",
-        note: "Public homepage rechecked 2026-05-28 shows 2026 May 1-20 provisional total exports of USD 52,652M (+64.78%) and imports of USD 41,618M (+29.28%), plus April final totals, but product-level provisional lookup is marked premium and was not publicly accessible."
+        note: "Public homepage rechecked 2026-05-29 shows 2026 May 1-20 provisional total exports of USD 52,652M (+64.78%) and imports of USD 41,618M (+29.28%). Public widgets also show monthly major-item MoM percentages through April, but not export values for semiconductor/memory splits; product-level provisional lookup is marked premium and was not publicly accessible."
       },
       {
         key: "korea_kr_20260520",
@@ -274,7 +274,7 @@ export function buildSampleStore() {
         sourceName: "KITA K-stat public page",
         sourceUrl: "https://stat.kita.net/newMain.screen",
         status: "public_home_accessible_not_used_for_new_values",
-        note: "KITA K-stat public homepage was accessible during the 2026-05-27 refresh, but no KITA figure was needed or added because KCS official pages and attachments supplied the high-frequency data and KCS TradeData remains the primary monthly HS source."
+        note: "KITA K-stat public homepage was accessible during the 2026-05-29 refresh, but no KITA figure was needed or added because KCS official pages and attachments supplied the high-frequency data and KCS TradeData remains the primary monthly HS source."
       }
     ],
     officialMonthly: [
