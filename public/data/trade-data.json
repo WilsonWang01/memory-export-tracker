@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-06-11T05:00:29.125Z",
+    "lastUpdated": "2026-06-11T05:28:04.863Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
     "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年5月、旬度高频 2026年6月1-10日；截至 2026-06-11 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 仍沿用 KCS TradeData 官方网页同源 JSON 查询核验值，6 月旬度半导体值来自 KCS 公开简报的媒体转述。"

@@ -103,6 +103,27 @@ function coverageSentence(item) {
   return `截止：${item.latestPeriod} · 预计更新：${item.nextExpectedDate}`;
 }
 
+function sourceNote({ source, freshnesses, cutoffText = "", updateText = "", caveat = "" }) {
+  const items = freshnesses.filter(Boolean);
+  const cutoff = cutoffText || items.map((item) => `${item.label}：${item.latestPeriod}`).join("；");
+  const update = updateText || items.map((item) => `${item.label}：${item.nextExpectedDate}`).join("；");
+  return `<div class="source-note">
+    <div>
+      <span>数据源</span>
+      <strong>${escapeHtml(source)}</strong>
+    </div>
+    <div>
+      <span>数据截止</span>
+      <strong>${escapeHtml(cutoff || "待确认")}</strong>
+    </div>
+    <div>
+      <span>预计更新</span>
+      <strong>${escapeHtml(update || "待确认")}</strong>
+    </div>
+    ${caveat ? `<p>${escapeHtml(caveat)}</p>` : ""}
+  </div>`;
+}
+
 function volumePriceSignal(valuePct, weightPct, pricePct) {
   if (![valuePct, weightPct, pricePct].every(Number.isFinite)) return "样本不足";
   if (valuePct >= 0 && weightPct >= 0 && pricePct >= 0) return "量价共振";
@@ -397,7 +418,7 @@ function renderSummary() {
             <em>${escapeHtml(point?.periodLabel ?? "--")}</em>
           </span>
         </div>
-        <p class="card-freshness">${escapeHtml(coverageSentence(hsFreshness))}</p>
+        <p class="card-freshness">源：KCS TradeData / KITA K-stat 复核。${escapeHtml(coverageSentence(hsFreshness))}</p>
       </button>`;
     })
     .join("");
@@ -413,8 +434,14 @@ function renderSummary() {
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
   const freshness = freshnessByKey("memory_provisional_detail");
-  document.querySelector("#memoryDetailCoverage").textContent = `${coverageSentence(freshness)} · 非直连官方接口`;
-  document.querySelector("#memoryDetailMethod").textContent = freshness?.note ?? "";
+  document.querySelector("#memoryDetailCoverage").textContent = "5月全月产业细分已更新；单价/数量仅到5月前20日暂估";
+  document.querySelector("#memoryDetailMethod").innerHTML = sourceNote({
+    source: "MOTIE 5月进出口动向转述（Electimes / Newstomato）+ KCS官方发布事件；5月前20日价格来自市场镜像",
+    freshnesses: [freshness],
+    cutoffText: "5月全月：Memory / DRAM / NAND / Computer proxy；5月1-20日：部分价格/数量暂估",
+    updateText: "等待 TRASS/KITA 或市场转述公开 5月全月数量/单价；6月1-20日暂定值预计 2026-06-21 左右",
+    caveat: "全月细分只有金额和同比；没有匹配净重，所以不进入 HS 单价图。"
+  });
   document.querySelector("#memoryDetailGrid").innerHTML = detail
     .map(
       (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
@@ -462,7 +489,13 @@ function renderDetails() {
 function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
-  document.querySelector("#mainCoverageBadge").innerHTML = `<span>数据口径</span><strong>${escapeHtml(product?.name ?? "选中品类")} HS 明细</strong><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
+  document.querySelector("#mainCoverageBadge").innerHTML = sourceNote({
+    source: `${product?.name ?? "选中品类"} HS 明细：KCS TradeData by H.S Code；KITA K-stat worker 复核；data.go.kr API 待密钥后自动替换`,
+    freshnesses: [hsFreshness],
+    cutoffText: "HS 金额 / 净重 / 单价：2026年4月",
+    updateText: "5月 HS 明细预计 2026年6月中旬随 KCS / data.go.kr / TRASS 更新",
+    caveat: "该图只使用同时具备出口金额和净重的月度 HS 数据，因此 5月产业发布金额不会进入单价图。"
+  });
   document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：${metricLabels[state.metric]}与增长率`;
   const monthly = filteredMonthly();
   const allProductPoints = state.data.monthly
@@ -494,7 +527,13 @@ function renderMainChart() {
 
 function renderSplitChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
-  document.querySelector("#splitCoverageBadge").innerHTML = `<span>选中品类 HS 明细</span><em>${escapeHtml(coverageSentence(hsFreshness))}</em>`;
+  document.querySelector("#splitCoverageBadge").innerHTML = sourceNote({
+    source: "选中品类 HS 明细：KCS TradeData by H.S Code；KITA K-stat worker 复核",
+    freshnesses: [hsFreshness],
+    cutoffText: "HS 三指标：2026年4月",
+    updateText: "5月 HS 明细预计 2026年6月中旬更新",
+    caveat: "金额、净重、单价按各自最高值标准化，只比较方向，不比较绝对量级。"
+  });
   const points = filteredMonthly().filter((point) => point.productKey === state.selectedProduct);
   const labels = points.map((point) => point.period);
   const series = [
@@ -522,7 +561,13 @@ function renderSplitChart() {
 function renderPrelimChart() {
   const monthlyFreshness = freshnessByKey("monthly_semiconductor");
   const tenDayFreshness = freshnessByKey("ten_day_semiconductor");
-  document.querySelector("#officialCoverageBadge").innerHTML = `<span>半导体总量</span><em>月度${escapeHtml(coverageSentence(monthlyFreshness))}；旬度${escapeHtml(coverageSentence(tenDayFreshness))}</em>`;
+  document.querySelector("#officialCoverageBadge").innerHTML = sourceNote({
+    source: "KCS/MOTIE 月度发布 + KCS 旬度进出口现状简报；部分精确值经媒体转述交叉核验",
+    freshnesses: [monthlyFreshness, tenDayFreshness],
+    cutoffText: "月度半导体：2026年5月；旬度高频：2026年6月1-10日",
+    updateText: "6月1-20日暂定值预计 2026-06-21；6月初值预计 2026-07-01 左右",
+    caveat: "半导体总量/高频窗口不拆 DRAM/SSD/HBM 重量，与 HS 单价图口径不同。"
+  });
   const monthlyOfficial = state.data.officialMonthly ?? [];
   document.querySelector("#monthlyOfficial").innerHTML = monthlyOfficial
     .map(
