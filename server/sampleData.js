@@ -146,7 +146,7 @@ export function buildSampleStore() {
         nextExpectedDate: "2026年5月 HS 明细预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
         status: "official_public_web",
         note:
-          "KCS TradeData 英文 By H.S Code 页面同源 JSON 查询可取得月度出口金额和 KG。2026-06-11 复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 仍以 2026.04 为最后可用月度明细，未返回可落库的 2026.05 HS 明细；已落库数值与官方响应一致。"
+          "KCS TradeData 英文 By H.S Code 页面同源 JSON 与 KITA K-stat worker 查询均可取得月度出口金额和 KG。2026-06-11 复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 仍以 2026.04 为最后可用当年明细；强制查询 2026.05 时 KITA 返回去年同期列有值、当年列为 0，不能作为 5 月当年数据落库。"
       },
       {
         key: "monthly_semiconductor",
@@ -176,7 +176,7 @@ export function buildSampleStore() {
         nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年5月全月数量/单价或 2026年6月旬度 DRAM/SSD/HBM 细分数据",
         status: "mixed_public_reported",
         note:
-          "2026-06-11 复核：已补入 5月全月官方/月度发布转述中的 Memory、DRAM、NAND 金额和 YoY；未发现可核验的 5月全月数量/单位价或 6月1-10日 DRAM/SSD/HBM 细分公开表。5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
+          "2026-06-11 复核：已补入 5月全月官方/月度发布转述中的 Memory、DRAM、NAND、Computer/SSD proxy 金额和 YoY；未发现可核验的 5月全月数量/单位价或 6月1-10日 DRAM/SSD/HBM 细分公开表。5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
       }
     ],
     sourceRegistry: [
@@ -185,8 +185,8 @@ export function buildSampleStore() {
         section: "monthly_hs",
         sourceName: "KCS TradeData English by H.S Code monthly statistics",
         sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000",
-        status: "official_public_web_verified_2026_05_31",
-        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site JSON query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-05-31; querying through 2026.05 returned 16 monthly rows ending at 2026.04 and no May monthly HS row. Latest official rows remain SSD 2026.04 value 3,836,678 thousand USD / 202,057 kg and HS 854232 2026.04 value 20,829,061 thousand USD / 319,349 kg, matching the local store."
+        status: "official_public_web_verified_2026_06_11",
+        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site JSON query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-06-11. KITA K-stat worker independently returns the same 2026.04 values: SSD 3,836,678 thousand USD / 202,057 kg and HS 854232 20,829,061 thousand USD / 319,349 kg. For forced 2026.05 queries, KITA returns 2025.05 in LAST_* columns but 0 in THIS_* columns, so 2026.05 HS values are not yet published."
       },
       {
         key: "data_go_kr_itemtrade",
@@ -313,6 +313,14 @@ export function buildSampleStore() {
         note: "Cross-checks the MOTIE May monthly split: memory semiconductors USD 32.1B (+255%), DRAM USD 18.6B (+369.8%), NAND USD 1.7B (+206.8%), system semiconductors USD 4.5B (+6%), and management commentary that memory prices rose versus April."
       },
       {
+        key: "kita_kstat_hs_worker_20260611",
+        section: "monthly_hs_context",
+        sourceName: "KITA K-stat ItemImpExpList worker",
+        sourceUrl: "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen",
+        status: "official_public_web_verified_2026_06_11",
+        note: "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. 2026.04 matches the dashboard values. Forced 2026.05 queries return LAST_* 2025.05 comparison values but THIS_* values of 0 and -100% change, confirming the public K-stat monthly HS database had not released 2026.05 current-year rows as of 2026-06-11."
+      },
+      {
         key: "market_mirror_20260520_unit_price",
         section: "memory_provisional_detail",
         sourceName: "Market Telegram mirror of May 1-20 Korean semiconductor export table",
@@ -420,6 +428,22 @@ export function buildSampleStore() {
         sourceName: "MOTIE May Export-Import Trends, reported by Electimes and cross-checked by Newstomato",
         sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
         crossCheckSourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690"
+      },
+      {
+        period: "2026.05",
+        periodLabel: "2026年5月全月",
+        category: "Computer / SSD proxy",
+        exportValueUsd: 4_180_000_000,
+        exportValueYoYPct: 290.7,
+        exportValueMoMPct: null,
+        unitPriceUsdPerKg: null,
+        unitPriceYoYPct: null,
+        unitPriceMoMPct: null,
+        source: "official_public_reported",
+        sourceName: "MOTIE May Export-Import Trends, reported by Electimes and cross-checked by Newstomato",
+        sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
+        crossCheckSourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690",
+        note: "MOTIE May export trend reports computer exports of USD 4.18B, YoY +290.7%, driven by AI-server SSD demand. This is a monthly product-category proxy, not HS 852351 weight/unit-price data."
       },
       {
         period: "2026.05-1~20",

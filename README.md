@@ -56,7 +56,7 @@ GitHub Actions 不做每日空跑，而是按 KCS/TRASS 数据窗口固定刷新
 ## 当前已手动核验并落库的公开旬度数据
 
 - 2026 年 6 月 1-10 日：半导体出口 110.68 亿美元、同比 +205.8%，总出口 286.35 亿美元、同比 +85.9%，总进口 233.52 亿美元、贸易顺差 52.82 亿美元。来源为 2026-06-11 公开媒体对 KCS `6월 1~10일 수출입현황` 的表格转述，并用 Korea Tax Times / MoneyToday 同日报道交叉核验。
-- 2026 年 5 月全月官方/月度细分：Memory semiconductor 321 亿美元、同比 +255%；DRAM 186 亿美元、同比 +369.8%；NAND 17 亿美元、同比 +206.8%。来源为公开媒体对 MOTIE `2026년 5월 수출입 동향` 的转述，并用 Electimes / Newstomato 交叉核验；未发现可公开核验的 5 月全月 DRAM/SSD/HBM 数量、净重或出口单价表。
+- 2026 年 5 月全月官方/月度细分：Memory semiconductor 321 亿美元、同比 +255%；DRAM 186 亿美元、同比 +369.8%；NAND 17 亿美元、同比 +206.8%；Computer / SSD proxy 41.8 亿美元、同比 +290.7%，报道称由 AI 服务器 SSD 需求拉动。来源为公开媒体对 MOTIE `2026년 5월 수출입 동향` 的转述，并用 Electimes / Newstomato 交叉核验；未发现可公开核验的 5 月全月 DRAM/SSD/HBM 数量、净重或出口单价表。
 - 2026 年 5 月全月：半导体出口 371.6 亿美元、同比 +169.4%。KCS 官网 2026-06-01 `2026년 5월 수출입 현황 [잠정치]` 页面和 HWPX/PDF 附件可核验 5 月总出口 877.47 亿美元、同比 +53.2%，总进口 607.98 亿美元、贸易顺差 269.49 亿美元，并确认“半导体出口创历史新高”的官方标题；但 KCS 页面正文和附件未公开可读取的产品级精确表。半导体金额和同比来自公开媒体对 MOTIE/KCS 2026-06-01 `5월 수출입 동향` 发布的转述，已在数据中标为 `official_public_reported`，并保留 KCS 官方链接作为发布和总量核验来源。
 - 2026 年 5 月 1-20 日：半导体出口 219.51 亿美元、同比 +202.1%，KCS 官网 2026-05-27 登记的 2026-05-21 暂定值简报 PDF 附件第 4 页给出精确值；KCS 页面正文和 TRASS 公开首页交叉核验同期总出口/进口暂定值，但未公开产品级暂定明细。
 - 2026 年 5 月 1-10 日：半导体出口约 85 亿美元，来源为 KCS 经政策简报转载的 2026-05-11 简报。
@@ -64,4 +64,4 @@ GitHub Actions 不做每日空跑，而是按 KCS/TRASS 数据窗口固定刷新
 - 2026 年 4 月 1-10 日：半导体出口约 86 亿美元，来源为 KCS 经政策简报转载的 2026-04-13 简报。
 - 2026 年 3 月 1-20 日：半导体出口约 187 亿美元，来源为 KCS 经新闻转载的 2026-03-23 简报。
 
-其中部分 1-20 日数据直接来自简报正文；部分 1-10/1-20 数据由简报披露的总出口额和半导体占比推算，并在 `data/trade-data.json` 的 `source` 字段标为 `official_public_derived` 或 `official_public_reported`。截至 2026-06-11，本地环境未配置 `DATA_GO_KR_SERVICE_KEY`，`npm run fetch` 未走 data.go.kr Itemtrade API；此前无密钥调用返回 401 Unauthorized。已通过 KCS TradeData 官方公开页同源 JSON 查询复核 2025.01-2026.04 的 SSD HS `852351` 与 DRAM/HBM HS `854232` 月度出口金额、净重和推算单价，查询至 2026.05 时两个品类均仅返回 16 个明细月度行且最后一期为 2026.04，未返回可落库的 5 月月度 HS 明细，已落库值与官方响应一致。TRASS 公开首页仅提供总出口/进口暂定值，产品级暂定查询未公开可用；KITA K-stat 本次未提供需要替代 KCS 月度数据的新公开值。
+其中部分 1-20 日数据直接来自简报正文；部分 1-10/1-20 数据由简报披露的总出口额和半导体占比推算，并在 `data/trade-data.json` 的 `source` 字段标为 `official_public_derived` 或 `official_public_reported`。截至 2026-06-11，本地环境未配置 `DATA_GO_KR_SERVICE_KEY`，`npm run fetch` 未走 data.go.kr Itemtrade API；此前无密钥调用返回 401 Unauthorized。已通过 KCS TradeData 官方公开页同源 JSON 和 KITA K-stat worker 复核 2025.01-2026.04 的 SSD HS `852351` 与 DRAM/HBM HS `854232` 月度出口金额、净重和推算单价。强制查询 2026.05 时，KITA 返回 2025.05 的 `LAST_*` 对比列，但 `THIS_*` 当年列为 0、变化率 -100%，因此不能作为 2026 年 5 月 HS 当年明细落库。TRASS 公开首页仅提供总出口/进口暂定值，产品级暂定查询未公开可用。详细接口和判断方法保存在 [`docs/korea-trade-data-research.md`](docs/korea-trade-data-research.md)。
