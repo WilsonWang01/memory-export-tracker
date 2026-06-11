@@ -1,9 +1,9 @@
 {
   "meta": {
-    "lastUpdated": "2026-06-03T15:43:36.034Z",
+    "lastUpdated": "2026-06-11T03:24:01.007Z",
     "nextScheduledUpdate": null,
     "mode": "mixed_public",
-    "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度/高频 2026年5月全月；截至 2026-06-03 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 仍沿用 KCS TradeData 官方网页同源 JSON 查询核验值，5 月半导体全月值标记为 MOTIE/KCS 发布的媒体转述值并附 KCS 官方页面核验链接。"
+    "message": "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年5月、旬度高频 2026年6月1-10日；截至 2026-06-11 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 仍沿用 KCS TradeData 官方网页同源 JSON 查询核验值，6 月旬度半导体值来自 KCS 公开简报的媒体转述。"
   },
   "products": [
     {
@@ -476,10 +476,10 @@
       "key": "monthly_hs",
       "label": "SSD / DRAM-HBM HS 明细",
       "latestPeriod": "2026年4月",
-      "latestReleaseDate": "2026-05-31 复核：KCS TradeData 官方网页同源 JSON 查询仍更新至 2026.04，2026.05 月度 HS 尚未释放",
-      "nextExpectedDate": "2026年5月最终值预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
+      "latestReleaseDate": "2026-06-11 复核：KCS TradeData / data.go.kr 月度 HS 明细仍以 2026.04 为最新可用月份",
+      "nextExpectedDate": "2026年5月 HS 明细预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
       "status": "official_public_web",
-      "note": "KCS TradeData 英文 By H.S Code 页面同源 JSON 查询可取得月度出口金额和 KG。2026-05-31 使用 2025.01-2026.05 区间复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 均仅返回 16 个明细月度行，最后一期为 2026.04，未返回 2026.05 明细；已落库数值与官方响应一致。"
+      "note": "KCS TradeData 英文 By H.S Code 页面同源 JSON 查询可取得月度出口金额和 KG。2026-06-11 复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 仍以 2026.04 为最后可用月度明细，未返回可落库的 2026.05 HS 明细；已落库数值与官方响应一致。"
     },
     {
       "key": "monthly_semiconductor",
@@ -493,20 +493,20 @@
     {
       "key": "ten_day_semiconductor",
       "label": "半导体旬度高频",
-      "latestPeriod": "2026年5月全月",
-      "latestReleaseDate": "2026-06-01",
-      "nextExpectedDate": "2026-06-11 左右发布 2026年6月1-10日初值",
+      "latestPeriod": "2026年6月1-10日",
+      "latestReleaseDate": "2026-06-11",
+      "nextExpectedDate": "2026-06-21 左右发布 2026年6月1-20日暂定值",
       "status": "official_public_reported",
-      "note": "KCS 5月1~20日官方 PDF 附件仍为最新可直接读取精确半导体表的 KCS 附件，已落库半导体出口 21,951M 美元、同比 +202.1%。2026-06-01 KCS 发布 5 月全月初值，确认半导体出口创历史新高和总贸易口径；全月半导体金额 37,160M 美元、同比 +169.4% 来自 MOTIE/KCS 发布的媒体转述，因 KCS 页面/HWPX/PDF 未公开精确产品表而单独标记。"
+      "note": "2026-06-11 KCS 发布 6月1-10日暂定值，公开转述给出总出口 28,635M 美元、同比 +85.9%，半导体出口约 111 亿美元、同比 +205.8%，半导体占比 38.7%；半导体金额为转述中的四舍五入值。"
     },
     {
       "key": "memory_provisional_detail",
       "label": "存储细分旬度暂估",
       "latestPeriod": "2026年5月1-20日",
       "latestReleaseDate": "2026-05-21",
-      "nextExpectedDate": "等待 TRASS/KITA 或市场转述公开 2026年5月全月细分数据",
+      "nextExpectedDate": "等待 TRASS/KITA 或市场转述公开 2026年5月全月或 2026年6月旬度细分数据",
       "status": "market_repost_trass",
-      "note": "2026-05-30 复核：未发现 5月21日后新的公开存储细分暂估。5 月前 20 日细分来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS TradeData 官方 HWPX 已核验 5 月前 20 日半导体总量，但不拆分 DRAM/SSD/HBM。Memory 总额为 DRAM incl. modules + Flash memory + SSD 的派生值，MCP/HBM proxy 本轮公开源未给单位价。"
+      "note": "2026-06-11 复核：未发现可核验的 5月全月或 6月1-10日 DRAM/SSD/HBM 细分金额、数量、单位价公开表；看板继续保留 5月前20日细分暂估。5 月前 20 日细分来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
     }
   ],
   "sourceRegistry": [
@@ -559,6 +559,22 @@
       "sourceUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
       "status": "official_public_checked_2026_06_03",
       "note": "KCS official press-release list page 1 was checked on 2026-06-03. The latest export-status release after the May 1-20 briefing is 2026년 5월 수출입 현황 [잠정치], registered 2026-06-01 with nttSn 10165743."
+    },
+    {
+      "key": "taxtimes_20260610",
+      "section": "ten_day_semiconductor",
+      "sourceName": "Korea Tax Times repost of KCS June 1-10 provisional import/export status",
+      "sourceUrl": "https://www.taxtimes.co.kr/news/article.html?no=275489",
+      "status": "official_public_reported_2026_06_11",
+      "note": "Public article cites KCS June 1-10 provisional customs data: total exports USD 28,635M (+85.9%), imports USD 23,352M (+35.6%), trade surplus USD 5,282M, semiconductor exports about USD 11.1B (+205.8%), and semiconductor share of 38.7%."
+    },
+    {
+      "key": "moneytoday_20260610",
+      "section": "ten_day_semiconductor",
+      "sourceName": "MoneyToday report of KCS June 1-10 provisional import/export status",
+      "sourceUrl": "https://www.mt.co.kr/amp/economy/2026/06/11/2026061108475185652",
+      "status": "media_cross_check_2026_06_11",
+      "note": "Cross-check source for the KCS June 1-10 release; reports total exports +85.9%, semiconductor exports +205.8%, semiconductor share 38.7%, and major region/item growth. Used to corroborate the same-day KCS-reported high-frequency direction."
     },
     {
       "key": "korea_ict_202604",
@@ -894,6 +910,34 @@
       "averageDailyExportValueUsd": 4280000000,
       "averageDailyExportYoYPct": 60.7,
       "note": "KCS official detail and attachment extraction verify the May full-month release, overall trade totals, and record-high semiconductor headline; exact semiconductor amount and YoY are marked as reported because the KCS browser-readable files did not include the product table."
+    },
+    {
+      "period": "2026.06-1~10",
+      "periodLabel": "6月前10日",
+      "valueUsd": 11100000000,
+      "valueYoYPct": 205.8,
+      "weightKg": 0,
+      "unitPriceUsdPerKg": null,
+      "hsCode": "semiconductor",
+      "productKey": "semiconductor",
+      "productName": "半导体出口",
+      "source": "official_public_reported",
+      "status": "preliminary",
+      "sourceName": "KCS June 1-10 provisional import/export status, reported by Korea Tax Times",
+      "sourceUrl": "https://www.taxtimes.co.kr/news/article.html?no=275489",
+      "crossCheckSourceName": "MoneyToday report of KCS June 1-10 provisional import/export status",
+      "crossCheckSourceUrl": "https://www.mt.co.kr/amp/economy/2026/06/11/2026061108475185652",
+      "overallExportValueUsd": 28635000000,
+      "overallExportYoYPct": 85.9,
+      "overallImportValueUsd": 23352000000,
+      "overallImportYoYPct": 35.6,
+      "tradeBalanceUsd": 5282000000,
+      "semiconductorSharePct": 38.7,
+      "workingDaysCurrent": 7,
+      "workingDaysPrevious": 5.5,
+      "dailyAverageExportValueUsd": 4090000000,
+      "dailyAverageExportYoYPct": 46.1,
+      "note": "KCS June 1-10 public table is reported in Korea Tax Times; semiconductor value is rounded to USD 11.1B, while total trade table values are exact USD million values from the same article."
     }
   ]
 }
