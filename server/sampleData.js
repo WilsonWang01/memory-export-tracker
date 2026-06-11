@@ -166,17 +166,17 @@ export function buildSampleStore() {
         nextExpectedDate: "2026-06-21 左右发布 2026年6月1-20日暂定值",
         status: "official_public_reported",
         note:
-          "2026-06-11 KCS 发布 6月1-10日暂定值，公开转述给出总出口 28,635M 美元、同比 +85.9%，半导体出口约 111 亿美元、同比 +205.8%，半导体占比 38.7%；半导体金额为转述中的四舍五入值。"
+          "2026-06-11 KCS 发布 6月1-10日暂定值，公开转述给出总出口 28,635M 美元、同比 +85.9%，半导体出口 11,068M 美元、同比 +205.8%，半导体占比 38.7%。"
       },
       {
         key: "memory_provisional_detail",
-        label: "存储细分旬度暂估",
-        latestPeriod: "2026年5月1-20日",
-        latestReleaseDate: "2026-05-21",
-        nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年5月全月或 2026年6月旬度细分数据",
-        status: "market_repost_trass",
+        label: "存储细分明细",
+        latestPeriod: "2026年5月全月官方细分；2026年5月1-20日价格/数量暂估",
+        latestReleaseDate: "2026-06-11 复核",
+        nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年5月全月数量/单价或 2026年6月旬度 DRAM/SSD/HBM 细分数据",
+        status: "mixed_public_reported",
         note:
-          "2026-06-11 复核：未发现可核验的 5月全月或 6月1-10日 DRAM/SSD/HBM 细分金额、数量、单位价公开表；看板继续保留 5月前20日细分暂估。5 月前 20 日细分来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
+          "2026-06-11 复核：已补入 5月全月官方/月度发布转述中的 Memory、DRAM、NAND 金额和 YoY；未发现可核验的 5月全月数量/单位价或 6月1-10日 DRAM/SSD/HBM 细分公开表。5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
       }
     ],
     sourceRegistry: [
@@ -241,6 +241,14 @@ export function buildSampleStore() {
         note: "Public article cites KCS June 1-10 provisional customs data: total exports USD 28,635M (+85.9%), imports USD 23,352M (+35.6%), trade surplus USD 5,282M, semiconductor exports about USD 11.1B (+205.8%), and semiconductor share of 38.7%."
       },
       {
+        key: "ajunews_20260610",
+        section: "ten_day_semiconductor",
+        sourceName: "Aju Economy report of KCS June 1-10 provisional import/export status",
+        sourceUrl: "https://www.ajunews.com/view/20260611090921842",
+        status: "official_public_reported_2026_06_11",
+        note: "Cross-check source with a more precise KCS-reported semiconductor export value for June 1-10: USD 11,068M (+205.8%), total exports USD 28,635M (+85.9%), imports USD 23,352M, trade surplus USD 5,282M, and semiconductor share 38.7%."
+      },
+      {
         key: "moneytoday_20260610",
         section: "ten_day_semiconductor",
         sourceName: "MoneyToday report of KCS June 1-10 provisional import/export status",
@@ -287,6 +295,22 @@ export function buildSampleStore() {
         sourceUrl: "https://t.me/s/skitteam/3951",
         status: "market_repost_trass",
         note: "Public mirror reports May 1-20 DRAM, DRAM module, NAND, MCP, and SSD export values with MoM/QoQ, and states the content is a public release. Used where official KCS source does not disclose product splits."
+      },
+      {
+        key: "electimes_202605_memory_detail",
+        section: "memory_provisional_detail",
+        sourceName: "Electimes report of MOTIE May 2026 Export-Import Trends",
+        sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
+        status: "official_public_reported_2026_06_11",
+        note: "Reports MOTIE May 2026 monthly semiconductor split: memory semiconductors USD 32.1B (+255%), DRAM USD 18.6B (+369.8%), NAND USD 1.7B (+206.8%), system semiconductors USD 4.5B (+6%), and computer exports USD 4.18B (+290.7%) driven by AI-server SSD demand."
+      },
+      {
+        key: "newstomato_202605_memory_detail",
+        section: "memory_provisional_detail",
+        sourceName: "Newstomato report of MOTIE May 2026 Export-Import Trends",
+        sourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690",
+        status: "official_public_reported_2026_06_11",
+        note: "Cross-checks the MOTIE May monthly split: memory semiconductors USD 32.1B (+255%), DRAM USD 18.6B (+369.8%), NAND USD 1.7B (+206.8%), system semiconductors USD 4.5B (+6%), and management commentary that memory prices rose versus April."
       },
       {
         key: "market_mirror_20260520_unit_price",
@@ -352,6 +376,51 @@ export function buildSampleStore() {
       }
     ],
     memoryDetail: [
+      {
+        period: "2026.05",
+        periodLabel: "2026年5月全月",
+        category: "Memory semiconductors",
+        exportValueUsd: 32_100_000_000,
+        exportValueYoYPct: 255,
+        exportValueMoMPct: null,
+        unitPriceUsdPerKg: null,
+        unitPriceYoYPct: null,
+        unitPriceMoMPct: null,
+        source: "official_public_reported",
+        sourceName: "MOTIE May Export-Import Trends, reported by Electimes and cross-checked by Newstomato",
+        sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
+        crossCheckSourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690"
+      },
+      {
+        period: "2026.05",
+        periodLabel: "2026年5月全月",
+        category: "DRAM",
+        exportValueUsd: 18_600_000_000,
+        exportValueYoYPct: 369.8,
+        exportValueMoMPct: null,
+        unitPriceUsdPerKg: null,
+        unitPriceYoYPct: null,
+        unitPriceMoMPct: null,
+        source: "official_public_reported",
+        sourceName: "MOTIE May Export-Import Trends, reported by Electimes and cross-checked by Newstomato",
+        sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
+        crossCheckSourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690"
+      },
+      {
+        period: "2026.05",
+        periodLabel: "2026年5月全月",
+        category: "NAND",
+        exportValueUsd: 1_700_000_000,
+        exportValueYoYPct: 206.8,
+        exportValueMoMPct: null,
+        unitPriceUsdPerKg: null,
+        unitPriceYoYPct: null,
+        unitPriceMoMPct: null,
+        source: "official_public_reported",
+        sourceName: "MOTIE May Export-Import Trends, reported by Electimes and cross-checked by Newstomato",
+        sourceUrl: "https://www.electimes.com/news/articleView.html?idxno=368652",
+        crossCheckSourceUrl: "https://www.newstomato.com/readnews.aspx?no=1302690"
+      },
       {
         period: "2026.05-1~20",
         periodLabel: "2026年5月前20日",
@@ -591,7 +660,7 @@ export function buildSampleStore() {
       {
         period: "2026.06-1~10",
         periodLabel: "6月前10日",
-        valueUsd: 11_100_000_000,
+        valueUsd: 11_068_000_000,
         valueYoYPct: 205.8,
         weightKg: 0,
         unitPriceUsdPerKg: null,
@@ -600,10 +669,10 @@ export function buildSampleStore() {
         productName: "半导体出口",
         source: "official_public_reported",
         status: "preliminary",
-        sourceName: "KCS June 1-10 provisional import/export status, reported by Korea Tax Times",
-        sourceUrl: "https://www.taxtimes.co.kr/news/article.html?no=275489",
-        crossCheckSourceName: "MoneyToday report of KCS June 1-10 provisional import/export status",
-        crossCheckSourceUrl: "https://www.mt.co.kr/amp/economy/2026/06/11/2026061108475185652",
+        sourceName: "KCS June 1-10 provisional import/export status, reported by Aju Economy",
+        sourceUrl: "https://www.ajunews.com/view/20260611090921842",
+        crossCheckSourceName: "Korea Tax Times and MoneyToday reports of KCS June 1-10 provisional import/export status",
+        crossCheckSourceUrl: "https://www.taxtimes.co.kr/news/article.html?no=275489",
         overallExportValueUsd: 28_635_000_000,
         overallExportYoYPct: 85.9,
         overallImportValueUsd: 23_352_000_000,
@@ -614,7 +683,7 @@ export function buildSampleStore() {
         workingDaysPrevious: 5.5,
         dailyAverageExportValueUsd: 4_090_000_000,
         dailyAverageExportYoYPct: 46.1,
-        note: "KCS June 1-10 public table is reported in Korea Tax Times; semiconductor value is rounded to USD 11.1B, while total trade table values are exact USD million values from the same article."
+        note: "KCS June 1-10 public table is reported by Aju Economy with a precise semiconductor value of USD 11,068M; Korea Tax Times and MoneyToday cross-check the same YoY, share, and total trade table values."
       }
     ]
   };

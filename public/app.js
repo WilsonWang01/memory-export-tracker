@@ -114,6 +114,19 @@ function volumePriceSignal(valuePct, weightPct, pricePct) {
   return Math.abs(pricePct) >= Math.abs(weightPct) ? "价格主导" : "出货主导";
 }
 
+function prelimComparableKey(period) {
+  const match = /^(\d{4})\.(\d{2})(.*)$/.exec(period ?? "");
+  if (!match) return period ?? "";
+  return match[3] || "monthly";
+}
+
+function prelimPreviousMonthPeriod(period) {
+  const match = /^(\d{4})\.(\d{2})(.*)$/.exec(period ?? "");
+  if (!match) return null;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 2, 1));
+  return `${date.getUTCFullYear()}.${String(date.getUTCMonth() + 1).padStart(2, "0")}${match[3]}`;
+}
+
 function tooltipHtml(label, rows) {
   return `<strong>${escapeHtml(label)}</strong>${rows
     .map((row) => `<span><i style="background:${row.color}"></i>${escapeHtml(row.name)}: ${escapeHtml(row.value)}</span>`)
@@ -167,10 +180,14 @@ function chartSvg({ series, labels, formatter, height = 360, chartType = "line",
             const y = scaleY(point.value);
             const tooltip = tooltipHtml(point.label ?? labels[index], [
               { color: item.color, name: item.name, value: formatter(point.value) },
+              ...(Number.isFinite(point.yoyPct) ? [{ color: "#b45f17", name: "YoY", value: formatChange(point.yoyPct) }] : []),
+              ...(Number.isFinite(point.sequentialPct) ? [{ color: "#118273", name: point.sequentialLabel ?? "MoM", value: formatChange(point.sequentialPct) }] : []),
               ...(point.sourceName ? [{ color: "#6b7280", name: "来源", value: point.sourceName }] : [])
             ]);
             const title = tooltipText(point.label ?? labels[index], [
               { name: item.name, value: formatter(point.value) },
+              ...(Number.isFinite(point.yoyPct) ? [{ name: "YoY", value: formatChange(point.yoyPct) }] : []),
+              ...(Number.isFinite(point.sequentialPct) ? [{ name: point.sequentialLabel ?? "MoM", value: formatChange(point.sequentialPct) }] : []),
               ...(point.sourceName ? [{ name: "来源", value: point.sourceName }] : [])
             ]);
             return `<rect class="bar-mark" x="${x}" y="${y}" width="${barWidth - 2}" height="${height - padding.bottom - y}" rx="4" fill="${item.color}" data-label="${escapeHtml(point.label ?? labels[index])}" data-tooltip="${escapeHtml(tooltip)}" data-source-url="${escapeHtml(point.sourceUrl ?? "")}"><title>${escapeHtml(title)}</title></rect>`;
@@ -402,6 +419,7 @@ function renderMemoryDetail() {
     .map(
       (item) => `<a class="memory-detail-card" href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noreferrer">
         <span>${escapeHtml(item.category)}</span>
+        <small class="memory-period">${escapeHtml(item.periodLabel ?? item.period ?? "")}</small>
         <strong>${compactUsd(item.exportValueUsd)}</strong>
         <div class="memory-kpis">
           <em><small>单价</small>${unitPrice(item.unitPriceUsdPerKg)}</em>
@@ -520,16 +538,26 @@ function renderPrelimChart() {
   document.querySelector("#prelimCaption").textContent = latest?.sourceName
     ? `最新：${latest.periodLabel} 半导体出口 ${compactUsd(latest.valueUsd)}。来源：${latest.sourceName}`
     : "用于观察 KCS 旬度简报口径下的半导体出口节奏。";
+  const prelimByPeriod = new Map(state.data.preliminary.map((point) => [point.period, point]));
   const series = [
     {
       name: "半导体出口金额",
       color: colors.semiconductor,
-      points: state.data.preliminary.map((point) => ({
-        label: point.periodLabel,
-        value: point.valueUsd,
-        sourceName: point.sourceName,
-        sourceUrl: point.sourceUrl
-      }))
+      points: state.data.preliminary.map((point, index, list) => {
+        const previousComparable = prelimByPeriod.get(prelimPreviousMonthPeriod(point.period));
+        const previousFallback = list[index - 1];
+        const sequentialPct = percentChangeValue(point.valueUsd, previousComparable?.valueUsd ?? previousFallback?.valueUsd);
+        const comparableKey = prelimComparableKey(point.period);
+        return {
+          label: point.periodLabel,
+          value: point.valueUsd,
+          yoyPct: point.valueYoYPct,
+          sequentialPct,
+          sequentialLabel: previousComparable ? `MoM（${comparableKey === "monthly" ? "月度" : "同窗口"}）` : "前序变化",
+          sourceName: point.sourceName,
+          sourceUrl: point.sourceUrl
+        };
+      })
     }
   ];
   document.querySelector("#prelimChart").innerHTML = chartSvg({
@@ -583,8 +611,14 @@ function bindChartInteractions(container) {
       mark.classList.add("hovered");
     };
     const moveTooltip = (event) => {
-      tooltip.style.left = `${event.clientX + 14}px`;
-      tooltip.style.top = `${event.clientY + 14}px`;
+      const margin = 12;
+      const rect = tooltip.getBoundingClientRect();
+      const desiredLeft = event.clientX + 14;
+      const desiredTop = event.clientY + 14;
+      const left = Math.min(desiredLeft, window.innerWidth - rect.width - margin);
+      const top = Math.min(desiredTop, window.innerHeight - rect.height - margin);
+      tooltip.style.left = `${Math.max(margin, left)}px`;
+      tooltip.style.top = `${Math.max(margin, top)}px`;
     };
     const hideTooltip = () => {
       tooltip.hidden = true;
