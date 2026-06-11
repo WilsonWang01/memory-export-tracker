@@ -34,6 +34,17 @@ npm start
 
 配置密钥后，SSD 与 DRAM/HBM 月度 HS 明细会尝试由 data.go.kr 官方 API 自动替换。
 
+## 云端更新节奏
+
+GitHub Actions 不做每日空跑，而是按 KCS/TRASS 数据窗口固定刷新并部署 GitHub Pages：
+
+- 每月 1 日 15:35 KST：月度进出口初值窗口
+- 每月 11 日 15:35 KST：当月 1-10 日高频窗口
+- 每月 15 日 15:35 KST：上月月度 HS / 最终明细窗口
+- 每月 21 日 15:35 KST：当月 1-20 日高频窗口
+
+对应 workflow cron 为 `35 6 1,11,15,21 * *`，其中 GitHub Actions 使用 UTC。
+
 ## 指标口径
 
 - SSD：HS `852351`，Solid-state non-volatile storage devices

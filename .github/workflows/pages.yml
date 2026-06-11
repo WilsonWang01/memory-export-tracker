@@ -4,7 +4,12 @@ on:
   push:
     branches: ["main"]
   schedule:
-    - cron: "35 6 * * *"
+    # 06:35 UTC = 15:35 KST / 14:35 China time.
+    # KCS/TRASS update windows: monthly preliminary on the 1st,
+    # 1-10 day high-frequency release around the 11th,
+    # monthly HS/final detail around the 15th,
+    # and 1-20 day high-frequency release around the 21st.
+    - cron: "35 6 1,11,15,21 * *"
   workflow_dispatch:
 
 permissions:
