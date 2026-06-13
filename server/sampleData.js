@@ -287,12 +287,12 @@ export function buildSampleStore() {
         note: "Official KCS TradeData homepage exposes the May 1-20 provisional aggregate table: exports USD 52,652M (+64.8%) and imports USD 41,618M (+29.3%). The KCS main-site detail page and attachment remain the primary source for the exact semiconductor high-frequency point. No official public page found with a DRAM/SSD/HBM split."
       },
       {
-        key: "trass_public_20260520",
+        key: "trass_public_20260613",
         section: "ten_day_semiconductor",
         sourceName: "TRASS public homepage, provisional trade summary",
         sourceUrl: "https://www.bandtrass.or.kr/index.do",
-        status: "public_aggregate_only",
-        note: "Public homepage rechecked 2026-05-31 shows 2026 May 1-20 provisional total exports of USD 52,652M (+64.78%) and imports of USD 41,618M (+29.28%). Public notices show 2026 April final data built on 2026-05-15. Public widgets do not expose export values for semiconductor/memory splits; product-level provisional lookup is marked premium and was not publicly accessible."
+        status: "public_aggregate_only_checked_2026_06_13",
+        note: "Public homepage checked 2026-06-13 shows 2026 June 1-10 provisional total exports of USD 28,635M (+85.93%) and imports of USD 23,352M (+35.64%), plus a 2026-05-15 notice that 2026 April final data was built. Public widgets do not expose export values for semiconductor/memory splits; product-level provisional lookup is marked premium and was not publicly accessible."
       },
       {
         key: "korea_kr_20260520",

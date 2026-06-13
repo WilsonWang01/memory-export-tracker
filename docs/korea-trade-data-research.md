@@ -155,6 +155,12 @@ KCS list page check on 2026-06-13:
 - The newest export-status release remains the 2026-06-11 June 1-10 provisional release.
 - No 2026-06-13 KCS export-status release was present in the official list. The next expected high-frequency release remains the June 1-20 provisional briefing around 2026-06-21.
 
+TRASS public homepage check on 2026-06-13:
+
+- The public homepage showed June 1-10 provisional aggregate totals: exports USD 28,635M (+85.93%) and imports USD 23,352M (+35.64%).
+- Notices showed 2026 April final data built on 2026-05-15.
+- Public widgets did not expose semiconductor/memory product-level provisional values; the provisional-statistics lookup is marked premium, so no TRASS product split was landed.
+
 ## Update Cadence
 
 - Around the 1st of each month: KCS/MOTIE full previous-month provisional release and semiconductor/product headline data.
