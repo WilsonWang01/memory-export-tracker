@@ -15,7 +15,7 @@ export const productConfigs = [
     name: "SSD",
     hsCode: "852351",
     unitBasis: "kg",
-    note: "HS 8523.51 为 Solid-state non-volatile storage devices；KCS TradeData 当前可查询该口径，且 2026年4月金额与 Korea.kr/MSIT SSD 出口额对齐。"
+    note: "HS 8523.51 为 Solid-state non-volatile storage devices；KITA K-stat / KCS TradeData 可用于跟踪该 SSD 口径的月度金额与 KG。"
   },
   {
     key: "dram_hbm",
@@ -31,6 +31,10 @@ export const env = {
   serviceKey: process.env.DATA_GO_KR_SERVICE_KEY,
   updateHour: Number(process.env.UPDATE_HOUR ?? 15),
   updateMinute: Number(process.env.UPDATE_MINUTE ?? 30),
+  updateDays: (process.env.UPDATE_DAYS ?? "1,11,15,21")
+    .split(",")
+    .map((day) => Number(day.trim()))
+    .filter((day) => Number.isInteger(day) && day >= 1 && day <= 31),
   updateTimezone: process.env.UPDATE_TIMEZONE ?? "Asia/Seoul",
   lookbackMonths: Number(process.env.LOOKBACK_MONTHS ?? 18)
 };

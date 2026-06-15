@@ -434,13 +434,13 @@ function renderSummary() {
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
   const freshness = freshnessByKey("memory_provisional_detail");
-  document.querySelector("#memoryDetailCoverage").textContent = "5月全月产业细分已更新；单价/数量仅到5月前20日暂估";
+  document.querySelector("#memoryDetailCoverage").textContent = "5月全月产业细分已更新；HS 月度图已含 5月金额 / KG / 单价";
   document.querySelector("#memoryDetailMethod").innerHTML = sourceNote({
     source: "MOTIE 5月进出口动向转述（Electimes / Newstomato）+ KCS官方发布事件；5月前20日价格来自市场镜像",
     freshnesses: [freshness],
     cutoffText: "5月全月：Memory / DRAM / NAND / Computer proxy；5月1-20日：部分价格/数量暂估",
-    updateText: "等待 TRASS/KITA 或市场转述公开 5月全月数量/单价；6月1-20日暂定值预计 2026-06-21 左右",
-    caveat: "全月细分只有金额和同比；没有匹配净重，所以不进入 HS 单价图。"
+    updateText: "6月1-20日暂定值预计 2026-06-21 左右；6月月度 HS 明细预计 2026年7月中旬",
+    caveat: "全月产业细分只有金额和同比；HS 月度单价另由 KITA/KCS 口径的金额与 KG 推算。"
   });
   document.querySelector("#memoryDetailGrid").innerHTML = detail
     .map(
@@ -490,11 +490,11 @@ function renderMainChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
   const product = state.data.products.find((item) => item.key === state.selectedProduct);
   document.querySelector("#mainCoverageBadge").innerHTML = sourceNote({
-    source: `${product?.name ?? "选中品类"} HS 明细：KCS TradeData by H.S Code；KITA K-stat worker 复核；data.go.kr API 待密钥后自动替换`,
+    source: `${product?.name ?? "选中品类"} HS 明细：KITA K-stat worker；KCS TradeData / data.go.kr 用于后续交叉核验和自动替换`,
     freshnesses: [hsFreshness],
-    cutoffText: "HS 金额 / 净重 / 单价：2026年4月",
-    updateText: "5月 HS 明细预计 2026年6月中旬随 KCS / data.go.kr / TRASS 更新",
-    caveat: "该图只使用同时具备出口金额和净重的月度 HS 数据，因此 5月产业发布金额不会进入单价图。"
+    cutoffText: "HS 金额 / 净重 / 单价：2026年5月",
+    updateText: "6月 HS 明细预计 2026年7月中旬随 KCS / data.go.kr / TRASS / KITA 更新",
+    caveat: "该图只使用同时具备出口金额和净重的月度 HS 数据；产业级发布金额不会直接进入单价图。"
   });
   document.querySelector("#mainChartTitle").textContent = `${product?.name ?? "当前品类"}：${metricLabels[state.metric]}与增长率`;
   const monthly = filteredMonthly();
@@ -528,10 +528,10 @@ function renderMainChart() {
 function renderSplitChart() {
   const hsFreshness = freshnessByKey("monthly_hs");
   document.querySelector("#splitCoverageBadge").innerHTML = sourceNote({
-    source: "选中品类 HS 明细：KCS TradeData by H.S Code；KITA K-stat worker 复核",
+    source: "选中品类 HS 明细：KITA K-stat worker；KCS TradeData / data.go.kr 用于交叉核验",
     freshnesses: [hsFreshness],
-    cutoffText: "HS 三指标：2026年4月",
-    updateText: "5月 HS 明细预计 2026年6月中旬更新",
+    cutoffText: "HS 三指标：2026年5月",
+    updateText: "6月 HS 明细预计 2026年7月中旬更新",
     caveat: "金额、净重、单价按各自最高值标准化，只比较方向，不比较绝对量级。"
   });
   const points = filteredMonthly().filter((point) => point.productKey === state.selectedProduct);
@@ -628,11 +628,12 @@ function renderMeta() {
   const sourcePill = document.querySelector("#sourcePill");
   const sourceText = {
     official_api: "官方接口",
+    official_kita_kstat: "KITA官方HS",
     mixed_public: "公开简报+官方HS",
     sample: "样例数据"
   };
   sourcePill.textContent = sourceText[state.data.meta.mode] ?? "数据已载入";
-  sourcePill.className = `source-pill ${state.data.meta.mode === "official_api" ? "official" : state.data.meta.mode === "mixed_public" ? "mixed" : "sample"}`;
+  sourcePill.className = `source-pill ${["official_api", "official_kita_kstat"].includes(state.data.meta.mode) ? "official" : state.data.meta.mode === "mixed_public" ? "mixed" : "sample"}`;
   document.querySelector("#lastUpdated").textContent = formatDateTime(state.data.meta.lastUpdated);
   document.querySelector("#statusMessage").textContent = state.data.meta.message;
 }

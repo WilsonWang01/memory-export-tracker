@@ -1,6 +1,7 @@
 import { productConfigs } from "./config.js";
 
 const periods = [
+  "2024.12",
   "2025.01",
   "2025.02",
   "2025.03",
@@ -16,13 +17,14 @@ const periods = [
   "2026.01",
   "2026.02",
   "2026.03",
-  "2026.04"
+  "2026.04",
+  "2026.05"
 ];
 
 const monthlyHsSource = {
-  source: "official_tradedata_web",
-  sourceName: "KCS TradeData English by H.S Code monthly statistics",
-  sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000"
+  source: "official_kita_kstat",
+  sourceName: "KITA K-stat ItemImpExpList worker",
+  sourceUrl: "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen"
 };
 
 function makeSeries(productKey, valuesUsd, weightsKg) {
@@ -50,6 +52,7 @@ export function buildSampleStore() {
     ...makeSeries(
       "ssd",
       [
+        1_254_068_000,
         640_157_000,
         622_804_000,
         1_001_625_000,
@@ -65,9 +68,11 @@ export function buildSampleStore() {
         1_365_724_000,
         2_417_571_000,
         3_190_956_000,
-        3_836_678_000
+        3_835_074_000,
+        3_973_455_000
       ],
       [
+        215_349,
         144_646,
         133_970,
         198_385,
@@ -83,12 +88,14 @@ export function buildSampleStore() {
         207_161,
         218_033,
         253_531,
-        202_057
+        202_057,
+        177_484
       ]
     ),
     ...makeSeries(
       "dram_hbm",
       [
+        7_444_170_000,
         4_765_687_000,
         4_725_937_000,
         6_694_284_000,
@@ -103,10 +110,12 @@ export function buildSampleStore() {
         12_636_910_000,
         12_111_963_000,
         15_810_750_000,
-        20_758_802_000,
-        20_829_061_000
+        20_759_011_000,
+        20_829_752_000,
+        24_950_563_000
       ],
       [
+        285_751,
         229_221,
         253_709,
         333_624,
@@ -122,7 +131,8 @@ export function buildSampleStore() {
         302_637,
         287_910,
         375_392,
-        319_349
+        319_349,
+        326_954
       ]
     )
   ];
@@ -133,7 +143,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年4月、半导体月度 2026年5月、旬度高频 2026年6月1-10日；截至 2026-06-14 未配置 DATA_GO_KR_SERVICE_KEY，月度 HS 仍沿用 KCS TradeData/KITA 公开网页同源查询核验值，6 月旬度半导体同比/占比由 KCS 官网、Korea.kr/KDI 核验，精确金额为媒体转述的 KCS 表格值并单独标记。"
+        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年5月、半导体月度 2026年5月、旬度高频 2026年6月1-10日；2026-06-15 复核，月度 HS 使用 KITA K-stat 官方公开 worker 当年金额与 KG，6 月旬度半导体同比/占比由 KCS 官网、Korea.kr/KDI 核验，精确金额为媒体转述的 KCS 表格值并单独标记。"
     },
     products: productConfigs,
     monthly,
@@ -141,12 +151,12 @@ export function buildSampleStore() {
       {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
-        latestPeriod: "2026年4月",
-        latestReleaseDate: "2026-06-14 复核：公开 KITA/KCS-data.go.kr 可核验月度 HS 明细仍以 2026.04 为最新可用月份",
-        nextExpectedDate: "2026年5月 HS 明细预计 2026年6月中旬随 KCS/data.go.kr/TRASS 更新",
+        latestPeriod: "2026年5月",
+        latestReleaseDate: "2026-06-15 复核：KITA K-stat worker 已返回 2026.05 当前年 HS 金额与 KG",
+        nextExpectedDate: "2026年6月 HS 明细预计 2026年7月中旬随 KCS/data.go.kr/TRASS/KITA 更新",
         status: "official_public_web",
         note:
-          "KCS TradeData 英文 By H.S Code 页面同源 JSON 与 KITA K-stat worker 查询均可取得月度出口金额和 KG。2026-06-14 复核，SSD HS 852351 与 DRAM/HBM proxy HS 854232 仍以 2026.04 为最后可用当年明细；KITA 公开 worker 强制查询 2026.05 时返回去年同期列有值、当年列为 0，不能作为 5 月当年数据落库。"
+          "2026-06-15 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。KCS TradeData 英文页同源接口当日未同步 2026.05，因此本次月度 HS 来源标记为 KITA K-stat。"
       },
       {
         key: "monthly_semiconductor",
@@ -172,11 +182,11 @@ export function buildSampleStore() {
         key: "memory_provisional_detail",
         label: "存储细分明细",
         latestPeriod: "2026年5月全月官方细分；2026年5月1-20日价格/数量暂估",
-        latestReleaseDate: "2026-06-14 复核",
-        nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年5月全月数量/单价或 2026年6月旬度 DRAM/SSD/HBM 细分数据",
+        latestReleaseDate: "2026-06-15 复核",
+        nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年6月旬度 DRAM/SSD/HBM 细分数据；6月月度 HS 明细预计 2026年7月中旬",
         status: "mixed_public_reported",
         note:
-          "2026-06-14 复核：MOTIE 5月 수출입 동향公开转发文本核验 Memory、DRAM、NAND、Computer/SSD proxy 金额和 YoY；未发现可核验的 5月全月数量/单位价或 6月1-10日 DRAM/SSD/HBM 细分公开表。5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估；KCS/TRASS 公开页不拆分 DRAM/SSD/HBM。"
+          "2026-06-15 复核：MOTIE 5月 수출입 동향公开转发文本核验 Memory、DRAM、NAND、Computer/SSD proxy 金额和 YoY；HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价。该细分卡仍未发现可核验的 6月1-10日 DRAM/SSD/HBM 旬度细分公开表；5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估。"
       }
     ],
     sourceRegistry: [
@@ -185,8 +195,8 @@ export function buildSampleStore() {
         section: "monthly_hs",
         sourceName: "KCS TradeData English by H.S Code monthly statistics",
         sourceUrl: "https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000",
-        status: "official_public_web_verified_2026_06_11_kita_rechecked_2026_06_14",
-        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site JSON query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-06-11. A 2026-06-13 direct local request to the same-site JSON endpoint returned an access-block message, so no new KCS TradeData value was landed from that path. KITA K-stat worker was rechecked on 2026-06-14: forced 2026.05 queries still return 2025.05 in LAST_* columns but 0 in THIS_* columns for both AMT and WGT, so 2026.05 HS values are not yet published."
+        status: "official_public_web_verified_2026_06_11_2026_04_only",
+        note: "Browser-visible official KCS page provides monthly HS export value in thousand USD and export weight in KG through its same-site JSON query. Re-verified 2025.01-2026.04 for SSD HS 852351 and DRAM/HBM proxy HS 854232 on 2026-06-11. A 2026-06-13 direct local request to the same-site JSON endpoint returned an access-block message, and the 2026-06-15 KCS English same-site check did not return 2026.05 rows. The latest 2026.05 monthly HS rows are therefore sourced from KITA K-stat instead."
       },
       {
         key: "data_go_kr_itemtrade",
@@ -329,12 +339,12 @@ export function buildSampleStore() {
         note: "Cross-checks the MOTIE May monthly split: memory semiconductors USD 32.1B (+255%), DRAM USD 18.6B (+369.8%), NAND USD 1.7B (+206.8%), system semiconductors USD 4.5B (+6%), and management commentary that memory prices rose versus April."
       },
       {
-        key: "kita_kstat_hs_worker_20260613",
+        key: "kita_kstat_hs_worker_20260615",
         section: "monthly_hs_context",
         sourceName: "KITA K-stat ItemImpExpList worker",
         sourceUrl: "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen",
-        status: "official_public_web_verified_2026_06_14",
-        note: "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. 2026.04 matches the dashboard values. Forced 2026.05 queries on 2026-06-14 return LAST_* 2025.05 comparison values but THIS_* values of 0 and -100% change, confirming the public K-stat monthly HS database had not released 2026.05 current-year rows."
+        status: "official_public_web_verified_2026_06_15",
+        note: "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. On 2026-06-15 it returned current-year 2026.05 rows: SSD 3,973,455 thousand USD / 177,484 kg and HS 854232 24,950,563 thousand USD / 326,954 kg. These rows are used as the latest monthly HS source."
       },
       {
         key: "market_mirror_20260520_unit_price",
@@ -349,8 +359,8 @@ export function buildSampleStore() {
         section: "monthly_hs_context",
         sourceName: "KITA K-stat public page",
         sourceUrl: "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen",
-        status: "official_public_page_checked_2026_06_14",
-        note: "KITA K-stat browser page redirected to a public wait/block page on 2026-06-14, but the same-site public XML worker remained accessible. The worker rows are documented separately because they matched KCS TradeData through 2026.04 and showed no usable 2026.05 current-year HS rows."
+        status: "official_public_page_checked_2026_06_15",
+        note: "KITA K-stat browser page can lag direct worker availability, but the same-site public XML worker remained accessible. Trust the worker only when the exact HS row has non-zero current-year THIS_EXP_AMT for both AMT and WGT; that condition was met for 2026.05 on 2026-06-15."
       }
     ],
     officialMonthly: [

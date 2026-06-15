@@ -1,6 +1,6 @@
 # Korea Trade Data Research Notes
 
-Last checked: 2026-06-14.
+Last checked: 2026-06-15.
 
 This dashboard uses two different data families and they should not be mixed:
 
@@ -9,10 +9,12 @@ This dashboard uses two different data families and they should not be mixed:
 
 ## Official HS Detail Path
 
-Primary page:
+Primary pages:
 
 - KCS TradeData English By H.S Code: `https://www.tradedata.go.kr/cts/hmpgEng/openETS0200013Q.do?menuId=ETS_MNE_10200000`
 - Query endpoint found in page JS: `/cts/hmpgEng/retrieveTradeHsCodeEng.do`
+- KITA K-stat ItemImpExpList: `https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen`
+- KITA worker endpoint: `POST https://stat.kita.net/stat/kts/pum/ItemImpExpListWorker.screen`
 
 Useful request parameters:
 
@@ -49,7 +51,8 @@ The page uses an IBSheet XML worker:
 
 - `POST https://stat.kita.net/stat/kts/pum/ItemImpExpListWorker.screen`
 
-Working form fields for a focused HS query:
+Working form fields for a focused HS query. The dashboard now uses this path when
+`DATA_GO_KR_SERVICE_KEY` is unavailable or data.go.kr fails:
 
 ```text
 event_udap=Search
@@ -71,7 +74,7 @@ s_cond_unit=6
 s_cond_unit_num=852351
 s_trade_gb=s_suji
 s_year=2026
-s_month=04
+s_month=05
 s_field=AMT
 s_monthsum_gb=1
 s_measure=1000
@@ -92,12 +95,13 @@ THIS_EXP_AMT, THIS_EXP_RATE, THIS_IMP_AMT, THIS_IMP_RATE, THIS_PROFIT,
 COND_GB, ORDER_NM
 ```
 
-2026-06-11 / 2026-06-12 / 2026-06-13 / 2026-06-14 verification:
+2026-06-15 verification:
 
-- `2026.04`, HS `852351`, AMT returns `THIS_EXP_AMT=3836678` thousand USD and WGT returns `THIS_EXP_AMT=202057` kg.
-- `2026.04`, HS `854232`, AMT returns `THIS_EXP_AMT=20829061` thousand USD and WGT returns `THIS_EXP_AMT=319349` kg.
-- Forced `2026.05` queries are not usable: the worker returns `LAST_*` values for 2025.05, but `THIS_*` values are `0` with `-100` change. This means the public K-stat monthly HS database had not released current-year May rows as of 2026-06-14.
-- The K-stat browser page itself redirected to a public wait/block page on 2026-06-14; the direct XML worker remained accessible. Earlier page checks generated the 2026 month dropdown only through `04`, and the total-trade page used hidden `s_yymm=202604`.
+- `2026.05`, HS `852351`, `AMT` returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` returns `THIS_EXP_AMT=177484` kg.
+- `2026.05`, HS `854232`, `AMT` returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` returns `THIS_EXP_AMT=326954` kg.
+- These are current-year `THIS_*` values, not previous-year `LAST_*` comparison values, so they are valid monthly HS rows.
+- The KCS TradeData English same-site endpoint did not return `2026.05` rows during the same 2026-06-15 check, so the dashboard records the latest HS source as KITA K-stat for this refresh.
+- KITA may show a default UI month that lags direct worker availability. Trust the worker only when the exact HS row has non-zero `THIS_EXP_AMT` for both `AMT` and `WGT`.
 
 ## data.go.kr API Check
 

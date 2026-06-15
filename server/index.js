@@ -67,27 +67,20 @@ async function handleRequest(request, response) {
   }
 }
 
-function nextDailyRun(now = new Date()) {
+function nextScheduledRun(now = new Date()) {
   const parts = zonedParts(now, env.updateTimezone);
-  let next = zonedTimeToUtc(
-    parts.year,
-    parts.month,
-    parts.day,
-    env.updateHour,
-    env.updateMinute,
-    env.updateTimezone
-  );
-  if (next <= now) {
-    next = zonedTimeToUtc(
-      parts.year,
-      parts.month,
-      parts.day + 1,
-      env.updateHour,
-      env.updateMinute,
-      env.updateTimezone
-    );
+  for (let monthOffset = 0; monthOffset <= 2; monthOffset += 1) {
+    const monthStart = new Date(Date.UTC(parts.year, parts.month - 1 + monthOffset, 1));
+    const year = monthStart.getUTCFullYear();
+    const month = monthStart.getUTCMonth() + 1;
+    const candidates = env.updateDays
+      .map((day) => zonedTimeToUtc(year, month, day, env.updateHour, env.updateMinute, env.updateTimezone))
+      .filter((date) => date > now)
+      .sort((a, b) => a.getTime() - b.getTime());
+    if (candidates.length > 0) return candidates[0];
   }
-  return next;
+
+  return zonedTimeToUtc(parts.year, parts.month + 1, 1, env.updateHour, env.updateMinute, env.updateTimezone);
 }
 
 function zonedParts(date, timeZone) {
@@ -116,15 +109,17 @@ function zonedTimeToUtc(year, month, day, hour, minute, timeZone) {
   return new Date(utcGuess.getTime() - offset);
 }
 
-function scheduleDailyRefresh() {
-  const next = nextDailyRun();
+function scheduleDataWindowRefresh() {
+  const next = nextScheduledRun();
   const waitMs = next.getTime() - Date.now();
-  console.log(`Next refresh: ${next.toISOString()} (${env.updateTimezone} target ${env.updateHour}:${String(env.updateMinute).padStart(2, "0")})`);
+  console.log(
+    `Next refresh: ${next.toISOString()} (${env.updateTimezone} target days ${env.updateDays.join("/")}, ${env.updateHour}:${String(env.updateMinute).padStart(2, "0")})`
+  );
   setTimeout(async () => {
     console.log(`[scheduler] refresh started at ${new Date().toISOString()}`);
     const store = await refreshTradeData();
     console.log(`[scheduler] refresh finished in ${store.meta.mode} mode`);
-    scheduleDailyRefresh();
+    scheduleDataWindowRefresh();
   }, waitMs);
 }
 
@@ -133,5 +128,5 @@ const server = http.createServer(handleRequest);
 server.listen(env.port, async () => {
   await refreshTradeData();
   console.log(`Dashboard listening on http://localhost:${env.port}`);
-  scheduleDailyRefresh();
+  scheduleDataWindowRefresh();
 });

@@ -1,35 +1,48 @@
 import { productConfigs } from "../config.js";
-import { fetchMonthlyProductSeries } from "../koreaTradeClient.js";
+import { fetchKitaMonthlyProductSeries, fetchMonthlyProductSeries } from "../koreaTradeClient.js";
 import { buildSampleStore } from "../sampleData.js";
 import { writeStore } from "../storage.js";
 
+async function buildStoreFromMonthly(monthlyResponses, metaPatch) {
+  const sample = buildSampleStore();
+  const store = {
+    ...sample,
+    meta: {
+      ...sample.meta,
+      lastUpdated: new Date().toISOString(),
+      nextScheduledUpdate: null,
+      ...metaPatch
+    },
+    products: productConfigs,
+    monthly: monthlyResponses.flat()
+  };
+  await writeStore(store);
+  return store;
+}
+
 export async function refreshTradeData() {
-  if (!process.env.DATA_GO_KR_SERVICE_KEY) {
-    const sample = buildSampleStore();
-    await writeStore(sample);
-    return sample;
+  if (process.env.DATA_GO_KR_SERVICE_KEY) {
+    try {
+      const monthlyResponses = await Promise.all(productConfigs.map((product) => fetchMonthlyProductSeries(product)));
+      return await buildStoreFromMonthly(monthlyResponses, {
+        mode: "official_api",
+        message: "已通过 KCS/data.go.kr 官方接口更新月度 HS 品类出口金额、净重与单位价格。"
+      });
+    } catch (error) {
+      console.warn(`[refresh] KCS/data.go.kr failed, trying KITA K-stat: ${error instanceof Error ? error.message : "unknown error"}`);
+    }
   }
 
   try {
-    const monthlyResponses = await Promise.all(productConfigs.map((product) => fetchMonthlyProductSeries(product)));
-    const sample = buildSampleStore();
-    const store = {
-      ...sample,
-      meta: {
-        ...sample.meta,
-        lastUpdated: new Date().toISOString(),
-        nextScheduledUpdate: null,
-        mode: "official_api",
-        message: "已通过 KCS/data.go.kr 官方接口更新月度 HS 品类出口金额、净重与单位价格。"
-      },
-      products: productConfigs,
-      monthly: monthlyResponses.flat()
-    };
-    await writeStore(store);
-    return store;
+    const monthlyResponses = await Promise.all(productConfigs.map((product) => fetchKitaMonthlyProductSeries(product)));
+    return await buildStoreFromMonthly(monthlyResponses, {
+      mode: "official_kita_kstat",
+      message: "已通过 KITA K-stat 官方公开 worker 更新月度 HS 品类出口金额、净重与单位价格；KCS/data.go.kr 密钥缺失或接口不可用时使用该路径。"
+    });
   } catch (error) {
     const sample = buildSampleStore();
-    sample.meta.message = `官方接口拉取失败，当前回落到样例数据：${error instanceof Error ? error.message : "unknown error"}`;
+    sample.meta.lastUpdated = new Date().toISOString();
+    sample.meta.message = `官方接口拉取失败，当前回落到内置公开核验数据：${error instanceof Error ? error.message : "unknown error"}`;
     await writeStore(sample);
     return sample;
   }
