@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-06-15T16:04:10.058Z",
+    "lastUpdated": "2026-06-15T16:05:15.030Z",
     "nextScheduledUpdate": null,
     "mode": "official_kita_kstat",
     "message": "已通过 KITA K-stat 官方公开 worker 更新月度 HS 品类出口金额、净重与单位价格；KCS/data.go.kr 密钥缺失或接口不可用时使用该路径。"
