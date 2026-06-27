@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-06-26T15:40:17.856Z",
+    "lastUpdated": "2026-06-27T15:39:54.779Z",
     "nextScheduledUpdate": null,
     "mode": "official_kita_kstat",
     "message": "已通过 KITA K-stat 官方公开 worker 更新月度 HS 品类出口金额、净重与单位价格；DATA_GO_KR_SERVICE_KEY 缺失或 KCS/data.go.kr 接口不可用时使用该路径。当前公开月度 HS 最新可落库期为 2026年5月，半导体旬度高频最新官方点为 2026年6月1-20日。"
@@ -532,10 +532,10 @@
       "key": "monthly_hs",
       "label": "SSD / DRAM-HBM HS 明细",
       "latestPeriod": "2026年5月",
-      "latestReleaseDate": "2026-06-26 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；TRASS 首页显示 2026-06-15 已完成 5 月确报构建",
+      "latestReleaseDate": "2026-06-27 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；TRASS 首页显示 2026-06-15 已完成 5 月确报构建",
       "nextExpectedDate": "2026年6月 HS 明细预计 2026年7月中旬随 KCS/data.go.kr/TRASS/KITA 更新",
       "status": "official_public_web",
-      "note": "2026-06-26 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
+      "note": "2026-06-27 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
     },
     {
       "key": "monthly_semiconductor",
@@ -553,16 +553,16 @@
       "latestReleaseDate": "2026-06-22",
       "nextExpectedDate": "2026-07-01 左右发布 2026年6月全月初值；2026-07-11 左右发布 2026年7月1-10日暂定值",
       "status": "official_public_rounded",
-      "note": "2026-06-26 复核：KCS 官网发布 2026-06-22 的 6月1-20日暂定值，KDI 转发同一简报，TRASS 首页交叉核验总出口/进口；KCS 6月23-26日较新列表项为 CBAM、半导体部件分类、统计会议、세수 통계 等非 수출입 현황 发布，6月26日未发现更新的 수출입 현황。KCS 正文和 HWPX 文本核验总出口 61,991M 美元、进口 44,495M 美元、贸易顺差 17,496M 美元、半导体同比 +188.4%、半导体占比 41.2%，并披露半导体出口约 255 亿美元；HWPX 中的主要品目图表为图片，未提取到可公开落库的更精确半导体金额。"
+      "note": "2026-06-27 复核：KCS 官网发布 2026-06-22 的 6月1-20日暂定值，KDI 转发同一简报，TRASS 首页交叉核验总出口/进口；KCS 6月23-26日较新列表项为 CBAM、半导体部件分类、统计会议、세수 통계、AI 政府表彰 等非 수출입 현황 发布，截至 6月27日未发现更新的 수출입 현황。KCS 正文和 HWPX 文本核验总出口 61,991M 美元、进口 44,495M 美元、贸易顺差 17,496M 美元、半导体同比 +188.4%、半导体占比 41.2%，并披露半导体出口约 255 亿美元；HWPX 中的主要品目图表为图片，未提取到可公开落库的更精确半导体金额。"
     },
     {
       "key": "memory_provisional_detail",
       "label": "存储细分明细",
       "latestPeriod": "2026年5月全月官方细分；2026年5月1-20日价格/数量暂估",
-      "latestReleaseDate": "2026-06-26 复核",
+      "latestReleaseDate": "2026-06-27 复核",
       "nextExpectedDate": "等待 TRASS/KITA 或市场转述公开 2026年6月旬度 DRAM/SSD/HBM 细分数据；6月月度 HS 明细预计 2026年7月中旬",
       "status": "mixed_public_reported",
-      "note": "2026-06-26 复核：MOTIE 5月 수출입 동향公开转发文本核验 Memory、DRAM、NAND、Computer/SSD proxy 金额和 YoY；HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价。KCS 6月1-20日简报只公开半导体合计、YoY 和占比，仍未发现可核验的 6月1-10日或 6月1-20日 DRAM/SSD/HBM 旬度细分公开表；5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估。"
+      "note": "2026-06-27 复核：MOTIE 5月 수출입 동향公开转发文本核验 Memory、DRAM、NAND、Computer/SSD proxy 金额和 YoY；HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价。KCS 6月1-20日简报只公开半导体合计、YoY 和占比，仍未发现可核验的 6月1-10日或 6月1-20日 DRAM/SSD/HBM 旬度细分公开表；5月前20日价格/数量仍来自公开券商/市场 Telegram 镜像转述的 Korean customs/TRASS 暂估。"
     }
   ],
   "sourceRegistry": [
@@ -580,14 +580,14 @@
       "sourceName": "KCS/data.go.kr Itemtrade API",
       "sourceUrl": "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
       "status": "requires_DATA_GO_KR_SERVICE_KEY",
-      "note": "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-06-26 refresh environment, so the API path was not used by npm run fetch. Earlier no-key endpoint verification returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22, REST/XML, free, with automatic approval for development use. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
+      "note": "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-06-27 refresh environment, so the API path was not used by npm run fetch. Earlier no-key endpoint verification returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22, REST/XML, free, with automatic approval for development use. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
     },
     {
       "key": "kcs_kdi_20260620",
       "section": "ten_day_semiconductor",
       "sourceName": "KCS official June 1-20 provisional import/export status, with KDI repost",
       "sourceUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?bbsId=1362&mi=2891&nttSn=10167371&nttSnUrl=d3dc345ca30751d2b28d06b45adfbc2b",
-      "status": "official_public_rounded_verified_2026_06_26",
+      "status": "official_public_rounded_verified_2026_06_27",
       "note": "KCS official page registered 2026-06-22 and KDI repost num=282993 verify June 1-20 provisional exports of USD 61,991M (+60.4%), imports of USD 44,495M (+23.2%), trade surplus of USD 17,496M, working days 15.0 versus 14.0, average daily exports of USD 4.13B (+49.7%), semiconductor exports up +188.4%, semiconductor share 41.2%, and rounded semiconductor exports of USD 25.5B. The HWPX text exposes the same rounded semiconductor value; its major-item chart is embedded as an image, so no more precise semiconductor dollar amount was landed.",
       "attachmentFileName": "260622 26년 6월 1일 - 6월 20일 수출입현황.hwpx",
       "attachmentSourceUrl": "https://www.customs.go.kr/common/nttFileDownload.do?fileKey=fe919b2b9b338d42e83308686682506a",
@@ -649,12 +649,12 @@
       "note": "KCS official page was registered 2026-05-27 and includes PDF/HWPX attachments named 260521. The page verifies the May 1-20 aggregate total and rounded semiconductor figure; the official PDF attachment URL remained reachable on 2026-05-31. The stored exact semiconductor export value remains USD 21,951M and YoY +202.1% from the official PDF attachment."
     },
     {
-      "key": "kcs_official_press_list_20260626",
+      "key": "kcs_official_press_list_20260627",
       "section": "ten_day_semiconductor",
       "sourceName": "KCS official press-release list",
       "sourceUrl": "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-      "status": "official_public_checked_2026_06_26",
-      "note": "KCS official press-release list/search was checked on 2026-06-26. Newer KCS list items dated 2026-06-23 through 2026-06-26 were not export-status releases, and no 2026-06-26 export-status release was found. The newest export-tracking release found is 2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치], registered 2026-06-22 with nttSn 10167371."
+      "status": "official_public_checked_2026_06_27",
+      "note": "KCS official press-release list/search was checked on 2026-06-27. Newer KCS list items dated 2026-06-23 through 2026-06-26 were not export-status releases, and no newer export-status release was found as of 2026-06-27. The newest export-tracking release found is 2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치], registered 2026-06-22 with nttSn 10167371."
     },
     {
       "key": "taxtimes_20260610",
@@ -697,20 +697,20 @@
       "note": "Official KCS TradeData homepage exposes the May 1-20 provisional aggregate table: exports USD 52,652M (+64.8%) and imports USD 41,618M (+29.3%). The KCS main-site detail page and attachment remain the primary source for the exact semiconductor high-frequency point. No official public page found with a DRAM/SSD/HBM split."
     },
     {
-      "key": "trass_public_20260626",
+      "key": "trass_public_20260627",
       "section": "ten_day_semiconductor,monthly_hs_context",
       "sourceName": "TRASS public homepage, final/provisional trade summary",
       "sourceUrl": "https://www.bandtrass.or.kr/index.do",
-      "status": "public_aggregate_only_checked_2026_06_26",
-      "note": "Public search/homepage check on 2026-06-26 shows 2026 May final data built on 2026-06-15 and public aggregate widgets only. TRASS public snippets show 2026 May final total exports of USD 87,821M (+53.37%), imports of USD 60,785M (+20.74%), and June 1-20 provisional exports of USD 61,991M (+60.35%) and imports of USD 44,495M (+23.17%). Public widgets do not expose export values for semiconductor/memory splits; product-level provisional lookup is marked premium and was not used."
+      "status": "public_aggregate_only_checked_2026_06_27",
+      "note": "Public search/homepage check on 2026-06-27 shows 2026 May final data built on 2026-06-15 and public aggregate widgets only. TRASS public snippets show 2026 May final total exports of USD 87,821M (+53.37%), imports of USD 60,785M (+20.74%), and June 1-20 provisional exports of USD 61,991M (+60.35%) and imports of USD 44,495M (+23.17%). Public widgets do not expose export values for semiconductor/memory splits; product-level provisional lookup is marked premium and was not used."
     },
     {
-      "key": "korea_kr_search_20260626",
+      "key": "korea_kr_search_20260627",
       "section": "ten_day_semiconductor",
       "sourceName": "Korea.kr repost search for KCS high-frequency releases",
       "sourceUrl": "https://www.korea.kr/",
-      "status": "partial_found_checked_2026_06_26",
-      "note": "Korea.kr exposed a document viewer/PDF for the 2026-06-11 KCS June 1-10 provisional release and the 2026-05-11 KCS May 1-10 repost. Searches on 2026-06-26 still did not expose a separate Korea.kr repost for the 2026-06-22 KCS June 1-20 provisional release; KCS official and KDI repost remain the primary accessible official-policy sources for that point."
+      "status": "partial_found_checked_2026_06_27",
+      "note": "Korea.kr exposed a document viewer/PDF for the 2026-06-11 KCS June 1-10 provisional release and the 2026-05-11 KCS May 1-10 repost. Searches on 2026-06-27 still did not expose a separate Korea.kr repost for the 2026-06-22 KCS June 1-20 provisional release; KCS official and KDI repost remain the primary accessible official-policy sources for that point."
     },
     {
       "key": "sk_securities_20260520_memory_detail",
@@ -737,11 +737,11 @@
       "note": "Cross-checks the MOTIE May monthly split: memory semiconductors USD 32.1B (+255%), DRAM USD 18.6B (+369.8%), NAND USD 1.7B (+206.8%), system semiconductors USD 4.5B (+6%), and management commentary that memory prices rose versus April."
     },
     {
-      "key": "kita_kstat_hs_worker_20260626",
+      "key": "kita_kstat_hs_worker_20260627",
       "section": "monthly_hs_context",
       "sourceName": "KITA K-stat ItemImpExpList worker",
       "sourceUrl": "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen",
-      "status": "official_public_web_verified_2026_06_26",
+      "status": "official_public_web_verified_2026_06_27",
       "note": "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. It returned current-year 2026.05 rows: SSD 3,973,455 thousand USD / 177,484 kg and HS 854232 24,950,563 thousand USD / 326,954 kg. A focused 2026.06 query returned no positive current-year rows for either HS code, so 2026.05 remains the latest monthly HS source."
     },
     {
