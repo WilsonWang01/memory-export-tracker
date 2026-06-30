@@ -1,6 +1,6 @@
 # Korea Trade Data Research Notes
 
-Last checked: 2026-06-29.
+Last checked: 2026-06-30.
 
 This dashboard uses two different data families and they should not be mixed:
 
@@ -95,7 +95,7 @@ THIS_EXP_AMT, THIS_EXP_RATE, THIS_IMP_AMT, THIS_IMP_RATE, THIS_PROFIT,
 COND_GB, ORDER_NM
 ```
 
-2026-06-29 verification:
+2026-06-30 verification:
 
 - `2026.05`, HS `852351`, `AMT` returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` returns `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, `AMT` returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` returns `THIS_EXP_AMT=326954` kg.
@@ -107,7 +107,7 @@ COND_GB, ORDER_NM
 
 ## data.go.kr API Check
 
-`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-06-29 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
+`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-06-30 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
 
 The public data.go.kr catalog page for `관세청_품목별 수출입실적(GW)` remains the correct official API source. It states that item trade statistics are aggregated by HS code, export value is the declared USD amount, weight is net weight in kg, and prior-month data is refreshed around the 15th after corrections/cancellations. The catalog was modified on 2026-05-22.
 
@@ -142,7 +142,7 @@ Do not use these product-release rows to calculate USD/kg unless a source explic
 
 ## High-Frequency June 2026 Check
 
-Latest official high-frequency release as of 2026-06-29:
+Latest official high-frequency release as of 2026-06-30:
 
 - KCS official June 1-20 release page: `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?bbsId=1362&mi=2891&nttSn=10167371&nttSnUrl=d3dc345ca30751d2b28d06b45adfbc2b`
 - KCS official June 1-20 HWPX attachment: `https://www.customs.go.kr/common/nttFileDownload.do?fileKey=fe919b2b9b338d42e83308686682506a`
@@ -186,22 +186,22 @@ Verified official values for 2026-06-01 through 2026-06-10:
 
 The direct KCS page body and KDI repost verify the rounded June 1-10 semiconductor value, growth rate, share, and aggregate trade totals. The KCS official HWPX attachment's main-items table verifies the precise June 1-10 semiconductor value of USD 11,068M (+205.8%), so the dashboard labels that point as official attachment data. Do not derive a precise semiconductor amount from total exports and share.
 
-KCS list/search check on 2026-06-29:
+KCS list/search check on 2026-06-30:
 
 - Official KCS search resolved to the 2026-06-22 `2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치]` release with nttSn `10167371`.
 - Newer KCS press-release list items dated 2026-06-23 through 2026-06-29 were CBAM, semiconductor-parts classification, trade-statistics coordination, customs-tax statistics, WCO technology exhibition hosting, imported-agricultural-product management, and other non-`수출입 현황` posts; they were not dashboard export-tracking releases.
-- No newer KCS `수출입 현황` release was found as of 2026-06-29.
+- No newer KCS `수출입 현황` release was found as of 2026-06-30.
 - KDI reposted the same June 1-20 release as policy material num `282993`.
 - Korea.kr search did not expose a separate June 1-20 repost during this refresh; KDI served as the accessible official-policy repost.
 
-TRASS public homepage check on 2026-06-29:
+TRASS public homepage check on 2026-06-30:
 
 - The public homepage showed May final aggregate totals: exports USD 87,821M (+53.37%) and imports USD 60,785M (+20.74%).
 - It also showed June 1-20 provisional aggregate totals: exports USD 61,991M (+60.35%) and imports USD 44,495M (+23.17%).
 - Notices showed 2026 May final data built on 2026-06-15.
 - Public widgets did not expose semiconductor/memory product-level provisional values for landing; product-level provisional lookup remains outside the free public widget surface, so no TRASS product split was landed.
 
-KITA monthly HS worker check on 2026-06-29:
+KITA monthly HS worker check on 2026-06-30:
 
 - `2026.05`, HS `852351`, still returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, still returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` `THIS_EXP_AMT=326954` kg.
