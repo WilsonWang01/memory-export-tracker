@@ -1,6 +1,6 @@
 # Korea Trade Data Research Notes
 
-Last checked: 2026-06-30.
+Last checked: 2026-07-01.
 
 This dashboard uses two different data families and they should not be mixed:
 
@@ -95,7 +95,7 @@ THIS_EXP_AMT, THIS_EXP_RATE, THIS_IMP_AMT, THIS_IMP_RATE, THIS_PROFIT,
 COND_GB, ORDER_NM
 ```
 
-2026-06-30 verification:
+2026-07-01 verification:
 
 - `2026.05`, HS `852351`, `AMT` returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` returns `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, `AMT` returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` returns `THIS_EXP_AMT=326954` kg.
@@ -107,7 +107,7 @@ COND_GB, ORDER_NM
 
 ## data.go.kr API Check
 
-`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-06-30 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
+`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-07-01 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
 
 The public data.go.kr catalog page for `관세청_품목별 수출입실적(GW)` remains the correct official API source. It states that item trade statistics are aggregated by HS code, export value is the declared USD amount, weight is net weight in kg, and prior-month data is refreshed around the 15th after corrections/cancellations. The catalog was modified on 2026-05-22.
 
@@ -115,7 +115,30 @@ The public data.go.kr catalog page for `관세청_품목별 수출입실적(GW)`
 
 Official and reported monthly product data is still useful when HS weight data is absent.
 
-Current May 2026 product values in the dashboard:
+Current June 2026 product values in the dashboard:
+
+- Semiconductor exports: USD 44.82B, YoY +199.5%.
+- Computer / SSD proxy exports: USD 5.41B, YoY +308.8%, reported as driven by AI-infrastructure SSD demand.
+- Overall exports: USD 102.25B, YoY +70.9%.
+- Overall imports: USD 66.10B, YoY +30.1%.
+- Trade balance: USD 36.15B surplus.
+- Average daily exports: USD 4.54B, YoY +59.5%.
+- First-half semiconductor exports: USD 192.4B, YoY +162.6%.
+
+Source chain:
+
+- Korea.kr / MOTIE June 2026 policy-news repost: `https://www.korea.kr/news/policyNewsView.do?newsId=148967445&pWise=sub&pWiseSub=C2`
+- Korea.kr / MOTIE June 2026 briefing transcript: `https://www.korea.kr/briefing/policyBriefingView.do?newsId=156769112`
+- MOTIE indexed PDF URL: `https://www.motir.go.kr/attach/down/095a2dda9c864e1d90d751f7668a1117/c92b70725392eb00d72a0441fcdfbd30/778bdbf5db9ced7c8fd52756c00bf0cd`
+
+2026-07-01 notes:
+
+- The Korea.kr policy-news repost exposes the exact June semiconductor value, YoY, computer/SSD proxy value, aggregate trade values, and first-half semiconductor value used in the dashboard.
+- The Korea.kr briefing transcript corroborates the rounded June total export, semiconductor export, import, trade-balance, and first-half values.
+- The MOTIE PDF is publicly indexed, but direct local download returned a 404/error page from this environment. No PDF-only values were landed.
+- KCS official press-release list still did not expose a separate 2026-07-01 full-month `수출입 현황` page during this refresh. KCS remains the source for June 1-10 and June 1-20 customs high-frequency releases.
+
+Current May 2026 product values still used for memory splits:
 
 - Semiconductor exports: USD 37.16B, YoY +169.4%.
 - Memory semiconductors: USD 32.1B, YoY +255%.
@@ -142,7 +165,7 @@ Do not use these product-release rows to calculate USD/kg unless a source explic
 
 ## High-Frequency June 2026 Check
 
-Latest official high-frequency release as of 2026-06-30:
+Latest official KCS high-frequency release as of 2026-07-01:
 
 - KCS official June 1-20 release page: `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?bbsId=1362&mi=2891&nttSn=10167371&nttSnUrl=d3dc345ca30751d2b28d06b45adfbc2b`
 - KCS official June 1-20 HWPX attachment: `https://www.customs.go.kr/common/nttFileDownload.do?fileKey=fe919b2b9b338d42e83308686682506a`
@@ -186,11 +209,11 @@ Verified official values for 2026-06-01 through 2026-06-10:
 
 The direct KCS page body and KDI repost verify the rounded June 1-10 semiconductor value, growth rate, share, and aggregate trade totals. The KCS official HWPX attachment's main-items table verifies the precise June 1-10 semiconductor value of USD 11,068M (+205.8%), so the dashboard labels that point as official attachment data. Do not derive a precise semiconductor amount from total exports and share.
 
-KCS list/search check on 2026-06-30:
+KCS list/search check on 2026-07-01:
 
-- Official KCS search resolved to the 2026-06-22 `2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치]` release with nttSn `10167371`.
+- Official KCS search/list still resolved to the 2026-06-22 `2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치]` release with nttSn `10167371`.
 - Newer KCS press-release list items dated 2026-06-23 through 2026-06-29 were CBAM, semiconductor-parts classification, trade-statistics coordination, customs-tax statistics, WCO technology exhibition hosting, imported-agricultural-product management, and other non-`수출입 현황` posts; they were not dashboard export-tracking releases.
-- No newer KCS `수출입 현황` release was found as of 2026-06-30.
+- No newer KCS `수출입 현황` release was found on the public KCS list as of the 2026-07-01 refresh, so the June full-month product value is sourced from Korea.kr/MOTIE instead.
 - KDI reposted the same June 1-20 release as policy material num `282993`.
 - Korea.kr search did not expose a separate June 1-20 repost during this refresh; KDI served as the accessible official-policy repost.
 
@@ -201,7 +224,7 @@ TRASS public homepage check on 2026-06-30:
 - Notices showed 2026 May final data built on 2026-06-15.
 - Public widgets did not expose semiconductor/memory product-level provisional values for landing; product-level provisional lookup remains outside the free public widget surface, so no TRASS product split was landed.
 
-KITA monthly HS worker check on 2026-06-30:
+KITA monthly HS worker check on 2026-07-01:
 
 - `2026.05`, HS `852351`, still returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, still returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` `THIS_EXP_AMT=326954` kg.
