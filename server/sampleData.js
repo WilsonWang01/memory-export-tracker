@@ -143,7 +143,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年5月、半导体月度 2026年6月、旬度高频 2026年6月1-20日；2026-07-01 复核，DATA_GO_KR_SERVICE_KEY 未配置，月度 HS 使用 KITA K-stat 官方公开 worker 当年金额与 KG；Korea.kr/MOTIE 公开 6月全月半导体 448.2 亿美元、同比 +199.5%，电脑/SSD proxy 54.1 亿美元、同比 +308.8%。KCS 官网 보도자료 列表截至本次复核仍未出现 6月全月 수출입 현황 发布；未发现可公开落库的 2026.06 月度 HS 当前年行。"
+        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年5月、半导体月度 2026年6月、旬度高频 2026年6月1-20日；2026-07-04 复核，DATA_GO_KR_SERVICE_KEY 未配置，月度 HS 使用 KITA K-stat 官方公开 worker 当年金额与 KG；Korea.kr/MOTIE 与 KCS 已公开 6月全月半导体 448.2 亿美元、同比 +199.5%，电脑/SSD proxy 54.1 亿美元、同比 +308.8%。未发现可公开落库的 2026.06 月度 HS 当前年行。"
     },
     products: productConfigs,
     monthly,
@@ -152,21 +152,21 @@ export function buildSampleStore() {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
         latestPeriod: "2026年5月",
-        latestReleaseDate: "2026-07-01 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；DATA_GO_KR_SERVICE_KEY 未配置",
+        latestReleaseDate: "2026-07-04 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；DATA_GO_KR_SERVICE_KEY 未配置",
         nextExpectedDate: "2026年6月 HS 明细预计 2026年7月中旬随 KCS/data.go.kr/TRASS/KITA 更新",
         status: "official_public_web",
         note:
-          "2026-07-01 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
+          "2026-07-04 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
       },
       {
         key: "monthly_semiconductor",
         label: "半导体月度总量",
         latestPeriod: "2026年6月",
-        latestReleaseDate: "2026-07-01 Korea.kr/MOTIE 6月 수출입 동향 初值",
+        latestReleaseDate: "2026-07-01 Korea.kr/MOTIE 6月 수출입 동향 初值；2026-07-02 KCS 官网同步 6月 수출입 현황 [잠정치]",
         nextExpectedDate: "2026年6月确报预计 2026年7月中旬；2026年7月全月初值预计 2026-08-01 左右",
         status: "official_public_repost",
         note:
-          "Korea.kr/MOTIE 2026-07-01 公开 6月 수출입 동향：总出口 102.25B 美元、同比 +70.9%，进口 66.10B 美元、贸易顺差 36.15B 美元；半导体出口 44.82B 美元、同比 +199.5%，电脑/SSD proxy 出口 5.41B 美元、同比 +308.8%。该 6月半导体值为官方月度初值；未用半导体占比或同比倒推。"
+          "Korea.kr/MOTIE 2026-07-01 公开 6月 수출입 동향，KCS 官网 2026-07-02 同步 6月 수출입 현황 [잠정치]：总出口 102.25B 美元、同比 +70.9%，进口 66.10B 美元、贸易顺差 36.15B 美元；半导体出口 44.82B 美元、同比 +199.5%，电脑/SSD proxy 出口 5.41B 美元、同比 +308.8%。该 6月半导体值为官方月度初值；未用半导体占比或同比倒推。"
       },
       {
         key: "ten_day_semiconductor",
@@ -176,17 +176,17 @@ export function buildSampleStore() {
         nextExpectedDate: "2026-07-11 左右发布 2026年7月1-10日暂定值",
         status: "official_public_rounded",
         note:
-          "2026-07-01 复核：KCS 官网发布 2026-06-22 的 6月1-20日暂定值，KDI 转发同一简报，TRASS 首页交叉核验总出口/进口；KCS 보도자료 列表本次仍未出现 6月全月 수출입 현황 页面。KCS 正文和 HWPX 文本核验总出口 61,991M 美元、进口 44,495M 美元、贸易顺差 17,496M 美元、半导体同比 +188.4%、半导体占比 41.2%，并披露半导体出口约 255 亿美元；HWPX 中的主要品目图表为图片，未提取到可公开落库的更精确半导体金额。"
+          "2026-07-04 复核：KCS 官网发布 2026-06-22 的 6月1-20日暂定值，KDI 转发同一简报，TRASS 首页交叉核验总出口/进口；KCS 官网另已出现 2026-07-02 的 6月全月 수출입 현황 [잠정치]。KCS 正文和 HWPX 文本核验总出口 61,991M 美元、进口 44,495M 美元、贸易顺差 17,496M 美元、半导体同比 +188.4%、半导体占比 41.2%，并披露半导体出口约 255 亿美元；HWPX 中的主要品目图表为图片，未提取到可公开落库的更精确半导体金额。"
       },
       {
         key: "memory_provisional_detail",
         label: "存储细分明细",
         latestPeriod: "2026年6月全月电脑/SSD proxy；2026年5月全月官方存储细分；2026年5月1-20日价格/数量暂估",
-        latestReleaseDate: "2026-07-01 复核",
+        latestReleaseDate: "2026-07-04 复核",
         nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年6月 DRAM/SSD/HBM 细分数据；6月月度 HS 明细预计 2026年7月中旬",
         status: "mixed_public_reported",
         note:
-          "2026-07-01 复核：Korea.kr/MOTIE 6月 수출입 동향核验半导体总量和电脑/SSD proxy 金额及 YoY，但未公开 DRAM/NAND/HBM 数量或重量；MOTIE 5月 수출입 동향公开转发文本仍是最新可核验 Memory、DRAM、NAND 细分金额来源。HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价；2026.06 HS 行尚不可落库。"
+          "2026-07-04 复核：Korea.kr/MOTIE 6月 수출입 동향与 KCS 6月 수출입 현황 [잠정치] 核验半导体总量和电脑/SSD proxy 金额及 YoY，但未公开 DRAM/NAND/HBM 数量或重量；MOTIE 5月 수출입 동향公开转发文本仍是最新可核验 Memory、DRAM、NAND 细分金额来源。HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价；2026.06 HS 行尚不可落库。"
       }
     ],
     sourceRegistry: [
@@ -294,7 +294,7 @@ export function buildSampleStore() {
         sourceName: "KCS official press-release list",
         sourceUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
         status: "official_public_checked_2026_07_01",
-        note: "KCS official press-release list/search was checked on 2026-07-01. The public list still showed 2026-06-23 through 2026-06-29 non-export-status releases on page 1 and did not expose a 2026-07-01 full-month export-status page during this refresh. The newest KCS export-tracking release found on the official list remains 2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치], registered 2026-06-22 with nttSn 10167371."
+        note: "KCS homepage/search was rechecked on 2026-07-04. It exposes 2026년 6월 수출입 현황 [잠정치], dated 2026-07-02, confirming the same full-month aggregate release already landed from Korea.kr/MOTIE. The latest high-frequency KCS export-tracking release in this dataset remains 2026년 6월 1일 ~ 6월 20일 수출입 현황 [잠정치], registered 2026-06-22 with nttSn 10167371."
       },
       {
         key: "taxtimes_20260610",
@@ -481,7 +481,7 @@ export function buildSampleStore() {
         firstHalfSemiconductorExportValueUsd: 192_400_000_000,
         firstHalfSemiconductorYoYPct: 162.6,
         note:
-          "Korea.kr/MOTIE 2026-07-01 release gives the exact June semiconductor amount and YoY used here. The value is not derived from share, total exports, or prior-year data. KCS official press-release list did not expose a separate 6월 월간 수출입 현황 page during this refresh."
+          "Korea.kr/MOTIE 2026-07-01 release gives the exact June semiconductor amount and YoY used here. The value is not derived from share, total exports, or prior-year data. KCS homepage/search was rechecked on 2026-07-04 and shows 2026년 6월 수출입 현황 [잠정치], dated 2026-07-02, as a full-month official cross-check."
       }
     ],
     memoryDetail: [

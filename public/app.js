@@ -434,12 +434,11 @@ function renderSummary() {
 function renderMemoryDetail() {
   const detail = state.data.memoryDetail ?? [];
   const freshness = freshnessByKey("memory_provisional_detail");
-  document.querySelector("#memoryDetailCoverage").textContent = "5月全月产业细分已更新；HS 月度图已含 5月金额 / KG / 单价";
+  document.querySelector("#memoryDetailCoverage").textContent =
+    "6月全月 Computer/SSD proxy 已更新；5月全月 Memory / DRAM / NAND 仍是最新可核验细分；HS 月度图已含 5月金额 / KG / 单价";
   document.querySelector("#memoryDetailMethod").innerHTML = sourceNote({
-    source: "MOTIE 5月进出口动向转述（Electimes / Newstomato）+ KCS官方发布事件；5月前20日价格来自市场镜像",
+    source: "Korea.kr/MOTIE 6月进出口动向 + MOTIE 5月细分转述 + KCS/KITA HS；5月前20日价格来自市场镜像",
     freshnesses: [freshness],
-    cutoffText: "5月全月：Memory / DRAM / NAND / Computer proxy；5月1-20日：部分价格/数量暂估",
-    updateText: "6月1-20日暂定值预计 2026-06-21 左右；6月月度 HS 明细预计 2026年7月中旬",
     caveat: "全月产业细分只有金额和同比；HS 月度单价另由 KITA/KCS 口径的金额与 KG 推算。"
   });
   document.querySelector("#memoryDetailGrid").innerHTML = detail
@@ -564,8 +563,6 @@ function renderPrelimChart() {
   document.querySelector("#officialCoverageBadge").innerHTML = sourceNote({
     source: "KCS/MOTIE 月度发布 + KCS 旬度进出口现状简报；部分精确值经媒体转述交叉核验",
     freshnesses: [monthlyFreshness, tenDayFreshness],
-    cutoffText: "月度半导体：2026年5月；旬度高频：2026年6月1-10日",
-    updateText: "6月1-20日暂定值预计 2026-06-21；6月初值预计 2026-07-01 左右",
     caveat: "半导体总量/高频窗口不拆 DRAM/SSD/HBM 重量，与 HS 单价图口径不同。"
   });
   const monthlyOfficial = state.data.officialMonthly ?? [];

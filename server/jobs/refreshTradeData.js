@@ -38,7 +38,7 @@ export async function refreshTradeData() {
     return await buildStoreFromMonthly(monthlyResponses, {
       mode: "official_kita_kstat",
       message:
-        "已通过 KITA K-stat 官方公开 worker 更新月度 HS 品类出口金额、净重与单位价格；DATA_GO_KR_SERVICE_KEY 缺失或 KCS/data.go.kr 接口不可用时使用该路径。2026-07-01 复核：当前公开月度 HS 最新可落库期仍为 2026年5月；Korea.kr/MOTIE 已公开 2026年6月全月半导体与电脑/SSD proxy 初值。"
+        "已通过 KITA K-stat 官方公开 worker 更新月度 HS 品类出口金额、净重与单位价格；DATA_GO_KR_SERVICE_KEY 缺失或 KCS/data.go.kr 接口不可用时使用该路径。2026-07-04 复核：当前公开月度 HS 最新可落库期仍为 2026年5月；Korea.kr/MOTIE 与 KCS 已公开 2026年6月全月半导体与电脑/SSD proxy 初值。"
     });
   } catch (error) {
     const sample = buildSampleStore();
