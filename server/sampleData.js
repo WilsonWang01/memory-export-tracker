@@ -143,7 +143,7 @@ export function buildSampleStore() {
       nextScheduledUpdate: null,
       mode: "mixed_public",
       message:
-        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年5月、半导体月度 2026年6月、KCS 海关高频/暂定值 2026年6月1-30日；2026-07-08 复核，DATA_GO_KR_SERVICE_KEY 未配置，月度 HS 使用 KITA K-stat 官方公开 worker 当年金额与 KG。KCS 官网 보도자료 列表和 KDI 转发已出现 6月全月 수출입 현황 [잠정치]，验证总出口/进口/顺差及半导体首次超过 400 亿美元；Korea.kr/MOTIE 提供 6月全月半导体 448.2 亿美元、同比 +199.5%，电脑/SSD proxy 54.1 亿美元、同比 +308.8%。未发现可公开落库的 2026.06 月度 HS 当前年行，也未发现 2026年7月1-10日暂定值。"
+        "公开数据已覆盖至：SSD 与 DRAM/HBM 月度 HS 2026年5月、半导体月度 2026年6月、KCS 海关高频/暂定值 2026年6月1-30日；2026-07-09 复核，DATA_GO_KR_SERVICE_KEY 未配置，月度 HS 使用 KITA K-stat 官方公开 worker 当年金额与 KG。KCS 官网 보도자료 列表和 KDI 转发已出现 6月全月 수출입 현황 [잠정치]，验证总出口/进口/顺差及半导体首次超过 400 亿美元；Korea.kr/MOTIE 提供 6月全月半导体 448.2 亿美元、同比 +199.5%，电脑/SSD proxy 54.1 亿美元、同比 +308.8%。未发现可公开落库的 2026.06 月度 HS 当前年行，也未发现 2026年7月1-10日暂定值。"
     },
     products: productConfigs,
     monthly,
@@ -152,11 +152,11 @@ export function buildSampleStore() {
         key: "monthly_hs",
         label: "SSD / DRAM-HBM HS 明细",
         latestPeriod: "2026年5月",
-        latestReleaseDate: "2026-07-08 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；DATA_GO_KR_SERVICE_KEY 未配置",
+        latestReleaseDate: "2026-07-09 复核：KITA K-stat worker 仍只返回 2026.05 当前年 HS 金额与 KG；DATA_GO_KR_SERVICE_KEY 未配置",
         nextExpectedDate: "2026年6月 HS 明细预计 2026年7月中旬随 KCS/data.go.kr/TRASS/KITA 更新",
         status: "official_public_web",
         note:
-          "2026-07-08 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
+          "2026-07-09 复核，KITA K-stat ItemImpExpList worker 对 SSD HS 852351 返回 2026.05 出口金额 3,973,455 thousand USD、重量 177,484 kg；对 DRAM/HBM proxy HS 854232 返回出口金额 24,950,563 thousand USD、重量 326,954 kg。强制查询 2026.06 对两个 HS code 均未返回可落库当前年 HS 行。KCS TradeData 英文页同源接口未作为本次落库来源；DATA_GO_KR_SERVICE_KEY 未配置，未调用 KCS/data.go.kr API。"
       },
       {
         key: "monthly_semiconductor",
@@ -176,17 +176,17 @@ export function buildSampleStore() {
         nextExpectedDate: "2026-07-11 左右发布 2026年7月1-10日暂定值",
         status: "official_public_repost",
         note:
-          "2026-07-08 复核：KCS 官网 보도자료 列表显示 2026-07-02 发布的 2026年6月 수출입 현황 [잠정치] 仍为最新出口状态简报，KDI 转发同一 KCS 6月1-30日简报并验证总出口 1,023 亿美元、进口 661 亿美元、贸易顺差 361 亿美元。KCS/Korea.kr/KDI 搜索未发现 2026年7月1日~7月10日 수출입 현황 [잠정치]，该窗口仍预计 2026-07-11 左右发布。KCS/KDI HTML 摘要只披露半导体首次超过 400 亿美元，未给出可落库的精确半导体金额；精确 6月半导体金额仍使用 Korea.kr/MOTIE 的 448.2 亿美元。"
+          "2026-07-09 复核：KCS 官网 보도자료 列表显示 2026-07-02 发布的 2026年6月 수출입 현황 [잠정치] 仍为最新出口状态简报，KDI 转发同一 KCS 6月1-30日简报并验证总出口 1,023 亿美元、进口 661 亿美元、贸易顺差 361 亿美元。KCS/Korea.kr/KDI 搜索未发现 2026年7月1日~7月10日 수출입 현황 [잠정치]，该窗口仍预计 2026-07-11 左右发布。KCS/KDI HTML 摘要只披露半导体首次超过 400 亿美元，未给出可落库的精确半导体金额；精确 6月半导体金额仍使用 Korea.kr/MOTIE 的 448.2 亿美元。"
       },
       {
         key: "memory_provisional_detail",
         label: "存储细分明细",
         latestPeriod: "2026年6月全月电脑/SSD proxy；2026年5月全月官方存储细分；2026年5月1-20日价格/数量暂估",
-        latestReleaseDate: "2026-07-08 复核",
+        latestReleaseDate: "2026-07-09 复核",
         nextExpectedDate: "等待 TRASS/KITA 或市场转述公开 2026年6月 DRAM/SSD/HBM 细分数据；6月月度 HS 明细预计 2026年7月中旬",
         status: "mixed_public_reported",
         note:
-          "2026-07-08 复核：Korea.kr/MOTIE 6月 수출입 동향核验半导体总量和电脑/SSD proxy 金额及 YoY，KCS/KDI 全月海关简报验证半导体首次超过 400 亿美元，但二者未公开 DRAM/NAND/HBM 数量或重量；MOTIE 5月 수출입 동향公开转发文本仍是最新可核验 Memory、DRAM、NAND 细分金额来源。HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价；2026.06 HS 行尚不可落库。"
+          "2026-07-09 复核：Korea.kr/MOTIE 6月 수출입 동향核验半导体总量和电脑/SSD proxy 金额及 YoY，KCS/KDI 全月海关简报验证半导体首次超过 400 亿美元，但二者未公开 DRAM/NAND/HBM 数量或重量；MOTIE 5月 수출입 동향公开转发文本仍是最新可核验 Memory、DRAM、NAND 细分金额来源。HS 月度图已用 KITA K-stat 补入 2026.05 SSD 与 DRAM/HBM proxy 金额、KG、单价；2026.06 HS 行尚不可落库。"
       }
     ],
     sourceRegistry: [
@@ -204,7 +204,7 @@ export function buildSampleStore() {
         sourceName: "KCS/data.go.kr Itemtrade API",
         sourceUrl: "https://www.data.go.kr/data/15101609/openapi.do?recommendDataYn=Y",
         status: "requires_DATA_GO_KR_SERVICE_KEY",
-        note: "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-07-08 refresh environment, so the API path was not used by npm run fetch. Earlier no-key endpoint verification returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22, REST/XML, free, with automatic approval for development use. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
+        note: "Official API source for monthly HS export value and net weight. DATA_GO_KR_SERVICE_KEY was not present in the 2026-07-09 refresh environment, so the API path was not used by npm run fetch. Earlier no-key endpoint verification returned 401 Unauthorized. data.go.kr lists this API as modified 2026-05-22, REST/XML, free, with automatic approval for development use. Use SSD HS 852351 and DRAM/HBM proxy HS 854232 when configured."
       },
       {
         key: "korea_kr_motie_202606",
@@ -223,7 +223,7 @@ export function buildSampleStore() {
         section: "monthly_semiconductor,ten_day_semiconductor",
         sourceName: "KCS official June 2026 monthly import/export status [preliminary], with KDI repost",
         sourceUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-        status: "official_public_repost_verified_2026_07_07",
+        status: "official_public_repost_verified_2026_07_09",
         kdiRepostUrl: "https://eiec.kdi.re.kr/policy/materialView.do?num=283757&pg=&pp=&topic=O",
         kdiPdfUrl: "https://eiec.kdi.re.kr/policy/callDownload.do?dtime=20260705181006&filenum=1&num=283757",
         koreaKrMotieSourceUrl: "https://www.korea.kr/news/policyNewsView.do?newsId=148967445&pWise=sub&pWiseSub=C2",
@@ -305,8 +305,8 @@ export function buildSampleStore() {
         section: "ten_day_semiconductor",
         sourceName: "KCS official press-release list",
         sourceUrl: "https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891",
-        status: "official_public_checked_2026_07_08",
-        note: "KCS official press-release list was checked on 2026-07-08. Page 1 shows 2026년 6월 수출입 현황 [잠정치], registered 2026-07-02, as the newest export-status release, along with non-export-status releases dated 2026-07-02 through 2026-07-03. No 2026년 7월 1일 ~ 7월 10일 release was visible yet."
+        status: "official_public_checked_2026_07_09",
+        note: "KCS official press-release list was checked on 2026-07-09. Page 1 shows 2026년 6월 수출입 현황 [잠정치], registered 2026-07-02, as the newest export-status release, along with non-export-status releases dated 2026-07-02 through 2026-07-03. No 2026년 7월 1일 ~ 7월 10일 release was visible yet."
       },
       {
         key: "taxtimes_20260610",
@@ -393,8 +393,8 @@ export function buildSampleStore() {
         section: "monthly_hs_context",
         sourceName: "KITA K-stat ItemImpExpList worker",
         sourceUrl: "https://stat.kita.net/stat/kts/pum/ItemImpExpList.screen",
-        status: "official_public_web_verified_2026_07_08",
-        note: "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. It returned current-year 2026.05 rows: SSD 3,973,455 thousand USD / 177,484 kg and HS 854232 24,950,563 thousand USD / 326,954 kg. A focused 2026.06 query returned no positive current-year rows for either HS code on 2026-07-08, so 2026.05 remains the latest monthly HS source."
+        status: "official_public_web_verified_2026_07_09",
+        note: "Same-site XML worker endpoint /stat/kts/pum/ItemImpExpListWorker.screen was queried for HS 852351 and 854232, fields AMT and WGT, month mode. It returned current-year 2026.05 rows: SSD 3,973,455 thousand USD / 177,484 kg and HS 854232 24,950,563 thousand USD / 326,954 kg. A focused 2026.06 query returned no positive current-year rows for either HS code on 2026-07-09, so 2026.05 remains the latest monthly HS source."
       },
       {
         key: "market_mirror_20260520_unit_price",
