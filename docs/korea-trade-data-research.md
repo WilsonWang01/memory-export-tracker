@@ -1,8 +1,8 @@
 # Korea Trade Data Research Notes
 
-Last checked: 2026-07-10.
+Last checked: 2026-07-12.
 
-2026-07-10 update: no new semiconductor numeric data point was landed. KCS, Korea.kr, and KDI still show the June 2026 monthly customs/product releases as the newest official semiconductor export sources, and the KITA K-stat worker still returns no positive current-year June 2026 HS rows for SSD `852351` or DRAM/HBM proxy `854232`. TRASS public homepage now corroborates June 1-30 aggregate trade totals, but does not expose semiconductor or memory product splits.
+2026-07-12 update: no new semiconductor numeric data point was landed. KCS, Korea.kr, and KDI still show the June 2026 monthly customs/product releases as the newest official semiconductor export sources, and the KITA K-stat worker still returns no positive current-year June 2026 HS rows for SSD `852351` or DRAM/HBM proxy `854232`. The official KCS press-release list shows newer non-export-status releases through 2026-07-10, but no 2026년 7월 1일~10일 `수출입 현황 [잠정치]` release. TRASS public widgets now show July 1-10 aggregate exports/imports, but remain aggregate-only and do not expose semiconductor or memory product splits.
 
 This dashboard uses two different data families and they should not be mixed:
 
@@ -97,19 +97,19 @@ THIS_EXP_AMT, THIS_EXP_RATE, THIS_IMP_AMT, THIS_IMP_RATE, THIS_PROFIT,
 COND_GB, ORDER_NM
 ```
 
-2026-07-10 verification:
+2026-07-12 verification:
 
 - `2026.05`, HS `852351`, `AMT` returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` returns `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, `AMT` returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` returns `THIS_EXP_AMT=326954` kg.
 - These are current-year `THIS_*` values, not previous-year `LAST_*` comparison values, so they are valid monthly HS rows.
-- Focused `2026.06` queries for both HS codes still returned no positive current-year rows, so June monthly HS data was not landed.
+- Focused `2026.06` queries for both HS codes still returned no positive current-year rows on 2026-07-12, so June monthly HS data was not landed.
 - The KCS TradeData English same-site endpoint did not return `2026.05` rows during the same 2026-06-15 check, so the dashboard records the latest HS source as KITA K-stat for this refresh.
 - TRASS public homepage shows `2026년 05월 확정치 구축완료` dated 2026-06-15.
 - KITA may show a default UI month that lags direct worker availability. Trust the worker only when the exact HS row has non-zero `THIS_EXP_AMT` for both `AMT` and `WGT`.
 
 ## data.go.kr API Check
 
-`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-07-10 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
+`DATA_GO_KR_SERVICE_KEY` was not present in the 2026-07-12 refresh environment, so the official KCS itemtrade API path could not be used by `npm run fetch`.
 
 The public data.go.kr catalog page for `관세청_품목별 수출입실적(GW)` remains the correct official API source. It states that item trade statistics are aggregated by HS code, export value is the declared USD amount, weight is net weight in kg, and prior-month data is refreshed around the 15th after corrections/cancellations. The catalog was modified on 2026-05-22.
 
@@ -133,7 +133,7 @@ Source chain:
 - Korea.kr / MOTIE June 2026 briefing transcript: `https://www.korea.kr/briefing/policyBriefingView.do?newsId=156769112`
 - MOTIE indexed PDF URL: `https://www.motir.go.kr/attach/down/095a2dda9c864e1d90d751f7668a1117/c92b70725392eb00d72a0441fcdfbd30/778bdbf5db9ced7c8fd52756c00bf0cd`
 
-2026-07-10 notes:
+2026-07-12 notes:
 
 - The Korea.kr policy-news repost exposes the exact June semiconductor value, YoY, computer/SSD proxy value, aggregate trade values, and first-half semiconductor value used in the dashboard.
 - The Korea.kr briefing transcript corroborates the rounded June total export, semiconductor export, import, trade-balance, and first-half values.
@@ -170,7 +170,7 @@ Do not use these product-release rows to calculate USD/kg unless a source explic
 
 ## High-Frequency June/July 2026 Check
 
-Latest official KCS full-month release as of 2026-07-10:
+Latest official KCS full-month release as of 2026-07-12:
 
 - KCS official release page: `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?nttSn=10168488&nttSnUrl=17797181bd6178913682c340f7b8b5c2`
 - KCS official press-release list for newer-release checks: `https://www.customs.go.kr/kcs/na/ntt/selectNttList.do?bbsId=1362&mi=2891`
@@ -191,7 +191,7 @@ Landing rule applied:
 - No value was derived from total exports, semiconductor share, or prior-year YoY.
 - The KCS full-month row supersedes June 1-20 as the latest high-frequency/customs status check, but June 1-10 and June 1-20 rows remain in the dashboard as intra-month tracking points.
 
-Latest official KCS intra-month high-frequency release as of 2026-07-10:
+Latest official KCS intra-month high-frequency release as of 2026-07-12:
 
 - KCS official June 1-20 release page: `https://www.customs.go.kr/kcs/na/ntt/selectNttInfo.do?bbsId=1362&mi=2891&nttSn=10167371&nttSnUrl=d3dc345ca30751d2b28d06b45adfbc2b`
 - KCS official June 1-20 HWPX attachment: `https://www.customs.go.kr/common/nttFileDownload.do?fileKey=fe919b2b9b338d42e83308686682506a`
@@ -235,28 +235,29 @@ Verified official values for 2026-06-01 through 2026-06-10:
 
 The direct KCS page body and KDI repost verify the rounded June 1-10 semiconductor value, growth rate, share, and aggregate trade totals. The KCS official HWPX attachment's main-items table verifies the precise June 1-10 semiconductor value of USD 11,068M (+205.8%), so the dashboard labels that point as official attachment data. Do not derive a precise semiconductor amount from total exports and share.
 
-KCS list/search check on 2026-07-10:
+KCS list/search check on 2026-07-12:
 
-- Official KCS press-release list page 1 shows 2026-07-09 non-export-status releases; the newest export-status release found in official/repost searches remains the 2026-07-02 `2026년 6월 수출입 현황 [잠정치]` release.
-- No 2026년 7월 1일 ~ 7월 10일 `수출입 현황 [잠정치]` release was visible on KCS, Korea.kr, or KDI searches on 2026-07-10 KST; the next high-frequency window is still expected around 2026-07-11.
+- Official KCS press-release list page 1 shows 2026-07-10 non-export-status releases; the newest export-status release found in official/repost searches remains the 2026-07-02 `2026년 6월 수출입 현황 [잠정치]` release.
+- No 2026년 7월 1일 ~ 7월 10일 `수출입 현황 [잠정치]` release was visible on KCS, Korea.kr, or KDI searches on 2026-07-12 KST; continue checking from 2026-07-13 because 2026-07-11 fell on a Saturday.
+- TRASS public widgets show July 1-10 aggregate exports of USD 29,839M (+53.93%) and imports of USD 23,480M (+17.41%), but not semiconductor or memory values, so no high-frequency semiconductor point was landed from TRASS.
 - KDI reposted the same June 1-30 KCS release as policy material num `283757`.
 - The June full-month product value remains sourced from Korea.kr/MOTIE because KCS/KDI expose the semiconductor-over-USD-40B milestone but not an exact browser-readable semiconductor dollar value.
 - KDI reposted the June 1-20 release as policy material num `282993`.
 - Korea.kr search did not expose a separate June 1-20 repost during this refresh; KDI served as the accessible official-policy repost.
 
-TRASS public homepage check on 2026-07-10:
+TRASS public homepage check on 2026-07-12:
 
 - The public homepage showed May final aggregate totals: exports USD 87,821M (+53.37%) and imports USD 60,785M (+20.74%).
-- It also showed June 1-30 provisional aggregate totals: exports USD 102,251M (+70.89%) and imports USD 66,101M (+30.05%).
+- It also showed July 1-10 provisional aggregate totals: exports USD 29,839M (+53.93%) and imports USD 23,480M (+17.41%).
 - Notices showed 2026 May final data built on 2026-06-15.
 - Public widgets did not expose semiconductor/memory product-level provisional values for landing; product-level provisional lookup remains outside the free public widget surface, so no TRASS product split was landed.
 
-KITA monthly HS worker check on 2026-07-10:
+KITA monthly HS worker check on 2026-07-12:
 
 - `2026.05`, HS `852351`, still returns `THIS_EXP_AMT=3973455` thousand USD and `WGT` `THIS_EXP_AMT=177484` kg.
 - `2026.05`, HS `854232`, still returns `THIS_EXP_AMT=24950563` thousand USD and `WGT` `THIS_EXP_AMT=326954` kg.
 - A focused `2026.06` query returned no positive current-year rows for either HS code, so June monthly HS data was not landed.
-- `DATA_GO_KR_SERVICE_KEY` was not present in the 2026-07-10 refresh environment, so the KCS/data.go.kr itemtrade API path could not be used by `npm run fetch`.
+- `DATA_GO_KR_SERVICE_KEY` was not present in the 2026-07-12 refresh environment, so the KCS/data.go.kr itemtrade API path could not be used by `npm run fetch`.
 
 ## Update Cadence
 
